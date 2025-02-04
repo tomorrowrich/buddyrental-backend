@@ -1,4 +1,4 @@
-import { Body, Controller, Get, NotFoundException, Post } from '@nestjs/common';
+import { BadRequestException, NotFoundException, Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthRegisterRequestDto, AuthRegisterResponseDto } from 'dtos/register.auth.dto';
 
@@ -13,11 +13,6 @@ export class AuthController {
 
   @Post('register')
   register(@Body() authRegisterDto: AuthRegisterRequestDto): AuthRegisterResponseDto {
-    if (authRegisterDto.email === "") {
-        // strValue was empty string
-        throw new NotFoundException({ success: false, message: 'User not found' });
-    }
-
     return this.authService.register(authRegisterDto);
   }
 
