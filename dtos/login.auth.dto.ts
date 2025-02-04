@@ -1,9 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { AccountType } from "../interfaces/account_type.user.interface";
 
-export class AuthRegisterRequestDto {
-    @ApiProperty({example: "user"})
-    account_type: AccountType;
+export class AuthLoginRequestDto {
+    @ApiProperty({example: "331541d6-617d-4464-b7d0-9b346b87f41c"})
+    user_id: string
 
     @ApiProperty({example: "example@example.com"})
     email: string;
@@ -12,10 +11,10 @@ export class AuthRegisterRequestDto {
     password: string;
 }
 
-export class AuthRegisterResponseDto {
+export class AuthLoginResponseDto {
     success: boolean;
     data: {
-        user_id: string;
+        session_id: string;
     };
     message: string;
 }
