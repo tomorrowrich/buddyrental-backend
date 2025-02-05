@@ -1,10 +1,29 @@
-import { BadRequestException, NotFoundException, Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  Body,
+  Controller,
+  Get,
+  Post,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthRegisterRequestDto, AuthRegisterResponseDto } from 'dtos/register.auth.dto';
+import {
+  AuthRegisterRequestDto,
+  AuthRegisterResponseDto,
+} from './dtos/register.auth.dto';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { AuthLoginRequestDto, AuthLoginResponseDto } from 'dtos/login.auth.dto';
-import { AuthStatusRequestDto, AuthStatusResponseDto } from 'dtos/status.auth.dto';
-import { AuthLogoutRequestDto, AuthLogoutResponseDto } from 'dtos/logout.auth.dto';
+import {
+  AuthLoginRequestDto,
+  AuthLoginResponseDto,
+} from './dtos/login.auth.dto';
+import {
+  AuthStatusRequestDto,
+  AuthStatusResponseDto,
+} from './dtos/status.auth.dto';
+import {
+  AuthLogoutRequestDto,
+  AuthLogoutResponseDto,
+} from './dtos/logout.auth.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -17,7 +36,9 @@ export class AuthController {
   }
 
   @Post('register')
-  register(@Body() authRegisterDto: AuthRegisterRequestDto): AuthRegisterResponseDto {
+  register(
+    @Body() authRegisterDto: AuthRegisterRequestDto,
+  ): AuthRegisterResponseDto {
     return this.authService.register(authRegisterDto);
   }
 
@@ -36,5 +57,4 @@ export class AuthController {
   status(@Body() user_id: AuthStatusRequestDto): AuthStatusResponseDto {
     return this.authService.getStatus(user_id);
   }
-
 }

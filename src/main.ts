@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  app.setGlobalPrefix('/api');
   const config = new DocumentBuilder()
     .setTitle('BuddyRental')
     .setDescription('The renter of buddies')
@@ -12,8 +12,8 @@ async function bootstrap() {
     .addTag('auth')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, documentFactory);
+  SwaggerModule.setup('/api/docs', app, documentFactory);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 5501);
 }
 bootstrap();
