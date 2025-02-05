@@ -4,6 +4,7 @@ import { AuthRegisterRequestDto, AuthRegisterResponseDto } from 'dtos/register.a
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthLoginRequestDto, AuthLoginResponseDto } from 'dtos/login.auth.dto';
 import { AuthStatusRequestDto, AuthStatusResponseDto } from 'dtos/status.auth.dto';
+import { AuthLogoutRequestDto, AuthLogoutResponseDto } from 'dtos/logout.auth.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,6 +26,12 @@ export class AuthController {
     return this.authService.login(authLoginDto);
   }
 
+  @Post('logout')
+  logout(@Body() authLogoutDto: AuthLogoutRequestDto): AuthLogoutResponseDto {
+    return this.authService.logout(authLogoutDto);
+  }
+
+  //get verification status of user account
   @Post('status')
   status(@Body() user_id: AuthStatusRequestDto): AuthStatusResponseDto {
     return this.authService.getStatus(user_id);

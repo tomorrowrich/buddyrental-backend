@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { AuthLoginRequestDto, AuthLoginResponseDto } from 'dtos/login.auth.dto';
+import { AuthLogoutRequestDto, AuthLogoutResponseDto } from 'dtos/logout.auth.dto';
 import { AuthRegisterRequestDto, AuthRegisterResponseDto } from 'dtos/register.auth.dto';
 import { AuthStatusRequestDto, AuthStatusResponseDto } from 'dtos/status.auth.dto';
 
@@ -34,6 +35,10 @@ export class AuthService {
   }
 
   login(authLoginDto: AuthLoginRequestDto): AuthLoginResponseDto {
+    throw new NotImplementedException;
+  }
+
+  logout(authLoginDto: AuthLogoutRequestDto): AuthLogoutResponseDto {
     throw new NotImplementedException;
   }
 

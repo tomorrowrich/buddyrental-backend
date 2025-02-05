@@ -12,3 +12,27 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Credential {
+  userId   String  @id @default(uuid()) @map("user_id")
+  email    String  @unique
+  password String
+  verified Boolean @default(false)
+  User     User[]
+}
+
+model User {
+  userId         String  @id @map("user_id")
+  displayName    String? @map("display_name")
+  description    String?
+  firstName      String? @map("first_name")
+  lastName       String? @map("last_name")
+  age            Int?
+  gender         String?
+  profilePicture String? @map("profile_picture")
+  address        String?
+  phoneNumber    String? @map("phone_number")
+  citizenId      String? @map("citizen_id")
+
+  credential Credential @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
