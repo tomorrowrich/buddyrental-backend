@@ -121,7 +121,7 @@ jobs:
           tags: |
             type=semver,pattern=${{ github.ref_name }}
             type=raw,value=${{ needs.release.outputs.version }}
-            ${{ github.ref_name == 'main' && 'type=raw,value=latest' || github.ref_name == 'develop' && 'type=raw,value=devel' }}
+            ${{ github.ref_name == 'main' && 'type=raw,value=prod' || github.ref_name == 'develop' && 'type=raw,value=devel' }}
             type=raw,value=latest
 
       - name: Build and push
