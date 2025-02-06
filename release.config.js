@@ -19,6 +19,12 @@ module.exports = {
       },
     ],
     [
+      '@semantic-release/exec',
+      {
+        successCmd: 'echo v${nextRelease.version} > VERSION',
+      },
+    ],
+    [
       '@semantic-release/github',
       {
         assets: [{ path: 'CHANGELOG.md', label: 'CHANGELOG' }],
