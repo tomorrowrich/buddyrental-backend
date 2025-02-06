@@ -1,3 +1,9 @@
+# [1.2.0-beta.6](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.5...v1.2.0-beta.6) (2025-02-06)
+
+### Bug Fixes
+
+- **workflows:** update release.yml to set 'prod' tag for main branch ([44f5dbc](https://github.com/tomorrowrich/buddyrental-backend/commit/44f5dbc39b3078e3366d0634e3e2da3755a3957f))
+
 # [1.2.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.4...v1.2.0-beta.5) (2025-02-06)
 
 ### Bug Fixes
