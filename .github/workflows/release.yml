@@ -73,6 +73,7 @@ jobs:
 
   build-docker:
     name: Build and Push Docker Image
+    if: ${{ needs.release.outputs.nextRelease.version != '' }}
     runs-on: ubuntu-latest
     needs: release
     steps:
@@ -96,9 +97,7 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           tags: |
             type=semver,pattern=${{ needs.release.outputs.nextRelease.version }}
-            type=sha
-            type=raw,value=latest
-            ${{ github.ref == 'refs/heads/develop' && 'type=raw,value=devel' || '' }}
+            ${{ github.ref == 'refs/heads/develop' && 'type=raw,value=devel' || 'type=raw,value=latest' }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
