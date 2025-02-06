@@ -97,6 +97,7 @@ jobs:
             type=semver,pattern=${{ needs.release.outputs.nextRelease.version }}
             type=sha
             type=raw,value=latest
+            ${{ github.ref == 'refs/heads/develop' ? 'type=raw,value=devel' : '' }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
