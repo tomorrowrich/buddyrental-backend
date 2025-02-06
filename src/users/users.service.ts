@@ -9,7 +9,7 @@ export class UsersService {
   constructor(private prisma: PrismaService) {}
 
   create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    return this.prisma.user.create({ data: createUserDto });
   }
 
   async findAll(): Promise<User[]> {
@@ -24,7 +24,7 @@ export class UsersService {
     return this.prisma.user.update({ where: { userId }, data: updateUserDto });
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} user`;
+  remove(userId: string) {
+    return this.prisma.user.delete({ where: { userId } });
   }
 }
