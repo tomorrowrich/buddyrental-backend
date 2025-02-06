@@ -19,18 +19,10 @@
     "noFallthroughCasesInSwitch": false,
     "rootDir": "./",
     "paths": {
-      "@app/*": [
-        "src/*"
-      ],
-      "@test/*": [
-        "test/*"
-      ],
-      "@lib/*": [
-        "src/common/*"
-      ]
+      "@app/*": ["src/*"],
+      "@test/*": ["test/*"],
+      "@lib/*": ["src/common/*"]
     }
   },
-  "modulePaths": [
-    "<rootDir>"
-  ]
+  "modulePaths": ["<rootDir>"]
 }
