@@ -1,5 +1,11 @@
 name: Release Pipeline
 
+permissions:
+  packages: write
+  deployments: write
+  contents: write
+  pull-requests: write
+
 on:
   push:
     branches:
