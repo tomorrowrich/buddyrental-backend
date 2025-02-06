@@ -17,13 +17,20 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
+    "rootDir": "./",
     "paths": {
-      "@/*": [
+      "@app/*": [
         "src/*"
+      ],
+      "@test/*": [
+        "test/*"
+      ],
+      "@lib/*": [
+        "src/common/*"
       ]
     }
   },
   "modulePaths": [
     "<rootDir>"
-  ],
+  ]
 }

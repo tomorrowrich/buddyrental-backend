@@ -1,17 +1,10 @@
-import {
-  BadRequestException,
-  NotFoundException,
-  Body,
-  Controller,
-  Get,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import {
   AuthRegisterRequestDto,
   AuthRegisterResponseDto,
 } from './dtos/register.auth.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import {
   AuthLoginRequestDto,
   AuthLoginResponseDto,

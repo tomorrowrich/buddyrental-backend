@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "^11.0.3",
     "@prisma/client": "^6.3.1",
+    "module-alias": "^2.2.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -45,6 +46,7 @@
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
+    "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^15.14.0",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
@@ -59,13 +61,22 @@
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },
+  "_moduleAliases": {
+    "@app": "dist",
+    "@test": "test",
+    "@lib": "dist/common"
+  },
   "jest": {
+    "moduleNameMapper": {
+      "^@app/(.*)$": "<rootDir>/src/$1",
+      "^@lib/(.*)$": "<rootDir>/common/$1"
+    },
     "moduleFileExtensions": [
       "js",
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": "./",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
