@@ -1,3 +1,32 @@
+#!/bin/sh
+pnpm prisma generate
+
+echo "🔍 Running pre-commit checks..."
+
+echo "📊 Checking for pending Prisma migrations..."
+if ! pnpm prisma migrate status ; then
+  echo "❌ Error: There are pending Prisma migrations."
+  echo "👉 Please run 'pnpm prisma migrate deploy' to apply pending migrations."
+  exit 1
+fi
+echo "✅ No pending migrations found."
+
+echo "🔄 Checking for schema changes..."
+if ! pnpm prisma migrate diff --from-schema-datamodel prisma/schema.prisma --to-schema-datasource prisma/schema.prisma --exit-code ; then
+  echo "❌ Error: Your schema.prisma has uncommitted changes."
+  echo "👉 Please run 'pnpm prisma migrate dev' to create a new migration."
+  exit 1
+fi
+echo "✅ Schema is up to date."
+
+echo "🏃 Running tests..."
 pnpm test
+
+echo "✨ Formatting code..."
 pnpm format
+
+echo "🔍 Running linter..."
 pnpm lint
+
+echo "✅ All pre-commit checks passed successfully!"
+
