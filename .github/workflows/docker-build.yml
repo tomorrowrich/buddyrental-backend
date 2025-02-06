@@ -1,9 +1,10 @@
 name: Docker Build and Push
 
 on:
-  push:
+  create:
     tags:
-      - 'v*'
+      - v*
+    # The workflow is triggered when a new tag is created.
 
 env:
   REGISTRY: ghcr.io
