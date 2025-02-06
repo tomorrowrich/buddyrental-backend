@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,7 +9,7 @@ datasource db {
 }
 
 model Credential {
-  userId   String  @id @default(uuid()) @map("user_id")
+  userId   String  @id @unique @default(uuid()) @map("user_id") @db.Uuid
   email    String  @unique
   password String
   verified Boolean @default(false)
@@ -23,8 +17,8 @@ model Credential {
 }
 
 model User {
-  userId         String  @id @map("user_id")
-  displayName    String? @map("display_name")
+  userId         String  @id @unique @default(uuid()) @map("user_id") @db.Uuid
+  displayName    String? @map("display_name") @db.VarChar(255)
   description    String?
   firstName      String? @map("first_name")
   lastName       String? @map("last_name")

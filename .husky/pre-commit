@@ -1,3 +1,43 @@
-pnpm test
-pnpm format
-pnpm lint
+#!/usr/bin/env sh
+
+echo "✨ Formatting code..."
+cross-env pnpm format
+cross-env pnpm prisma format
+
+echo "🔍 Running linter..."
+cross-env pnpm lint
+
+# Add already formatted files
+git add $(git diff --name-only --cached)
+
+if git diff --name-only --cached | grep -q '^prisma/'; then
+  echo "🔍 Running pre-commit checks for Prisma..."
+
+  # Use cross-platform path separator
+  SCHEMA_PATH="prisma/schema.prisma"
+
+  # Generate Prisma client
+  echo "📦 Generating Prisma client..."
+  cross-env pnpm prisma generate
+
+  echo "📊 Checking for pending Prisma migrations..."
+  if ! cross-env pnpm prisma migrate status ; then
+    echo "❌ Error: There are pending Prisma migrations."
+    echo "👉 Please run 'pnpm prisma migrate deploy' to apply pending migrations."
+    exit 1
+  fi
+  echo "✅ No pending migrations found."
+
+  echo "🔄 Checking for schema changes..."
+  if ! cross-env pnpm prisma migrate diff --from-schema-datamodel "$SCHEMA_PATH" --to-schema-datasource "$SCHEMA_PATH" --exit-code ; then
+    echo "❌ Error: Your schema.prisma has uncommitted changes."
+    echo "👉 Please run 'pnpm prisma migrate dev' to create a new migration."
+    exit 1
+  fi
+  echo "✅ Schema is up to date."
+fi
+
+echo "🏃 Running tests..."
+cross-env pnpm test
+
+echo "✅ All pre-commit checks passed successfully!"
