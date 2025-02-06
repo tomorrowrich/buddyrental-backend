@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     tags:
-      - 'v*'
+      - '*'
   workflow_dispatch:
 
 env:
@@ -12,6 +12,7 @@ env:
 
 jobs:
   build-and-push:
+    if: startsWith(github.ref, 'refs/tags/') && ((contains(github.ref, 'develop') || contains(github.ref, 'main')))
     runs-on: ubuntu-latest
     permissions:
       contents: read
