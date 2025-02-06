@@ -13,16 +13,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set branch-specific config
-        run: |
-          if [ "${{ github.ref_name }}" = "develop" ]; then
-            cp .release-please-config.develop.json .release-please-config.json
-          else
-            cp .release-please-config.main.json .release-please-config.json
-          fi
-
       - uses: google-github-actions/release-please-action@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          config-file: .release-please-config.json
+          config-file: .release-please-config.${{github.ref_name}}.json
           manifest-file: .release-please-manifest.json
