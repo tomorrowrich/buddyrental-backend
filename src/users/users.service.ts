@@ -20,8 +20,8 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { userId } });
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(userId: string, updateUserDto: UpdateUserDto) {
+    return this.prisma.user.update({ where: { userId }, data: updateUserDto });
   }
 
   remove(id: string) {
