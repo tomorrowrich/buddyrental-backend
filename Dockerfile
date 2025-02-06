@@ -34,6 +34,7 @@ RUN pnpm install --prod --ignore-scripts
 
 
 COPY --from=builder --chown=nodeuser:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nodeuser:nodejs /app/@prisma ./@prisma
 COPY --from=builder --chown=nodeuser:nodejs /app/dist ./dist
 
 
