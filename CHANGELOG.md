@@ -1,3 +1,9 @@
+# [1.2.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.4...v1.2.0-beta.5) (2025-02-06)
+
+### Bug Fixes
+
+- **docker:** update Dockerfile to copy @prisma/client from node_modules ([cc9237b](https://github.com/tomorrowrich/buddyrental-backend/commit/cc9237b804222b453d2cd5cd6e4c6e43dde16448))
+
 # [1.2.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.3...v1.2.0-beta.4) (2025-02-06)
 
 ### Bug Fixes
