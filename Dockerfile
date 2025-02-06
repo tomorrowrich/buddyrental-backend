@@ -17,7 +17,7 @@ COPY . .
 
 RUN pnpm run build
 
-FROM node:lts-alpine as production
+FROM node:lts-alpine AS runner
 
 RUN mkdir -p /app && \
   addgroup -S nodejs && \
