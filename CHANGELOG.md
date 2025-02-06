@@ -1,3 +1,9 @@
+# [1.2.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.3...v1.2.0-beta.4) (2025-02-06)
+
+### Bug Fixes
+
+- **docker:** add missing [@prisma](https://github.com/prisma) directory to Dockerfile ([c570e27](https://github.com/tomorrowrich/buddyrental-backend/commit/c570e2722d7e67b062408a2a7c4c74fa408cb3fe))
+
 # [1.2.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.2...v1.2.0-beta.3) (2025-02-06)
 
 ### Bug Fixes
