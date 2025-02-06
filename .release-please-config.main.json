@@ -1,0 +1,31 @@
+{
+  "packages": {
+    ".": {
+      "release-type": "node",
+      "package-name": "buddyrental-backend",
+      "changelog-sections": [
+        {
+          "type": "feat",
+          "section": "Features",
+          "hidden": false
+        },
+        {
+          "type": "fix",
+          "section": "Bug Fixes",
+          "hidden": false
+        },
+        {
+          "type": "chore",
+          "section": "Miscellaneous",
+          "hidden": false
+        }
+      ],
+      "draft": false,
+      "prerelease": false,
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "versioning": "default"
+    }
+  },
+  "$schema": "https://raw.githubusercontent.com/google-github-actions/release-please-action/main/schema.json"
+}
