@@ -1,3 +1,9 @@
+# [1.2.0-beta.1](https://github.com/tomorrowrich-se2/buddyrental-backend/compare/v1.1.2-beta.1...v1.2.0-beta.1) (2025-02-06)
+
+### Features
+
+- **users:** implement user creation functionality ([0a5a3fb](https://github.com/tomorrowrich-se2/buddyrental-backend/commit/0a5a3fb00783ac530996f7eaa9ccda0afe486795))
+
 ## [1.1.2-beta.1](https://github.com/tomorrowrich-se2/buddyrental-backend/compare/v1.1.1...v1.1.2-beta.1) (2025-02-06)
 
 ### Bug Fixes
