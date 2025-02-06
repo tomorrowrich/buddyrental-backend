@@ -1,3 +1,9 @@
+# [1.2.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.2...v1.2.0-beta.3) (2025-02-06)
+
+### Bug Fixes
+
+- **healthcheck:** implement healthcheck endpoint in AppController ([64d7fea](https://github.com/tomorrowrich/buddyrental-backend/commit/64d7feaa2e66ad67218e4fe2a7600b3120931c07))
+
 # [1.2.0-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2025-02-06)
 
 ### Features
