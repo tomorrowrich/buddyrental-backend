@@ -1,3 +1,9 @@
+# [1.2.0-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.1...v1.2.0-beta.2) (2025-02-06)
+
+### Features
+
+- **healthz:** add healthcheck endpoint ([088e6db](https://github.com/tomorrowrich/buddyrental-backend/commit/088e6dbba6c508b8ebdfaf82cc2639ad245f0daf))
+
 # [1.2.0-beta.1](https://github.com/tomorrowrich-se2/buddyrental-backend/compare/v1.1.2-beta.1...v1.2.0-beta.1) (2025-02-06)
 
 ### Features
