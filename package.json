@@ -1,6 +1,6 @@
 {
   "name": "buddyrental-backend",
-  "version": "1.2.0-beta.7",
+  "version": "1.2.0-beta.6",
   "description": "",
   "author": "",
   "private": true,
@@ -42,6 +42,7 @@
     "@nestjs/testing": "^11.0.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^7.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.7",
     "@types/express": "^5.0.0",
