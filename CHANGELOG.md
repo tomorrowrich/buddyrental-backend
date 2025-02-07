@@ -1,3 +1,9 @@
+# [1.2.0-beta.7](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.6...v1.2.0-beta.7) (2025-02-07)
+
+### Bug Fixes
+
+- **workflows:** update deployment dependencies and success command logic ([c854b74](https://github.com/tomorrowrich/buddyrental-backend/commit/c854b74a540898769bcd37074fcb17bb39b1c046))
+
 # [1.2.0-beta.6](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.5...v1.2.0-beta.6) (2025-02-06)
 
 ### Bug Fixes
