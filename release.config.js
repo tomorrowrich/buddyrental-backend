@@ -21,8 +21,7 @@ module.exports = {
     [
       '@semantic-release/exec',
       {
-        successCmd:
-          'echo v${nextRelease.version || lastRelease.version} > VERSION',
+        successCmd: 'echo v${nextRelease.version} > VERSION',
       },
     ],
     [

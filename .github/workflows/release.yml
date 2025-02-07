@@ -88,13 +88,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.SEM_REL_TOKEN }}
         run: |
           pnpm dlx semantic-release --ci
-          VERSION=$(cat VERSION)
+          VERSION=$(cat VERSION || echo "")
           echo "Resolved version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
   docker-build:
     needs: release
     name: Build and Push Image ${{ needs.release.outputs.version }}
+    if: ${{ needs.release.outputs.version != '' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
