@@ -1,3 +1,9 @@
+# [1.2.0-beta.8](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.7...v1.2.0-beta.8) (2025-02-07)
+
+### Features
+
+- **proj:** add credential resource ([e128d52](https://github.com/tomorrowrich/buddyrental-backend/commit/e128d523ae63a7b09844034ef66e88d03670a008))
+
 # [1.2.0-beta.7](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.6...v1.2.0-beta.7) (2025-02-07)
 
 ### Bug Fixes
