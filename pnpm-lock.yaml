@@ -59,6 +59,9 @@ importers:
       '@semantic-release/changelog':
         specifier: ^6.0.3
         version: 6.0.3(semantic-release@24.2.1(typescript@5.7.3))
+      '@semantic-release/exec':
+        specifier: ^7.0.3
+        version: 7.0.3(semantic-release@24.2.1(typescript@5.7.3))
       '@semantic-release/git':
         specifier: ^10.0.1
         version: 10.0.1(semantic-release@24.2.1(typescript@5.7.3))
@@ -1574,6 +1577,15 @@ packages:
         integrity: sha512-mgdxrHTLOjOddRVYIYDo0fR3/v61GNN1YGkfbrjuIKg/uMgCd+Qzo3UAXJ+woLQQpos4pl5Esuw5A7AoNlzjUQ==,
       }
     engines: { node: '>=18' }
+
+  '@semantic-release/exec@7.0.3':
+    resolution:
+      {
+        integrity: sha512-uNWwPNtWi3WTcTm3fWfFQEuj8otOvwoS5m9yo2jSVHuvqdZNsOWmuL0/FqcVyZnCI32fxyYV0G7PPb/TzCH6jw==,
+      }
+    engines: { node: '>=20.8.1' }
+    peerDependencies:
+      semantic-release: '>=24.1.0'
 
   '@semantic-release/git@10.0.1':
     resolution:
@@ -8714,6 +8726,18 @@ snapshots:
   '@semantic-release/error@3.0.0': {}
 
   '@semantic-release/error@4.0.0': {}
+
+  '@semantic-release/exec@7.0.3(semantic-release@24.2.1(typescript@5.7.3))':
+    dependencies:
+      '@semantic-release/error': 4.0.0
+      aggregate-error: 3.1.0
+      debug: 4.4.0
+      execa: 9.5.2
+      lodash-es: 4.17.21
+      parse-json: 8.1.0
+      semantic-release: 24.2.1(typescript@5.7.3)
+    transitivePeerDependencies:
+      - supports-color
 
   '@semantic-release/git@10.0.1(semantic-release@24.2.1(typescript@5.7.3))':
     dependencies:

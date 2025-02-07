@@ -1,13 +1,13 @@
 {
   "name": "buddyrental-backend",
-  "version": "1.2.0",
+  "version": "1.2.0-beta.6",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write .",
+    "format": "prettier --write . --ignore-path .gitignore",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -41,6 +41,7 @@
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
     "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^7.0.3",
     "@semantic-release/git": "^10.0.1",
     "@swc/cli": "^0.6.0",
     "@swc/core": "^1.10.7",

@@ -17,7 +17,7 @@ COPY . .
 
 RUN pnpm run build
 
-FROM node:lts-alpine as production
+FROM node:lts-alpine AS runner
 
 RUN mkdir -p /app && \
   addgroup -S nodejs && \
@@ -34,6 +34,7 @@ RUN pnpm install --prod --ignore-scripts
 
 
 COPY --from=builder --chown=nodeuser:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nodeuser:nodejs /app/node_modules/@prisma/client ./node_modules/@prisma/client
 COPY --from=builder --chown=nodeuser:nodejs /app/dist ./dist
 
 
