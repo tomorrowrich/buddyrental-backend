@@ -5,9 +5,18 @@ import { LoggerMiddleware } from '@app/middleware/logger.middleware';
 import { CredentialsModule } from '@app/credentials/credentials.module';
 import { UsersModule } from '@app/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from '../constants/constants';
 
 @Module({
-  imports: [CredentialsModule, UsersModule, JwtModule],
+  imports: [
+    CredentialsModule,
+    UsersModule,
+    JwtModule.register({
+      global: true,
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '60s' },
+    }),
+  ],
   controllers: [AuthController],
   providers: [AuthService],
 })
