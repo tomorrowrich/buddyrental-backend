@@ -1,3 +1,14 @@
+# [1.2.0-beta.9](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.8...v1.2.0-beta.9) (2025-02-08)
+
+### Bug Fixes
+
+- **auth:** registers jwt module with secret ([885e9f7](https://github.com/tomorrowrich/buddyrental-backend/commit/885e9f7f7fbe4fa1932fc51cb59dbaf1351fc723))
+
+### Features
+
+- **auth:** add module @nestjs/jwt for auth ([019439e](https://github.com/tomorrowrich/buddyrental-backend/commit/019439e4b09bc5ca4bd2fe9ae695bb69e8099d58))
+- **auth:** implement login endpoint ([e9ba8c8](https://github.com/tomorrowrich/buddyrental-backend/commit/e9ba8c8ced3373d4e6da463409f5ca2a7ea937bc))
+
 # [1.2.0-beta.8](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.7...v1.2.0-beta.8) (2025-02-07)
 
 ### Features
