@@ -4,12 +4,14 @@ import { RegisterDto } from './dtos/register.dto';
 import { Credential } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dtos/login.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
   constructor(
     private credentialsService: CredentialsService,
     private jwtService: JwtService,
+    private config: ConfigService,
   ) {}
 
   async register(registerDto: RegisterDto): Promise<Credential> {
@@ -23,7 +25,7 @@ export class AuthService {
     }
     return await this.jwtService.signAsync(
       { username: cred.userId },
-      { expiresIn: '72h' },
+      { expiresIn: this.config.get<string | number>('auth.expiration_time') },
     );
   }
 }
