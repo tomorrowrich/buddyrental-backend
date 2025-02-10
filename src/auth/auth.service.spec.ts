@@ -69,7 +69,7 @@ describe('AuthService', () => {
   //definition and mocking data is implied if credentialsService passes the test suite
   //and all following tests fail, so both tests are now unnecessary
 
-  it('should register a new user', async () => {
+  it('should register a new credential', async () => {
     const noUser = await credentialsService.findOne('test@example.com');
     expect(noUser).toBeNull();
 
@@ -90,7 +90,7 @@ describe('AuthService', () => {
     });
   });
 
-  it('should throw an error when registering an existing user', async () => {
+  it('should throw an error when registering an existing credential', async () => {
     mockDatabase.users.push({
       userId: '1',
       email: 'test@example.com',
@@ -103,7 +103,7 @@ describe('AuthService', () => {
         email: 'test@example.com',
         password: 'password123',
       }),
-    ).rejects.toThrow('User already exists');
+    ).rejects.toThrow('Duplicate credential');
     expect(jest.spyOn(credentialsService, 'findOne')).toHaveBeenCalledWith(
       'test@example.com',
     );
@@ -139,5 +139,17 @@ describe('AuthService', () => {
     expect(jest.spyOn(credentialsService, 'findOne')).toHaveBeenCalledWith(
       'wrong@example.com',
     );
+  });
+
+  it('should check verified of a credential', async () => {
+    mockDatabase.users.push({
+      userId: '1',
+      email: 'test@example.com',
+      password: 'password123',
+      verified: false,
+    });
+    const status = await authService.verifyStatus('test@example.com');
+
+    expect(status).toBe(false);
   });
 });

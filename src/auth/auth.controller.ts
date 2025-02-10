@@ -35,9 +35,9 @@ export class AuthController {
   }
 
   @ApiTags('auth')
-  @Get('verify')
+  @Get('verify_status')
   @UseGuards(AuthGuard)
   verify(@Request() req: AuthenticatedRequest) {
-    return this.authService.verify(req.username);
+    return this.authService.verifyStatus(req.email);
   }
 }

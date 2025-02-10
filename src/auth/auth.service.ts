@@ -28,7 +28,7 @@ export class AuthService {
       registerDto.email,
     );
     if (existingUser) {
-      throw new Error('User already exists');
+      throw new Error('Duplicate credential');
     } else return await this.credentialsService.create(registerDto);
   }
 
@@ -56,7 +56,11 @@ export class AuthService {
     return { accessToken };
   }
 
-  async verify(email: string): Promise<boolean> {
-    return (await this.credentialsService.findOne(email)).verified;
+  async verifyStatus(email: string): Promise<boolean> {
+    const cred = await this.credentialsService.findOne(email);
+    if (!cred) {
+      throw new UnauthorizedException();
+    }
+    return cred.verified;
   }
 }
