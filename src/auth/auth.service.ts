@@ -28,4 +28,8 @@ export class AuthService {
       { expiresIn: this.config.get<string | number>('auth.expiration_time') },
     );
   }
+
+  async verify(email: string): Promise<boolean> {
+    return (await this.credentialsService.findOne(email)).verified;
+  }
 }

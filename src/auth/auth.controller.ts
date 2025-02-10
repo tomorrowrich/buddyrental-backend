@@ -1,8 +1,17 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register.dto';
 import { LoginDto } from './dtos/login.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from './auth.guard';
+import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -18,5 +27,12 @@ export class AuthController {
   @Post('signin')
   signin(@Body() loginDto: LoginDto) {
     return this.authService.signin(loginDto);
+  }
+
+  @ApiTags('auth')
+  @Get('verify')
+  @UseGuards(AuthGuard)
+  verify(@Request() req: AuthenticatedRequest) {
+    return this.authService.verify(req.username);
   }
 }
