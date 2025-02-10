@@ -5,13 +5,12 @@ import { LoggerMiddleware } from '@app/middleware/logger.middleware';
 import { CredentialsModule } from '@app/credentials/credentials.module';
 import { UsersModule } from '@app/users/users.module';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     CredentialsModule,
     UsersModule,
-    ConfigModule,
     JwtModule.registerAsync({
       useFactory: (config: ConfigService) => {
         return {

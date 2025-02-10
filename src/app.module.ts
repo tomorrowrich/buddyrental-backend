@@ -6,7 +6,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CredentialsModule } from './credentials/credentials.module';
 import { ConfigModule } from '@nestjs/config';
-import authConfig from './auth/auth.config';
+import mockConfig from './config/mock.config';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import authConfig from './auth/auth.config';
     CredentialsModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [authConfig],
+      load: [mockConfig],
     }),
   ],
   controllers: [AppController],

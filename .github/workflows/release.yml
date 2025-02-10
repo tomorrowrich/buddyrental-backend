@@ -13,11 +13,14 @@ on:
       - develop
     tags:
       - 'v*'
+  pull_request:
+    branches:
+      - main
+      - develop
   workflow_dispatch:
 
 jobs:
   build-test:
-    if: startsWith(github.ref, 'refs/heads/')
     name: Build and Test
     runs-on: ubuntu-latest
     strategy:
@@ -53,7 +56,7 @@ jobs:
           fi
 
   release:
-    if: startsWith(github.ref, 'refs/heads/')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
     name: Semantic Release
     needs: build-test
     runs-on: ubuntu-latest
@@ -95,7 +98,7 @@ jobs:
   docker-build:
     needs: release
     name: Build and Push Image ${{ needs.release.outputs.version }}
-    if: ${{ needs.release.outputs.version != '' }}
+    if: github.event_name == 'push' && needs.release.outputs.version != ''
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -140,7 +143,7 @@ jobs:
     needs:
       - release
       - docker-build
-    if: ${{ needs.docker-build.result == 'success' || needs.docker-build.result == 'skipped' }}
+    if: github.event_name == 'push' && (${{ needs.docker-build.result == 'success' || needs.docker-build.result == 'skipped' }})
     name: Deploy Prisma Migrations
     runs-on: ubuntu-latest
     environment: ${{ (github.ref_name == 'develop' && 'Staging') || (github.ref_name == 'main' && 'Production') || '' }}
