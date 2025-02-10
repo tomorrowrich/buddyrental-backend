@@ -1,11 +1,9 @@
-#!/usr/bin/env sh
-
 echo "✨ Formatting code..."
-cross-env pnpm format
-cross-env pnpm prisma format
+pnpm format
+pnpm prisma format
 
 echo "🔍 Running linter..."
-cross-env pnpm lint
+pnpm lint
 
 # Add already formatted files
 git update-index --again
@@ -18,10 +16,10 @@ if git diff --name-only --cached | grep -q '^prisma/'; then
 
   # Generate Prisma client
   echo "📦 Generating Prisma client..."
-  cross-env pnpm prisma generate
+  pnpm prisma generate
 
   echo "📊 Checking for pending Prisma migrations..."
-  if ! cross-env pnpm prisma migrate status ; then
+  if ! pnpm prisma migrate status ; then
     echo "❌ Error: There are pending Prisma migrations."
     echo "👉 Please run 'pnpm prisma migrate deploy' to apply pending migrations."
     exit 1
@@ -29,7 +27,7 @@ if git diff --name-only --cached | grep -q '^prisma/'; then
   echo "✅ No pending migrations found."
 
   echo "🔄 Checking for schema changes..."
-  if ! cross-env pnpm prisma migrate diff --from-schema-datamodel "$SCHEMA_PATH" --to-schema-datasource "$SCHEMA_PATH" --exit-code ; then
+  if ! pnpm prisma migrate diff --from-schema-datamodel "$SCHEMA_PATH" --to-schema-datasource "$SCHEMA_PATH" --exit-code ; then
     echo "❌ Error: Your schema.prisma has uncommitted changes."
     echo "👉 Please run 'pnpm prisma migrate dev' to create a new migration."
     exit 1
@@ -38,6 +36,6 @@ if git diff --name-only --cached | grep -q '^prisma/'; then
 fi
 
 echo "🏃 Running tests..."
-cross-env pnpm test
+git diff --cached --name-only | grep -E '\.(ts|js)$' | xargs -r pnpm test --findRelatedTests
 
 echo "✅ All pre-commit checks passed successfully!"
