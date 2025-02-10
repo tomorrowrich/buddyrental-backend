@@ -1,5 +1,5 @@
 echo "✨ Formatting code..."
-pnpm format
+prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown
 pnpm prisma format
 
 echo "🔍 Running linter..."
@@ -36,6 +36,6 @@ if git diff --name-only --cached | grep -q '^prisma/'; then
 fi
 
 echo "🏃 Running tests..."
-git diff --cached --name-only | grep -E '\.(ts|js)$' | xargs -r pnpm test --findRelatedTests
+git diff --cached --name-only --diff-filter=AM | grep -E '\.(ts|js)$' | xargs -r pnpm test --findRelatedTests
 
 echo "✅ All pre-commit checks passed successfully!"
