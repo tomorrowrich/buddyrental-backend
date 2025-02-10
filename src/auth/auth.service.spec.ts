@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { ConfigModule } from '@nestjs/config';
 import { CredentialsService } from '@app/credentials/credentials.service';
 import { RegisterDto } from './dtos/register.dto';
 import { Credential } from '@prisma/client';
+import { ConfigModule } from '@nestjs/config';
+import mockConfig from '@app/config/mock.config';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -47,9 +48,15 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [ConfigModule],
+      imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+          load: [mockConfig],
+        }),
+      ],
       providers: [
         AuthService,
+
         {
           provide: CredentialsService,
           useValue: mockCredentialsService,

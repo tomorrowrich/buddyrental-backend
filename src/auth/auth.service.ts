@@ -13,7 +13,7 @@ export class AuthService {
     private jwtService: JwtService,
     private config: ConfigService,
   ) {
-    const temp = this.config.get<string>('CLIENT_KEY');
+    const temp = this.config.get<string>('client_key');
 
     if (!temp) {
       throw new Error('CLIENT_KEY is not defined in the environment variables');
