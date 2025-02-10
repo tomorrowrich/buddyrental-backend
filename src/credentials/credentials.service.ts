@@ -16,8 +16,8 @@ export class CredentialsService {
     return await this.prisma.credential.findMany();
   }
 
-  async findOne(email: string): Promise<Credential> {
-    return await this.prisma.credential.findUniqueOrThrow({ where: { email } });
+  async findOne(email: string): Promise<Credential | null> {
+    return await this.prisma.credential.findUnique({ where: { email } });
   }
 
   async update(
