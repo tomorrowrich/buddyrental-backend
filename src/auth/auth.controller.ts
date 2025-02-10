@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register.dto';
-import { LoginDto } from './dtos/login.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from './auth.guard';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
@@ -25,8 +24,14 @@ export class AuthController {
 
   @ApiTags('auth')
   @Post('signin')
-  signin(@Body() loginDto: LoginDto) {
-    return this.authService.signin(loginDto);
+  async signin(
+    @Body() body: { clientKey: string; email: string; password: string },
+  ) {
+    this.authService.validateClientKey(body.clientKey);
+    return this.authService.signin({
+      email: body.email,
+      password: body.password,
+    });
   }
 
   @ApiTags('auth')
