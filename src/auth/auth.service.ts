@@ -24,7 +24,12 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto): Promise<Credential> {
-    return await this.credentialsService.create(registerDto);
+    const existingUser = await this.credentialsService.findOne(
+      registerDto.email,
+    );
+    if (existingUser) {
+      throw new Error('User already exists');
+    } else return await this.credentialsService.create(registerDto);
   }
 
   validateClientKey(clientKey: string): void {

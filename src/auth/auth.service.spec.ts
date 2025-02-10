@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { ConfigModule } from '@nestjs/config';
 import { CredentialsService } from '@app/credentials/credentials.service';
 import { RegisterDto } from './dtos/register.dto';
@@ -23,9 +23,6 @@ describe('AuthService', () => {
       mockDatabase.users.push(newMockUser);
       return newMockUser;
     }),
-    findAll: jest.fn(() => {
-      return mockDatabase.users;
-    }),
     findOne: jest.fn((email: string) => {
       const mockUser = mockDatabase.users.find(
         (element) => element.email === email,
@@ -34,91 +31,113 @@ describe('AuthService', () => {
       return mockUser;
     }),
   };
+  const mockJwtService = {
+    sign: jest
+      .fn()
+      .mockImplementation(
+        (payload: { sub: string; email: string }, options?: JwtSignOptions) => {
+          const secretString = options?.secret?.toString() || 'sekritsekrit';
+          const expiresIn = options?.expiresIn?.toString() || '42069s';
+          return (
+            payload.sub + payload.email.toUpperCase() + secretString + expiresIn
+          );
+        },
+      ),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [JwtModule, ConfigModule],
+      imports: [ConfigModule],
       providers: [
         AuthService,
         {
           provide: CredentialsService,
           useValue: mockCredentialsService,
         },
+        {
+          provide: JwtService,
+          useValue: mockJwtService,
+        },
       ],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
     credentialsService = module.get<CredentialsService>(CredentialsService);
-  });
-
-  afterEach(() => {
     mockDatabase.users = [];
   });
 
-  it('should be defined', () => {
-    expect(authService).toBeDefined();
-  });
+  //definition and mocking data is implied if credentialsService passes the test suite
+  //and all following tests fail, so both tests are now unnecessary
 
-  it('should create a new user', async () => {
-    const registerDto = {
+  it('should register a new user', async () => {
+    const noUser = await credentialsService.findOne('test@example.com');
+    expect(noUser).toBeNull();
+
+    const newUser = await authService.register({
       email: 'test@example.com',
-      password: 'hashedpassword',
-    };
-    const newUser = await credentialsService.create(registerDto);
+      password: 'password123',
+    });
 
     expect(newUser).toEqual({
       userId: '1',
       email: 'test@example.com',
-      password: 'hashedpassword',
+      password: 'password123',
+      verified: false,
+    });
+    expect(jest.spyOn(credentialsService, 'create')).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: 'password123',
+    });
+  });
+
+  it('should throw an error when registering an existing user', async () => {
+    mockDatabase.users.push({
+      userId: '1',
+      email: 'test@example.com',
+      password: 'password123',
       verified: false,
     });
 
-    expect(mockDatabase.users.length).toBe(1);
-    expect(mockDatabase.users[0]).toEqual(newUser);
-  });
-
-  it('should find all users', async () => {
-    mockDatabase.users.push(
-      {
-        userId: '1',
-        email: 'user1@example.com',
-        password: 'pass1',
-        verified: false,
-      },
-      {
-        userId: '2',
-        email: 'user2@example.com',
-        password: 'pass2',
-        verified: true,
-      },
+    await expect(
+      authService.register({
+        email: 'test@example.com',
+        password: 'password123',
+      }),
+    ).rejects.toThrow('User already exists');
+    expect(jest.spyOn(credentialsService, 'findOne')).toHaveBeenCalledWith(
+      'test@example.com',
     );
-
-    const users = await credentialsService.findAll();
-
-    expect(users).toHaveLength(2);
-    expect(users).toEqual(mockDatabase.users);
+    expect(mockDatabase.users.length).toBe(1); // Should NOT create a new user
   });
 
-  it('should find a user by email', async () => {
+  it('should login a user if credentials are correct', async () => {
     mockDatabase.users.push({
       userId: '1',
-      email: 'findme@example.com',
-      password: 'pass123',
-      verified: true,
+      email: 'test@example.com',
+      password: 'password123',
+      verified: false,
     });
 
-    const user = await credentialsService.findOne('findme@example.com');
-
-    expect(user).toEqual({
-      userId: '1',
-      email: 'findme@example.com',
-      password: 'pass123',
-      verified: true,
+    const res = await authService.signin({
+      email: 'test@example.com',
+      password: 'password123',
     });
+
+    expect(jest.spyOn(credentialsService, 'findOne')).toHaveBeenCalledWith(
+      'test@example.com',
+    );
   });
 
-  it('should return null if user is not found', async () => {
-    const user = await credentialsService.findOne('notfound@example.com');
-    expect(user).toBeNull();
+  it('should throw an error if login fails', async () => {
+    await expect(
+      authService.signin({
+        email: 'wrong@example.com',
+        password: 'password123',
+      }),
+    ).rejects.toThrow('Invalid email or password');
+
+    expect(jest.spyOn(credentialsService, 'findOne')).toHaveBeenCalledWith(
+      'wrong@example.com',
+    );
   });
 });
