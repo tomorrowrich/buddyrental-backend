@@ -1,3 +1,9 @@
+# [1.2.0-beta.10](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.9...v1.2.0-beta.10) (2025-02-10)
+
+### Features
+
+- **auth:** implement verify endpoint ([eab905a](https://github.com/tomorrowrich/buddyrental-backend/commit/eab905a6820303e502770930c4e660a2fc3ff11f))
+
 # [1.2.0-beta.9](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.8...v1.2.0-beta.9) (2025-02-08)
 
 ### Bug Fixes
