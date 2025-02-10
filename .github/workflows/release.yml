@@ -21,7 +21,6 @@ on:
 
 jobs:
   build-test:
-    if: startsWith(github.ref, 'refs/heads/')
     name: Build and Test
     runs-on: ubuntu-latest
     strategy:
