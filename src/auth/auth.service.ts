@@ -3,7 +3,6 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dtos/register.dto';
 import { Credential } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from './dtos/login.dto';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -38,13 +37,16 @@ export class AuthService {
     }
   }
 
-  async signin(loginDto: LoginDto): Promise<{ accessToken: string }> {
-    const cred = await this.credentialsService.findOne(loginDto.email);
+  async signin(data: {
+    email: string;
+    password: string;
+  }): Promise<{ accessToken: string }> {
+    const cred = await this.credentialsService.findOne(data.email);
     if (!cred) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    if (cred?.password !== loginDto.password) {
+    if (cred?.password !== data.password) {
       throw new UnauthorizedException();
     }
 

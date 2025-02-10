@@ -11,6 +11,7 @@ import { RegisterDto } from './dtos/register.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from './auth.guard';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
+import { LoginDto } from './dtos/login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,13 +25,11 @@ export class AuthController {
 
   @ApiTags('auth')
   @Post('signin')
-  async signin(
-    @Body() body: { clientKey: string; email: string; password: string },
-  ) {
-    this.authService.validateClientKey(body.clientKey);
+  async signin(@Body() loginDto: LoginDto) {
+    this.authService.validateClientKey(loginDto.clientKey);
     return this.authService.signin({
-      email: body.email,
-      password: body.password,
+      email: loginDto.email,
+      password: loginDto.password,
     });
   }
 
