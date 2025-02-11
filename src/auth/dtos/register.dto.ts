@@ -15,12 +15,12 @@ export enum Gender {
 }
 
 export class RegisterDto {
-  @ApiProperty({ description: 'First name of the user' })
+  @ApiProperty({ description: 'First name of the user', example: 'John' })
   @IsString()
   @IsNotEmpty()
   firstName: string;
 
-  @ApiProperty({ description: 'Last name of the user' })
+  @ApiProperty({ description: 'Last name of the user', example: 'Doe' })
   @IsString()
   @IsNotEmpty()
   lastName: string;
@@ -31,7 +31,10 @@ export class RegisterDto {
   @Matches(/^\d+$/, { message: 'ID Card must contain only numbers' })
   idCard: string;
 
-  @ApiProperty({ description: 'Email address of the user' })
+  @ApiProperty({
+    description: 'Email address of the user',
+    example: 'john.doe@example.com',
+  })
   @IsEmail()
   @IsNotEmpty()
   email: string;
@@ -56,12 +59,16 @@ export class RegisterDto {
   })
   password: string;
 
-  @ApiProperty({ description: 'User nickname' })
+  @ApiProperty({ description: 'User nickname', example: 'Xx_Mist3rJohn_xX' })
   @IsString()
   @IsOptional()
   nickname?: string;
 
-  @ApiProperty({ description: 'Gender of the user', enum: Gender })
+  @ApiProperty({
+    description: 'Gender of the user',
+    enum: Gender,
+    example: 'M',
+  })
   @IsEnum(Gender)
   @IsNotEmpty()
   gender: Gender;
@@ -74,12 +81,15 @@ export class RegisterDto {
   @IsNotEmpty()
   dateOfBirth: string;
 
-  @ApiProperty({ description: 'Address of the user' })
+  @ApiProperty({
+    description: 'Address of the user',
+    example: '123 Main Street',
+  })
   @IsString()
   @IsNotEmpty()
   address: string;
 
-  @ApiProperty({ description: 'City of residence' })
+  @ApiProperty({ description: 'City of residence', example: 'Tennessee' })
   @IsString()
   @IsNotEmpty()
   city: string;

@@ -41,6 +41,15 @@ export class UsersService {
     });
   }
 
+  //looks up database for users with the given email
+  //and returns true if there are no such users
+  async findUsersWithEmail(email: string): Promise<boolean> {
+    const users = await this.prisma.user.findMany({
+      where: { email: email },
+    });
+    return users.length !== 0;
+  }
+
   async update(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
     return await this.prisma.user.update({
       where: { userId: userId },

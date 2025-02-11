@@ -23,9 +23,8 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto): Promise<User> {
-    const existingUser = await this.usersService.findOne(registerDto.email);
-    if (existingUser) {
-      throw new Error('Duplicate user');
+    if (await this.usersService.findUsersWithEmail(registerDto.email)) {
+      throw new UnauthorizedException('Duplicate user');
     }
     const { dateOfBirth, ...registerDto1 } = registerDto;
     const obj = new Date(dateOfBirth);
