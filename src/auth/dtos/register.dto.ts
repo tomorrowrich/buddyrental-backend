@@ -7,12 +7,7 @@ import {
   IsOptional,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-
-export enum Gender {
-  MALE = 'M',
-  FEMALE = 'F',
-  OTHER = 'O',
-}
+import { Gender } from '@app/users/entities/user.entity';
 
 export class RegisterDto {
   @ApiProperty({ description: 'First name of the user', example: 'John' })

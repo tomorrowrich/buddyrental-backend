@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dtos/register.dto';
-import { User } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '@app/users/users.service';
@@ -22,14 +21,16 @@ export class AuthService {
     this.CLIENT_KEY = temp;
   }
 
-  async register(registerDto: RegisterDto): Promise<User> {
-    if (await this.usersService.findUsersWithEmail(registerDto.email)) {
+  async register(registerDto: RegisterDto): Promise<string> {
+    const check = await this.usersService.findUserWithEmail(registerDto.email);
+    if (!check) {
+      const { dateOfBirth, ...registerDto1 } = registerDto;
+      const obj = new Date(dateOfBirth);
+      const createUserDto = { ...registerDto1, dateOfBirth: obj };
+      return (await this.usersService.create(createUserDto)).userId;
+    } else {
       throw new UnauthorizedException('Duplicate user');
     }
-    const { dateOfBirth, ...registerDto1 } = registerDto;
-    const obj = new Date(dateOfBirth);
-    const createUserDto = { ...registerDto1, dateOfBirth: obj };
-    return await this.usersService.create(createUserDto);
   }
 
   validateClientKey(clientKey: string): void {
@@ -42,7 +43,7 @@ export class AuthService {
     email: string;
     password: string;
   }): Promise<{ accessToken: string }> {
-    const user = await this.usersService.findOne(data.email);
+    const user = await this.usersService.findUserWithEmail(data.email);
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }

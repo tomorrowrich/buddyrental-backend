@@ -20,7 +20,7 @@ model User {
   lastName  String @map("last_name")
   citizenId String @map("citizen_id")
 
-  email       String
+  email       String  @unique
   phoneNumber String  @map("phone_number")
   password    String  @db.VarChar(64)
   verified    Boolean @default(false)
