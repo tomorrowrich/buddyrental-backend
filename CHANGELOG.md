@@ -1,3 +1,18 @@
+# [1.2.0-beta.11](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.10...v1.2.0-beta.11) (2025-02-10)
+
+### Bug Fixes
+
+- **auth:** add `client_key` for security ([35fb404](https://github.com/tomorrowrich/buddyrental-backend/commit/35fb404656cb26c16c1c3b0e6653cf432095d705))
+- **auth:** add `client_key` for security ([7508d05](https://github.com/tomorrowrich/buddyrental-backend/commit/7508d05baa7b1ffdeb26de19c594933af3b8d813))
+- **auth:** add client key to /login endpoint ([2771822](https://github.com/tomorrowrich/buddyrental-backend/commit/2771822a9feac325eb8367d59536f094147a9881))
+- **ci:** change from real env to mock config files ([a54c440](https://github.com/tomorrowrich/buddyrental-backend/commit/a54c44018644a7d40f3314869c72afea479c3c66))
+
+# [1.2.0-beta.10](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.9...v1.2.0-beta.10) (2025-02-10)
+
+### Features
+
+- **auth:** implement verify endpoint ([eab905a](https://github.com/tomorrowrich/buddyrental-backend/commit/eab905a6820303e502770930c4e660a2fc3ff11f))
+
 # [1.2.0-beta.9](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.8...v1.2.0-beta.9) (2025-02-08)
 
 ### Bug Fixes
