@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Credential {
@@ -13,7 +12,7 @@ model Credential {
   email    String  @unique
   password String
   verified Boolean @default(false)
-  User     User[]
+  User     User?
 }
 
 model User {
@@ -28,8 +27,9 @@ model User {
   address        String?
   phoneNumber    String? @map("phone_number")
   citizenId      String? @map("citizen_id")
-
   credential Credential @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  reviewsMade     Review[]   @relation("ReviewToCommenter")
+  reviewsReceived Review[]   @relation("ReviewToProfile")
   buddy      Buddy?
 }
 
@@ -41,4 +41,16 @@ model Buddy {
   maxPrice               Float  @map("max_price")
 
   user User @relation(fields: [buddyId], references: [userId], onDelete: Cascade)
+}
+
+model Review {
+  reviewId    Int      @id @default(autoincrement())
+  commenterId String   @db.Uuid
+  profileId   String   @db.Uuid
+  createdAt   DateTime @default(now())
+  rating      Int
+  comment     String
+
+  commenter User @relation("ReviewToCommenter", fields: [commenterId], references: [userId], onDelete: Cascade)
+  profile   User @relation("ReviewToProfile", fields: [profileId], references: [userId], onDelete: Cascade)
 }

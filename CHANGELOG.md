@@ -1,3 +1,9 @@
+# [1.2.0-beta.12](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.11...v1.2.0-beta.12) (2025-02-11)
+
+### Features
+
+- **updatePI:** implement update user PI ([493c021](https://github.com/tomorrowrich/buddyrental-backend/commit/493c0212fe42cb92345c6668a2da06e4a9026335))
+
 # [1.2.0-beta.11](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.10...v1.2.0-beta.11) (2025-02-10)
 
 ### Bug Fixes
