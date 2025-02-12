@@ -1,3 +1,9 @@
+# [1.2.0-beta.14](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.13...v1.2.0-beta.14) (2025-02-12)
+
+### Bug Fixes
+
+- **auth:** add swagger bearer token to verify endpoint ([b29c866](https://github.com/tomorrowrich/buddyrental-backend/commit/b29c8667931363d5f0481b40cd7e2317631de6f6))
+
 # [1.2.0-beta.13](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.12...v1.2.0-beta.13) (2025-02-12)
 
 ### Features

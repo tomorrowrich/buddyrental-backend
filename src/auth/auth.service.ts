@@ -64,7 +64,7 @@ export class AuthService {
   async verifyStatus(userId: string): Promise<boolean> {
     const user = await this.usersService.findOne(userId);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('No such user');
     }
     return user.verified;
   }
