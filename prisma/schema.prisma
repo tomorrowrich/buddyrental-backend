@@ -35,9 +35,19 @@ model User {
 
   profilePicture String? @map("profile_picture")
   description    String?
+  reviewsMade     Review[]   @relation("ReviewToCommenter")
+  reviewsReceived Review[]   @relation("ReviewToProfile")
+  buddy      Buddy?
+}
 
-  reviewsMade     Review[] @relation("ReviewToCommenter")
-  reviewsReceived Review[] @relation("ReviewToProfile")
+model Buddy {
+  buddyId                String @id @unique @default(uuid()) @map("buddy_id") @db.Uuid
+  withdrawableCoinAmount Float  @map("withdrawable_coin_amount")
+  averageRating          Float? @map("average_rating")
+  minPrice               Float  @map("min_price")
+  maxPrice               Float  @map("max_price")
+
+  user User @relation(fields: [buddyId], references: [userId], onDelete: Cascade)
 }
 
 model Review {
