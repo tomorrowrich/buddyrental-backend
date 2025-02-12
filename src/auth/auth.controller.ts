@@ -31,10 +31,17 @@ export class AuthController {
     });
   }
 
+  @ApiBearerAuth()
   @Get('verify_status')
-  @ApiBearerAuth() // Indicates this route requires a Bearer token
   @UseGuards(AuthGuard)
   verify(@Request() req: AuthenticatedRequest) {
     return this.authService.verifyStatus(req.user.userId);
+  }
+
+  @ApiBearerAuth()
+  @Get('me')
+  @UseGuards(AuthGuard)
+  me(@Request() req: AuthenticatedRequest) {
+    return this.authService.me(req.user.userId);
   }
 }

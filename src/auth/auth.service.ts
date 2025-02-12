@@ -3,6 +3,7 @@ import { RegisterDto } from './dtos/register.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '@app/users/users.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -66,5 +67,15 @@ export class AuthService {
       throw new UnauthorizedException('No such user');
     }
     return user.verified;
+  }
+
+  async me(userId: string): Promise<Omit<User, 'password'>> {
+    const user = await this.usersService.findOne(userId);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    const { password: _password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 }
