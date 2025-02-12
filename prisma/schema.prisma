@@ -30,4 +30,15 @@ model User {
   citizenId      String? @map("citizen_id")
 
   credential Credential @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  buddy      Buddy?
+}
+
+model Buddy {
+  buddyId                String @id @unique @default(uuid()) @map("buddy_id") @db.Uuid
+  withdrawableCoinAmount Float  @map("withdrawable_coin_amount")
+  averageRating          Float? @map("average_rating")
+  minPrice               Float  @map("min_price")
+  maxPrice               Float  @map("max_price")
+
+  user User @relation(fields: [buddyId], references: [userId], onDelete: Cascade)
 }
