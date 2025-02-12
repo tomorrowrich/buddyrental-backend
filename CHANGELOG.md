@@ -1,3 +1,9 @@
+# [1.2.0-beta.16](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.15...v1.2.0-beta.16) (2025-02-12)
+
+### Bug Fixes
+
+- **auth:** correct response http codes ([a22c448](https://github.com/tomorrowrich/buddyrental-backend/commit/a22c448cde4ec8cad24d4e5392cc0a152b51be6c))
+
 # [1.2.0-beta.15](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.14...v1.2.0-beta.15) (2025-02-12)
 
 ### Features
