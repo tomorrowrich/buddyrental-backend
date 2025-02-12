@@ -1,3 +1,9 @@
+# [1.2.0-beta.15](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.14...v1.2.0-beta.15) (2025-02-12)
+
+### Features
+
+- **auth:** get session ([87b6888](https://github.com/tomorrowrich/buddyrental-backend/commit/87b68884b4263fea4bf49865fd18e97732e2bfff))
+
 # [1.2.0-beta.14](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.13...v1.2.0-beta.14) (2025-02-12)
 
 ### Bug Fixes
