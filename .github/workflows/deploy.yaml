@@ -53,8 +53,19 @@ jobs:
 
       - name: Create Render service preview
         uses: fjogeleit/http-request-action@v1
+        id: trigger-preview
         with:
           url: 'https://api.render.com/v1/services/${{ secrets.RENDER_PREVIEW_SERVICE_ID }}/preview'
           method: 'POST'
           bearerToken: ${{ secrets.RENDER_API_KEY }}
-          data: '{"imagePath": "ghcr.io/${{ github.repository }}@${{ needs.build.outputs.build-image-digest }}"}'
+          timeout: 15000
+          contentType: 'application/json'
+          data: '{"imagePath": "ghcr.io/${{ github.repository }}@${{ needs.build.outputs.build-image-digest }}","plan": "free","name": "${{ github.sha }}"}'
+
+      - name: Output Render service URL
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            🚀 Preview deployment is ready!
+            URL: ${{ fromJson(steps.trigger-preview.outputs.response).service.url }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
