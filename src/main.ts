@@ -6,14 +6,22 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log', 'debug', 'verbose'],
-    cors: true,
+    cors: {
+      origin: '*',
+      credentials: true,
+      exposedHeaders: ['Authorization', 'Content-Type'],
+      allowedHeaders: ['Content-Type', 'Authorization'],
+    },
   });
   app.setGlobalPrefix('/api');
   const config = new DocumentBuilder()
     .setTitle('BuddyRental')
     .setDescription('The renter of buddies')
     .setVersion('1.0')
-    .addTag('auth')
+    .addSecurity('bearer', {
+      type: 'http',
+      scheme: 'bearer',
+    })
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, documentFactory);

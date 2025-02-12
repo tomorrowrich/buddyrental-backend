@@ -4,19 +4,12 @@ import {
   IsNotEmpty,
   IsString,
   Matches,
-  IsDate,
   IsOptional,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { Gender } from '@app/users/entities/user.entity';
 
-export enum Gender {
-  MALE = 'M',
-  FEMALE = 'F',
-  OTHER = 'O',
-}
-
-export class CreateUserDto {
+export class RegisterDto {
   @ApiProperty({ description: 'First name of the user', example: 'John' })
   @IsString()
   @IsNotEmpty()
@@ -35,7 +28,7 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'Email address of the user',
-    example: 'john@doe.com',
+    example: 'john.doe@example.com',
   })
   @IsEmail()
   @IsNotEmpty()
@@ -61,24 +54,27 @@ export class CreateUserDto {
   })
   password: string;
 
-  @ApiProperty({ description: 'User nickname' })
+  @ApiProperty({ description: 'User nickname', example: 'Xx_Mist3rJohn_xX' })
   @IsString()
   @IsOptional()
   nickname?: string;
 
-  @ApiProperty({ description: 'Gender of the user', enum: Gender })
+  @ApiProperty({
+    description: 'Gender of the user',
+    enum: Gender,
+    example: 'M',
+  })
   @IsEnum(Gender)
   @IsNotEmpty()
   gender: Gender;
 
   @ApiProperty({
-    description: 'Date of birth of the user',
+    description: 'Date of birth of the user (as a string)',
     example: '1990-01-01',
   })
-  @Type(() => Date)
-  @IsDate()
+  @IsString()
   @IsNotEmpty()
-  dateOfBirth: Date;
+  dateOfBirth: string;
 
   @ApiProperty({
     description: 'Address of the user',

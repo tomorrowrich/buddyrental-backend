@@ -13,21 +13,52 @@ model Credential {
   email    String  @unique
   password String
   verified Boolean @default(false)
-  User     User[]
 }
 
 model User {
-  userId         String  @id @unique @default(uuid()) @map("user_id") @db.Uuid
-  displayName    String? @map("display_name") @db.VarChar(255)
-  description    String?
-  firstName      String? @map("first_name")
-  lastName       String? @map("last_name")
-  age            Int?
-  gender         String?
-  profilePicture String? @map("profile_picture")
-  address        String?
-  phoneNumber    String? @map("phone_number")
-  citizenId      String? @map("citizen_id")
+  userId    String @id @unique @default(uuid()) @map("user_id") @db.Uuid
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+  citizenId String @map("citizen_id")
 
-  credential Credential @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  email       String  @unique
+  phoneNumber String  @map("phone_number")
+  password    String  @db.VarChar(64)
+  verified    Boolean @default(false)
+
+  displayName String?  @map("display_name") @db.VarChar(255)
+  gender      String
+  dateOfBirth DateTime @map("date_of_birth")
+
+  address String
+  city    String
+  zipcode String
+
+  profilePicture  String?  @map("profile_picture")
+  description     String?
+  reviewsMade     Review[] @relation("ReviewToCommenter")
+  reviewsReceived Review[] @relation("ReviewToProfile")
+  buddy           Buddy?
+}
+
+model Buddy {
+  buddyId                String @id @unique @default(uuid()) @map("buddy_id") @db.Uuid
+  withdrawableCoinAmount Float  @map("withdrawable_coin_amount")
+  averageRating          Float? @map("average_rating")
+  minPrice               Float  @map("min_price")
+  maxPrice               Float  @map("max_price")
+
+  user User @relation(fields: [buddyId], references: [userId], onDelete: Cascade)
+}
+
+model Review {
+  reviewId    Int      @id @default(autoincrement())
+  commenterId String   @db.Uuid
+  profileId   String   @db.Uuid
+  createdAt   DateTime @default(now())
+  rating      Int
+  comment     String
+
+  commenter User @relation("ReviewToCommenter", fields: [commenterId], references: [userId], onDelete: Cascade)
+  profile   User @relation("ReviewToProfile", fields: [profileId], references: [userId], onDelete: Cascade)
 }

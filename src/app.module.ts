@@ -1,14 +1,25 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { CredentialsModule } from './credentials/credentials.module';
+import { ConfigModule } from '@nestjs/config';
+import mockConfig from './config/mock.config';
 
 @Module({
-  imports: [PrismaModule, UsersModule],
-  controllers: [AppController, AuthController],
-  providers: [AppService, AuthService],
+  imports: [
+    PrismaModule,
+    UsersModule,
+    AuthModule,
+    CredentialsModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [mockConfig],
+    }),
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

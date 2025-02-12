@@ -1,0 +1,80 @@
+name: Preview Docker Image on Render
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'SHA of the commit to preview'
+        required: false
+
+jobs:
+  build:
+    name: Build and push Docker preview image
+    runs-on: ubuntu-latest
+    environment: Staging
+    outputs:
+      build-image-digest: ${{ steps.build.outputs.digest }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Docker Metadata action
+        uses: docker/metadata-action@v4.6.0
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=raw,value={{sha}}-${{ github.actor }}
+            type=sha,format=short
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4.1.1
+        id: build
+        with:
+          context: .
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  deploy:
+    name: Deploy preview to Render
+    needs: build
+    runs-on: ubuntu-latest
+    environment: Staging
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Create Render service preview
+        uses: fjogeleit/http-request-action@v1
+        id: trigger-preview
+        with:
+          url: 'https://api.render.com/v1/services/${{ secrets.RENDER_PREVIEW_SERVICE_ID }}/preview'
+          method: 'POST'
+          bearerToken: ${{ secrets.RENDER_API_KEY }}
+          timeout: 15000
+          contentType: 'application/json'
+          data: '{"imagePath": "ghcr.io/${{ github.repository }}@${{ needs.build.outputs.build-image-digest }}","plan": "free","name": "buddyrental-backend-${{ github.sha }}"}'
+
+      - name: Output Render service URL
+        uses: mshick/add-pr-comment@v2
+        with:
+          message: |
+            🚀 Preview deployment is ready!
+            URL: ${{ fromJson(steps.trigger-preview.outputs.response).service.serviceDetails.url }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
