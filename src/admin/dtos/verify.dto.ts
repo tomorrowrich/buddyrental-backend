@@ -1,5 +1,5 @@
 import {
-  IsEnum,
+  IsBoolean,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -8,19 +8,14 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
-export enum VerifyMethod {
-  ACCEPT = 'accept',
-  REJECT = 'reject',
-}
-
 export class VerifyDto {
   @ApiProperty({
-    description: 'Method to update the user status',
-    enum: VerifyMethod,
+    description: 'If the user will be accepted',
+    example: true,
   })
-  @IsEnum(VerifyMethod)
+  @IsBoolean()
   @IsNotEmpty()
-  method: VerifyMethod;
+  accept: boolean;
 
   @ApiProperty({
     description: 'User ID',
@@ -37,6 +32,6 @@ export class VerifyDto {
   })
   @IsString()
   @IsOptional()
-  @ValidateIf((dto: VerifyDto) => dto.method === VerifyMethod.REJECT)
+  @ValidateIf((dto: VerifyDto) => dto.accept === false)
   reason?: string;
 }

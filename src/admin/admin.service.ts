@@ -1,7 +1,7 @@
 import { UsersService } from '@app/users/users.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { VerifyDto, VerifyMethod } from './dtos/verify.dto';
+import { VerifyDto } from './dtos/verify.dto';
 
 @Injectable()
 export class AdminService {
@@ -19,11 +19,9 @@ export class AdminService {
       throw new BadRequestException('User already verified');
     }
 
-    if ((verifyDto.method = VerifyMethod.ACCEPT)) {
+    if (verifyDto.accept) {
       return this.acceptUser(verifyDto.userId);
-    }
-
-    if ((verifyDto.method = VerifyMethod.REJECT)) {
+    } else {
       return this.rejectUser(verifyDto.userId);
     }
   }
