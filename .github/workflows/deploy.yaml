@@ -3,9 +3,15 @@ name: Preview Docker Image on Render
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'SHA of the commit to preview'
+        required: false
 
 jobs:
   build:
+    name: Build and push Docker preview image
     runs-on: ubuntu-latest
     environment: Staging
     outputs:
@@ -46,6 +52,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
+    name: Deploy preview to Render
     needs: build
     runs-on: ubuntu-latest
     environment: Staging
@@ -69,5 +76,5 @@ jobs:
         with:
           message: |
             🚀 Preview deployment is ready!
-            URL: ${{ fromJson(steps.trigger-preview.outputs.response).service.url }}
+            URL: ${{ fromJson(steps.trigger-preview.outputs.response).service.serviceDetails.url }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
