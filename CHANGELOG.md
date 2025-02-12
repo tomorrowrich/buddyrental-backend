@@ -1,3 +1,9 @@
+# [1.2.0-beta.17](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.16...v1.2.0-beta.17) (2025-02-12)
+
+### Features
+
+- **cors:** allow cross-origin ([22fae19](https://github.com/tomorrowrich/buddyrental-backend/commit/22fae19cdb9a168d39b449f6b30fdbd40ca9d894))
+
 # [1.2.0-beta.16](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.15...v1.2.0-beta.16) (2025-02-12)
 
 ### Bug Fixes
