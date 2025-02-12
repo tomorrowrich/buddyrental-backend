@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { RegisterDto } from './dtos/register.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -30,11 +35,14 @@ export class AuthService {
       const createUserDto = { ...registerDto1, dateOfBirth: obj };
       return (await this.usersService.create(createUserDto)).userId;
     } else {
-      throw new UnauthorizedException('Duplicate user');
+      throw new ForbiddenException('Duplicate user');
     }
   }
 
   validateClientKey(clientKey: string): void {
+    if (!clientKey) {
+      throw new BadRequestException('No client key');
+    }
     if (clientKey !== this.CLIENT_KEY) {
       throw new UnauthorizedException('Invalid client key');
     }
