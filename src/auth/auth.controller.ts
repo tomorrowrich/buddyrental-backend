@@ -35,13 +35,13 @@ export class AuthController {
   @Get('verify_status')
   @UseGuards(AuthGuard)
   verify(@Request() req: AuthenticatedRequest) {
-    return this.authService.verifyStatus(req.userId);
+    return this.authService.verifyStatus(req.user.userId);
   }
 
   @ApiBearerAuth()
   @Get('me')
   @UseGuards(AuthGuard)
   me(@Request() req: AuthenticatedRequest) {
-    return this.authService.me(req.userId);
+    return this.authService.me(req.user.userId);
   }
 }
