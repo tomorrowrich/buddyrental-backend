@@ -3,6 +3,7 @@ import { RegisterDto } from './dtos/register.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '@app/users/users.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -60,11 +61,21 @@ export class AuthService {
     return { accessToken };
   }
 
-  async verifyStatus(email: string): Promise<boolean> {
-    const user = await this.usersService.findOne(email);
+  async verifyStatus(userId: string): Promise<boolean> {
+    const user = await this.usersService.findOne(userId);
     if (!user) {
       throw new UnauthorizedException();
     }
     return user.verified;
+  }
+
+  async me(userId: string): Promise<Omit<User, 'password'>> {
+    const user = await this.usersService.findOne(userId);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    const { password: _password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
   }
 }

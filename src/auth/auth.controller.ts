@@ -11,6 +11,7 @@ import { RegisterDto } from './dtos/register.dto';
 import { AuthGuard } from './auth.guard';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
 import { LoginDto } from './dtos/login.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -30,9 +31,17 @@ export class AuthController {
     });
   }
 
+  @ApiBearerAuth()
   @Get('verify_status')
   @UseGuards(AuthGuard)
   verify(@Request() req: AuthenticatedRequest) {
-    return this.authService.verifyStatus(req.email);
+    return this.authService.verifyStatus(req.userId);
+  }
+
+  @ApiBearerAuth()
+  @Get('me')
+  @UseGuards(AuthGuard)
+  me(@Request() req: AuthenticatedRequest) {
+    return this.authService.me(req.userId);
   }
 }
