@@ -1,3 +1,9 @@
+# [1.2.0-beta.13](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.12...v1.2.0-beta.13) (2025-02-12)
+
+### Features
+
+- **updatePricing:** implement service offered ([#46](https://github.com/tomorrowrich/buddyrental-backend/issues/46)) ([e9ef32e](https://github.com/tomorrowrich/buddyrental-backend/commit/e9ef32eef7f0260806ff883734b595c5c03cf0b4))
+
 # [1.2.0-beta.12](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.11...v1.2.0-beta.12) (2025-02-11)
 
 ### Features

@@ -33,11 +33,11 @@ model User {
   city    String
   zipcode String
 
-  profilePicture String? @map("profile_picture")
-  description    String?
-  reviewsMade     Review[]   @relation("ReviewToCommenter")
-  reviewsReceived Review[]   @relation("ReviewToProfile")
-  buddy      Buddy?
+  profilePicture  String?  @map("profile_picture")
+  description     String?
+  reviewsMade     Review[] @relation("ReviewToCommenter")
+  reviewsReceived Review[] @relation("ReviewToProfile")
+  buddy           Buddy?
 }
 
 model Buddy {
