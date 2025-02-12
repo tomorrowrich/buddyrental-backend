@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dtos/register.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from './auth.guard';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
 import { LoginDto } from './dtos/login.dto';
@@ -17,13 +17,11 @@ import { LoginDto } from './dtos/login.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiTags('auth')
   @Post('register')
   register(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
 
-  @ApiTags('auth')
   @Post('signin')
   async signin(@Body() loginDto: LoginDto) {
     this.authService.validateClientKey(loginDto.clientKey);
@@ -33,10 +31,10 @@ export class AuthController {
     });
   }
 
-  @ApiTags('auth')
   @Get('verify_status')
+  @ApiBearerAuth() // Indicates this route requires a Bearer token
   @UseGuards(AuthGuard)
   verify(@Request() req: AuthenticatedRequest) {
-    return this.authService.verifyStatus(req.email);
+    return this.authService.verifyStatus(req.user.userId);
   }
 }
