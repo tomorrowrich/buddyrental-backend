@@ -60,10 +60,10 @@ export class AuthService {
     return { accessToken };
   }
 
-  async verifyStatus(email: string): Promise<boolean> {
-    const user = await this.usersService.findOne(email);
+  async verifyStatus(userId: string): Promise<boolean> {
+    const user = await this.usersService.findOne(userId);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('No such user');
     }
     return user.verified;
   }

@@ -32,16 +32,16 @@ export class AuthGuard implements CanActivate {
       });
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      request.email = payload.email;
-      request.userId = payload.sub;
+      request.user = { userId: payload.sub, email: payload.email };
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Unable to authorize token');
     }
     return true;
   }
 
   private extractTokenFromHeader(request: ExpressRequest): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
+    const authHeader = request.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) return undefined;
+    return authHeader.split(' ')[1];
   }
 }

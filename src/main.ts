@@ -13,7 +13,7 @@ async function bootstrap() {
     .setTitle('BuddyRental')
     .setDescription('The renter of buddies')
     .setVersion('1.0')
-    .addTag('auth')
+    .addBearerAuth()
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/docs', app, documentFactory);
