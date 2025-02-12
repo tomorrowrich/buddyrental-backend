@@ -170,3 +170,9 @@ jobs:
 
       - name: Migrate Prisma
         run: pnpm prisma migrate deploy
+
+      - name: Trigger Render Deploy
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ${{ secrets.RENDER_DEPLOY_HOOK }}
+          method: 'GET'

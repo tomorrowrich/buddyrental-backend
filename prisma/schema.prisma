@@ -16,21 +16,21 @@ model Credential {
 }
 
 model User {
-  userId         String  @id @unique @default(uuid()) @map("user_id") @db.Uuid
-  displayName    String? @map("display_name") @db.VarChar(255)
-  description    String?
-  firstName      String? @map("first_name")
-  lastName       String? @map("last_name")
-  age            Int?
-  gender         String?
-  profilePicture String? @map("profile_picture")
-  address        String?
-  phoneNumber    String? @map("phone_number")
-  citizenId      String? @map("citizen_id")
-  credential Credential @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId          String     @id @unique @default(uuid()) @map("user_id") @db.Uuid
+  displayName     String?    @map("display_name") @db.VarChar(255)
+  description     String?
+  firstName       String?    @map("first_name")
+  lastName        String?    @map("last_name")
+  age             Int?
+  gender          String?
+  profilePicture  String?    @map("profile_picture")
+  address         String?
+  phoneNumber     String?    @map("phone_number")
+  citizenId       String?    @map("citizen_id")
+  credential      Credential @relation(fields: [userId], references: [userId], onDelete: Cascade)
   reviewsMade     Review[]   @relation("ReviewToCommenter")
   reviewsReceived Review[]   @relation("ReviewToProfile")
-  buddy      Buddy?
+  buddy           Buddy?
 }
 
 model Buddy {
