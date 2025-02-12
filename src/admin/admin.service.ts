@@ -8,18 +8,18 @@ export class AdminService {
 
   async getVerify(): Promise<Omit<User, 'password'>[]> {
     return (await this.usersService.findUnverified()).map(
-      ({ password, ...profile }) => profile,
+      ({ password: _password, ...profile }) => profile,
     );
   }
 
   async rejectUser(userId: string) {
     const user = await this.usersService.remove(userId);
-    const { password: password, ...profile } = user;
+    const { password: _password, ...profile } = user;
     return profile;
   }
   async acceptUser(userId: string) {
     const user = await this.usersService.update(userId, { verified: true });
-    const { password: password, ...profile } = user;
+    const { password: _password, ...profile } = user;
     return profile;
   }
 }
