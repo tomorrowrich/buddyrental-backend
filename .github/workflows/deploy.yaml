@@ -1,11 +1,8 @@
 name: Preview Docker Image on Render
 
 on:
-  push:
-    branches:
-      - '!main'
-      - '!develop'
-      - '**'
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
@@ -62,7 +59,7 @@ jobs:
           bearerToken: ${{ secrets.RENDER_API_KEY }}
           timeout: 15000
           contentType: 'application/json'
-          data: '{"imagePath": "ghcr.io/${{ github.repository }}@${{ needs.build.outputs.build-image-digest }}","plan": "free","name": "${{ github.sha }}"}'
+          data: '{"imagePath": "ghcr.io/${{ github.repository }}@${{ needs.build.outputs.build-image-digest }}","plan": "free","name": "buddyrental-backend-${{ github.sha }}"}'
 
       - name: Output Render service URL
         uses: mshick/add-pr-comment@v2
