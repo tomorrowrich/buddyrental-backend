@@ -1,15 +1,14 @@
-import { CredentialsService } from '@app/credentials/credentials.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RegisterDto } from './dtos/register.dto';
-import { Credential } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from '@app/users/users.service';
 
 @Injectable()
 export class AuthService {
   private readonly CLIENT_KEY: string;
   constructor(
-    private credentialsService: CredentialsService,
+    private usersService: UsersService,
     private jwtService: JwtService,
     private config: ConfigService,
   ) {
@@ -22,13 +21,16 @@ export class AuthService {
     this.CLIENT_KEY = temp;
   }
 
-  async register(registerDto: RegisterDto): Promise<Credential> {
-    const existingUser = await this.credentialsService.findOne(
-      registerDto.email,
-    );
-    if (existingUser) {
-      throw new Error('Duplicate credential');
-    } else return await this.credentialsService.create(registerDto);
+  async register(registerDto: RegisterDto): Promise<string> {
+    const check = await this.usersService.findUserWithEmail(registerDto.email);
+    if (!check) {
+      const { dateOfBirth, ...registerDto1 } = registerDto;
+      const obj = new Date(dateOfBirth);
+      const createUserDto = { ...registerDto1, dateOfBirth: obj };
+      return (await this.usersService.create(createUserDto)).userId;
+    } else {
+      throw new UnauthorizedException('Duplicate user');
+    }
   }
 
   validateClientKey(clientKey: string): void {
@@ -41,17 +43,17 @@ export class AuthService {
     email: string;
     password: string;
   }): Promise<{ accessToken: string }> {
-    const cred = await this.credentialsService.findOne(data.email);
-    if (!cred) {
+    const user = await this.usersService.findUserWithEmail(data.email);
+    if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    if (cred?.password !== data.password) {
+    if (user?.password !== data.password) {
       throw new UnauthorizedException();
     }
 
     const accessToken = this.jwtService.sign(
-      { sub: cred.userId, email: cred.email },
+      { sub: user.userId, email: user.email },
       { expiresIn: this.config.get<string | number>('auth.expiration_time') },
     );
 
@@ -59,10 +61,10 @@ export class AuthService {
   }
 
   async verifyStatus(email: string): Promise<boolean> {
-    const cred = await this.credentialsService.findOne(email);
-    if (!cred) {
+    const user = await this.usersService.findOne(email);
+    if (!user) {
       throw new UnauthorizedException();
     }
-    return cred.verified;
+    return user.verified;
   }
 }

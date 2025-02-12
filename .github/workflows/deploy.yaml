@@ -3,9 +3,15 @@ name: Preview Docker Image on Render
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
+    inputs:
+      sha:
+        description: 'SHA of the commit to preview'
+        required: false
 
 jobs:
   build:
+    name: Build and push Docker preview image
     runs-on: ubuntu-latest
     environment: Staging
     outputs:
@@ -21,6 +27,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Docker Metadata action
         uses: docker/metadata-action@v4.6.0
         id: meta
@@ -35,14 +44,15 @@ jobs:
         id: build
         with:
           context: .
-          file: ./Dockerfile
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
   deploy:
+    name: Deploy preview to Render
     needs: build
     runs-on: ubuntu-latest
     environment: Staging
@@ -66,5 +76,5 @@ jobs:
         with:
           message: |
             🚀 Preview deployment is ready!
-            URL: ${{ fromJson(steps.trigger-preview.outputs.response).service.url }}
+            URL: ${{ fromJson(steps.trigger-preview.outputs.response).service.serviceDetails.url }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
