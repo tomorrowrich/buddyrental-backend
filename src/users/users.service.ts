@@ -50,6 +50,12 @@ export class UsersService {
     return user;
   }
 
+  async findUnverified(): Promise<User[]> {
+    return await this.prisma.user.findMany({
+      where: { verified: false },
+    });
+  }
+
   async update(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
     return await this.prisma.user.update({
       where: { userId: userId },
