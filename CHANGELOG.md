@@ -1,3 +1,16 @@
+# [1.2.0-beta.18](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.17...v1.2.0-beta.18) (2025-02-12)
+
+### Bug Fixes
+
+- **admin:** add user validation for verifying ([48db8d5](https://github.com/tomorrowrich/buddyrental-backend/commit/48db8d51d6d27b6f8edf7638343615e12f872458))
+- **admin:** fix /verify by making acceptance boolean ([13bcb97](https://github.com/tomorrowrich/buddyrental-backend/commit/13bcb97a79c668bcf5e5542e7b93eb14ef5e7b4e))
+- **admin:** format unused vars ([a3062ab](https://github.com/tomorrowrich/buddyrental-backend/commit/a3062abf3185c3bd79a0d258ad9e94672d06160b))
+
+### Features
+
+- **admin:** add unverified list api @ /admin/verify ([7d84869](https://github.com/tomorrowrich/buddyrental-backend/commit/7d848694dd003ed5a939e7cbbf520cac1a06517d))
+- **admin:** impl accept/reject methods @ /admin/verify ([f36d664](https://github.com/tomorrowrich/buddyrental-backend/commit/f36d6645a3474a974b434e168addf870d9d34f93))
+
 # [1.2.0-beta.17](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.16...v1.2.0-beta.17) (2025-02-12)
 
 ### Features
