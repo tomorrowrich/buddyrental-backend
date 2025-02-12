@@ -12,7 +12,6 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from './auth.guard';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
 import { LoginDto } from './dtos/login.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -34,7 +33,6 @@ export class AuthController {
 
   @ApiBearerAuth()
   @Get('verify_status')
-  @ApiBearerAuth() // Indicates this route requires a Bearer token
   @UseGuards(AuthGuard)
   verify(@Request() req: AuthenticatedRequest) {
     return this.authService.verifyStatus(req.userId);
