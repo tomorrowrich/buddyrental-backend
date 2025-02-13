@@ -1,3 +1,9 @@
+## [1.2.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.2...v1.2.3) (2025-02-13)
+
+### Bug Fixes
+
+- **ci:** disable sync with version bump ([04b0a4b](https://github.com/tomorrowrich/buddyrental-backend/commit/04b0a4b027f17ee3b3ea5bbda95541234cc48cc7))
+
 ## [1.2.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.1...v1.2.2) (2025-02-13)
 
 ### Bug Fixes
