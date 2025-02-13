@@ -1,3 +1,9 @@
+# [1.2.0-beta.21](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.20...v1.2.0-beta.21) (2025-02-13)
+
+### Bug Fixes
+
+- **ci:** optimized docker image ([6b0e232](https://github.com/tomorrowrich/buddyrental-backend/commit/6b0e232ec6345f2d278dee99d2665b845fff09cb))
+
 # [1.2.0-beta.20](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.19...v1.2.0-beta.20) (2025-02-13)
 
 ### Bug Fixes
