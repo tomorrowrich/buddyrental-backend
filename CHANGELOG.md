@@ -1,3 +1,11 @@
+## [1.2.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.1...v1.2.2) (2025-02-13)
+
+### Bug Fixes
+
+- **auth:** apply bearer on non-public api ([1251aff](https://github.com/tomorrowrich/buddyrental-backend/commit/1251affb9ef639e57f0fb5ce6335ff443fb0493f))
+- **authentication:** add protection rules ([#64](https://github.com/tomorrowrich/buddyrental-backend/issues/64)) ([58a43ea](https://github.com/tomorrowrich/buddyrental-backend/commit/58a43ea202b80a2ea5a30f040caedc67293b27f3))
+- **prisma:** remove unused migrations ([#63](https://github.com/tomorrowrich/buddyrental-backend/issues/63)) ([9e6d84e](https://github.com/tomorrowrich/buddyrental-backend/commit/9e6d84ebe5d8621d5689b3f3f97fca61f84f1573))
+
 ## [1.2.2-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.2-beta.1...v1.2.2-beta.2) (2025-02-13)
 
 ### Bug Fixes
