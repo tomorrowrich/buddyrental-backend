@@ -1,8 +1,48 @@
-# [1.2.0-beta.22](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.21...v1.2.0-beta.22) (2025-02-13)
+## [1.2.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0...v1.2.1) (2025-02-13)
 
 ### Bug Fixes
 
 - **docker:** prisma client missing ([d2fdcae](https://github.com/tomorrowrich/buddyrental-backend/commit/d2fdcae699632a80a43219466eb50fbef6f7c9d9))
+
+# [1.2.0](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.1.1...v1.2.0) (2025-02-13)
+
+### Bug Fixes
+
+- **admin:** add user validation for verifying ([48db8d5](https://github.com/tomorrowrich/buddyrental-backend/commit/48db8d51d6d27b6f8edf7638343615e12f872458))
+- **admin:** fix /verify by making acceptance boolean ([13bcb97](https://github.com/tomorrowrich/buddyrental-backend/commit/13bcb97a79c668bcf5e5542e7b93eb14ef5e7b4e))
+- **admin:** format unused vars ([a3062ab](https://github.com/tomorrowrich/buddyrental-backend/commit/a3062abf3185c3bd79a0d258ad9e94672d06160b))
+- **auth:** add `client_key` for security ([35fb404](https://github.com/tomorrowrich/buddyrental-backend/commit/35fb404656cb26c16c1c3b0e6653cf432095d705))
+- **auth:** add `client_key` for security ([7508d05](https://github.com/tomorrowrich/buddyrental-backend/commit/7508d05baa7b1ffdeb26de19c594933af3b8d813))
+- **auth:** add client key to /login endpoint ([2771822](https://github.com/tomorrowrich/buddyrental-backend/commit/2771822a9feac325eb8367d59536f094147a9881))
+- **auth:** add swagger bearer token to verify endpoint ([b29c866](https://github.com/tomorrowrich/buddyrental-backend/commit/b29c8667931363d5f0481b40cd7e2317631de6f6))
+- **auth:** correct response http codes ([a22c448](https://github.com/tomorrowrich/buddyrental-backend/commit/a22c448cde4ec8cad24d4e5392cc0a152b51be6c))
+- **auth:** registers jwt module with secret ([885e9f7](https://github.com/tomorrowrich/buddyrental-backend/commit/885e9f7f7fbe4fa1932fc51cb59dbaf1351fc723))
+- **ci:** change from real env to mock config files ([a54c440](https://github.com/tomorrowrich/buddyrental-backend/commit/a54c44018644a7d40f3314869c72afea479c3c66))
+- **ci:** optimized docker image ([6b0e232](https://github.com/tomorrowrich/buddyrental-backend/commit/6b0e232ec6345f2d278dee99d2665b845fff09cb))
+- **docker:** add missing [@prisma](https://github.com/prisma) directory to Dockerfile ([c570e27](https://github.com/tomorrowrich/buddyrental-backend/commit/c570e2722d7e67b062408a2a7c4c74fa408cb3fe))
+- **docker:** update Dockerfile to copy @prisma/client from node_modules ([cc9237b](https://github.com/tomorrowrich/buddyrental-backend/commit/cc9237b804222b453d2cd5cd6e4c6e43dde16448))
+- **healthcheck:** implement healthcheck endpoint in AppController ([64d7fea](https://github.com/tomorrowrich/buddyrental-backend/commit/64d7feaa2e66ad67218e4fe2a7600b3120931c07))
+- **prisma:** migrations ([53925f3](https://github.com/tomorrowrich/buddyrental-backend/commit/53925f3b2541b66b20b8154519414f7965636912))
+- **users:** implement user removal functionality ([3a160e1](https://github.com/tomorrowrich/buddyrental-backend/commit/3a160e1cd2626af0ca4fd32e3acd5accfa8ea265))
+- **workflows:** update deployment dependencies and success command logic ([c854b74](https://github.com/tomorrowrich/buddyrental-backend/commit/c854b74a540898769bcd37074fcb17bb39b1c046))
+- **workflows:** update release.yml to set 'prod' tag for main branch ([44f5dbc](https://github.com/tomorrowrich/buddyrental-backend/commit/44f5dbc39b3078e3366d0634e3e2da3755a3957f))
+
+### Features
+
+- **admin:** add unverified list api @ /admin/verify ([7d84869](https://github.com/tomorrowrich/buddyrental-backend/commit/7d848694dd003ed5a939e7cbbf520cac1a06517d))
+- **admin:** impl accept/reject methods @ /admin/verify ([f36d664](https://github.com/tomorrowrich/buddyrental-backend/commit/f36d6645a3474a974b434e168addf870d9d34f93))
+- **auth:** add module @nestjs/jwt for auth ([019439e](https://github.com/tomorrowrich/buddyrental-backend/commit/019439e4b09bc5ca4bd2fe9ae695bb69e8099d58))
+- **auth:** get session ([87b6888](https://github.com/tomorrowrich/buddyrental-backend/commit/87b68884b4263fea4bf49865fd18e97732e2bfff))
+- **auth:** implement login endpoint ([e9ba8c8](https://github.com/tomorrowrich/buddyrental-backend/commit/e9ba8c8ced3373d4e6da463409f5ca2a7ea937bc))
+- **auth:** implement verify endpoint ([eab905a](https://github.com/tomorrowrich/buddyrental-backend/commit/eab905a6820303e502770930c4e660a2fc3ff11f))
+- **cors:** allow cross-origin ([22fae19](https://github.com/tomorrowrich/buddyrental-backend/commit/22fae19cdb9a168d39b449f6b30fdbd40ca9d894))
+- **healthz:** add healthcheck endpoint ([088e6db](https://github.com/tomorrowrich/buddyrental-backend/commit/088e6dbba6c508b8ebdfaf82cc2639ad245f0daf))
+- **proj:** add credential resource ([e128d52](https://github.com/tomorrowrich/buddyrental-backend/commit/e128d523ae63a7b09844034ef66e88d03670a008))
+- **updatePI:** implement update user PI ([493c021](https://github.com/tomorrowrich/buddyrental-backend/commit/493c0212fe42cb92345c6668a2da06e4a9026335))
+- **updatePricing:** implement service offered ([#46](https://github.com/tomorrowrich/buddyrental-backend/issues/46)) ([e9ef32e](https://github.com/tomorrowrich/buddyrental-backend/commit/e9ef32eef7f0260806ff883734b595c5c03cf0b4))
+- **users:** implement user creation functionality ([0a5a3fb](https://github.com/tomorrowrich/buddyrental-backend/commit/0a5a3fb00783ac530996f7eaa9ccda0afe486795))
+- **viewBookingHistory:** implement booking history api ([#50](https://github.com/tomorrowrich/buddyrental-backend/issues/50)) ([28877d7](https://github.com/tomorrowrich/buddyrental-backend/commit/28877d7cb8994d0141fa14b944dbdb5f34de6d03))
+- **workflows:** add workflow_dispatch trigger to release workflow ([f2a5c9c](https://github.com/tomorrowrich/buddyrental-backend/commit/f2a5c9c35d9608157cb9159c3e2fb4357c1977a2))
 
 # [1.2.0-beta.21](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.20...v1.2.0-beta.21) (2025-02-13)
 
