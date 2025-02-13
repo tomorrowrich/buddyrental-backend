@@ -84,3 +84,4 @@ jobs:
             🚀 Preview deployment is ready!
             URL: ${{ fromJson(steps.trigger-preview.outputs.response).service.serviceDetails.url }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          allow-repeats: true
