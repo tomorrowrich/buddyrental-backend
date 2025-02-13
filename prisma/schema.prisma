@@ -34,10 +34,10 @@ model User {
   city    String
   zipcode String
 
-  profilePicture  String?  @map("profile_picture")
+  profilePicture  String?             @map("profile_picture")
   description     String?
-  reviewsMade     Review[] @relation("ReviewToCommenter")
-  reviewsReceived Review[] @relation("ReviewToProfile")
+  reviewsMade     Review[]            @relation("ReviewToCommenter")
+  reviewsReceived Review[]            @relation("ReviewToProfile")
   buddy           Buddy?
   reservations    ReservationRecord[]
 }
@@ -49,7 +49,7 @@ model Buddy {
   minPrice               Float  @map("min_price")
   maxPrice               Float  @map("max_price")
 
-  user User @relation(fields: [buddyId], references: [userId], onDelete: Cascade)
+  user         User                @relation(fields: [buddyId], references: [userId], onDelete: Cascade)
   reservations ReservationRecord[]
 }
 
@@ -72,9 +72,9 @@ model ReservationRecord {
   status          String   @map("status")
   createTimestamp DateTime @default(now()) @map("create_timestamp")
 
-  userId          String   @map("user_id") @db.Uuid
-  buddyId         String   @map("buddy_id") @db.Uuid
+  userId  String @map("user_id") @db.Uuid
+  buddyId String @map("buddy_id") @db.Uuid
 
-  user            User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  buddy           Buddy    @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  buddy Buddy @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
 }
