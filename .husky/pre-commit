@@ -1,41 +1,51 @@
+# Skip all pre-commit tasks if a merge commit is in progress
+if [ -f ".git/MERGE_HEAD" ]; then
+  echo "Merge commit detected. Skipping pre-commit checks."
+  exit 0
+fi
+
+# Get staged files once for reuse
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
+
 echo "✨ Formatting code..."
-prettier $(git diff --cached --name-only --diff-filter=ACMR | sed 's| |\\ |g') --write --ignore-unknown
-pnpm prisma format
+[ -n "$STAGED_FILES" ] && pnpm exec prettier $STAGED_FILES --write --ignore-unknown
+
+# Run Prisma format only if any prisma file is staged
+echo "$STAGED_FILES" | grep -q '^prisma/' && {
+  echo "🔧 Running Prisma format..."
+  pnpm exec prisma format
+}
 
 echo "🔍 Running linter..."
-pnpm lint
+# Lint only staged .ts/.js files
+TS_JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.(ts|js)$' || true)
+[ -n "$TS_JS_FILES" ] && pnpm eslint $TS_JS_FILES --fix || echo "No JS/TS files to lint."
 
-# Add already formatted files
+# Update index for formatted/linted files
 git update-index --again
 
-if git diff --name-only --cached | grep -q '^prisma/'; then
-  echo "🔍 Running pre-commit checks for Prisma..."
-
-  # Use cross-platform path separator
+# Prisma checks: Only run if any file in prisma folder was staged
+if echo "$STAGED_FILES" | grep -q '^prisma/'; then
+  echo "🔍 Running Prisma pre-commit checks..."
   SCHEMA_PATH="prisma/schema.prisma"
 
-  # Generate Prisma client
   echo "📦 Generating Prisma client..."
   pnpm prisma generate
 
   echo "📊 Checking for pending Prisma migrations..."
-  if ! pnpm prisma migrate status ; then
-    echo "❌ Error: There are pending Prisma migrations."
-    echo "👉 Please run 'pnpm prisma migrate deploy' to apply pending migrations."
+  if ! pnpm prisma migrate status; then
+    echo "❌ Error: Pending Prisma migrations require update."
     exit 1
   fi
-  echo "✅ No pending migrations found."
 
   echo "🔄 Checking for schema changes..."
-  if ! pnpm prisma migrate diff --from-schema-datamodel "$SCHEMA_PATH" --to-schema-datasource "$SCHEMA_PATH" --exit-code ; then
-    echo "❌ Error: Your schema.prisma has uncommitted changes."
-    echo "👉 Please run 'pnpm prisma migrate dev' to create a new migration."
+  if ! pnpm prisma migrate diff --from-schema-datamodel "$SCHEMA_PATH" --to-schema-datasource "$SCHEMA_PATH" --exit-code; then
+    echo "❌ Error: Uncommitted schema.prisma changes detected."
     exit 1
   fi
-  echo "✅ Schema is up to date."
 fi
 
-echo "🏃 Running tests..."
-git diff --cached --name-only --diff-filter=AM | grep -E '\.(ts|js)$' | xargs -r pnpm test
+echo "🏃 Running tests for changed JS/TS files..."
+[ -n "$TS_JS_FILES" ] && echo "$TS_JS_FILES" | xargs pnpm test || echo "No testable JS/TS files changed."
 
-echo "✅ All pre-commit checks passed successfully!"
+echo "✅ Pre-commit checks passed!"

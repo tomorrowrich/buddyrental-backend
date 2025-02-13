@@ -39,6 +39,7 @@ model User {
   reviewsMade     Review[] @relation("ReviewToCommenter")
   reviewsReceived Review[] @relation("ReviewToProfile")
   buddy           Buddy?
+  reservations    ReservationRecord[]
 }
 
 model Buddy {
@@ -49,6 +50,7 @@ model Buddy {
   maxPrice               Float  @map("max_price")
 
   user User @relation(fields: [buddyId], references: [userId], onDelete: Cascade)
+  reservations ReservationRecord[]
 }
 
 model Review {
@@ -61,4 +63,18 @@ model Review {
 
   commenter User @relation("ReviewToCommenter", fields: [commenterId], references: [userId], onDelete: Cascade)
   profile   User @relation("ReviewToProfile", fields: [profileId], references: [userId], onDelete: Cascade)
+}
+
+model ReservationRecord {
+  reservationId   String   @id @unique @default(uuid()) @map("reservation_id") @db.Uuid
+  priceCoin       Float    @map("price_coin")
+  reservationDate DateTime @map("reservation_date")
+  status          String   @map("status")
+  createTimestamp DateTime @default(now()) @map("create_timestamp")
+
+  userId          String   @map("user_id") @db.Uuid
+  buddyId         String   @map("buddy_id") @db.Uuid
+
+  user            User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  buddy           Buddy    @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
 }
