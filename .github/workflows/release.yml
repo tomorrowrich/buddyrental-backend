@@ -186,6 +186,7 @@ jobs:
       group: sync-main-develop
       cancel-in-progress: true
     needs: deploy
+    name: Sync main into develop
     runs-on: ubuntu-latest
     steps:
       - name: Checkout main branch
