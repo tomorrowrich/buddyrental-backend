@@ -232,7 +232,10 @@ jobs:
     concurrency:
       group: sync-main-develop
       cancel-in-progress: true
-    needs: release
+    needs:
+      - deploy
+      - trigger-devel
+      - trigger-prod
     name: Sync main into develop
     runs-on: ubuntu-latest
     steps:
@@ -245,12 +248,14 @@ jobs:
       - name: Verify CI Passed for Last Merge from Develop
         run: |
           LAST_MERGE_SHA=$(git log --merges --pretty=format:'%H' -n 1 origin/develop)
+          echo "Last merge SHA: $LAST_MERGE_SHA"
           if [ -z "$LAST_MERGE_SHA" ]; then
             echo "No recent merge from develop found, skipping sync."
             exit 1
           fi
           CI_STATUS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
             "https://api.github.com/repos/${{ github.repository }}/commits/$LAST_MERGE_SHA/status" | jq -r '.state')
+          echo "CI status for last merge: $CI_STATUS"
           if [[ "$CI_STATUS" != "success" ]]; then
             echo "CI checks for the last merge did NOT pass. Aborting sync."
             exit 1
