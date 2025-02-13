@@ -1,3 +1,9 @@
+## [1.2.2-beta.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.1...v1.2.2-beta.1) (2025-02-13)
+
+### Bug Fixes
+
+- **auth:** apply bearer on non-public api ([1251aff](https://github.com/tomorrowrich/buddyrental-backend/commit/1251affb9ef639e57f0fb5ce6335ff443fb0493f))
+
 ## [1.2.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0...v1.2.1) (2025-02-13)
 
 ### Bug Fixes
