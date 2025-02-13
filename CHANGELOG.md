@@ -1,3 +1,9 @@
+## [1.2.2-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.2-beta.1...v1.2.2-beta.2) (2025-02-13)
+
+### Bug Fixes
+
+- **prisma:** remove unused migrations ([#63](https://github.com/tomorrowrich/buddyrental-backend/issues/63)) ([9e6d84e](https://github.com/tomorrowrich/buddyrental-backend/commit/9e6d84ebe5d8621d5689b3f3f97fca61f84f1573))
+
 ## [1.2.2-beta.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.1...v1.2.2-beta.1) (2025-02-13)
 
 ### Bug Fixes
