@@ -98,9 +98,9 @@ jobs:
           echo "Resolved version: $VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-  docker-build:
+  docker:
     concurrency:
-      group: docker-build-${{ github.ref }}
+      group: docker-${{ github.ref }}
       cancel-in-progress: true
     needs: release
     name: Build and Push Image ${{ needs.release.outputs.version }}
@@ -131,8 +131,9 @@ jobs:
           tags: |
             type=semver,pattern=${{ github.ref_name }}
             type=raw,value=${{ needs.release.outputs.version }}
-            ${{ github.ref_name == 'main' && 'type=raw,value=prod' || github.ref_name == 'develop' && 'type=raw,value=devel' }}
             type=raw,value=latest
+            ${{ github.ref_name == 'main' && 'type=raw,value=prod' || '' }}
+            ${{ github.ref_name == 'develop' && 'type=raw,value=devel' || '' }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
@@ -145,14 +146,60 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  trigger-devel:
+    concurrency:
+      group: trigger-devel-${{ github.ref }}
+      cancel-in-progress: true
+    name: Deploy to Render
+    needs:
+      - docker
+      - release
+    runs-on: ubuntu-latest
+    if: ${{ (github.ref_name == 'develop' || github.ref_name == 'main') && (needs.docker.result == 'success' || needs.docker.result == 'skipped') }}
+    environment: Staging
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Create Render Deployment
+        uses: fjogeleit/http-request-action@v1
+        id: trigger-preview
+        with:
+          url: ${{ secrets.RENDER_DEPLOY_HOOK }}
+          method: 'GET'
+          timeout: 15000
+
+  trigger-prod:
+    concurrency:
+      group: trigger-prod-${{ github.ref }}
+      cancel-in-progress: true
+    name: Deploy to Render
+    needs:
+      - docker
+      - release
+    runs-on: ubuntu-latest
+    if: ${{ github.ref_name == 'main' && (needs.docker.result == 'success' || needs.docker.result == 'skipped') }}
+    environment: Production
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Create Render Deployment
+        uses: fjogeleit/http-request-action@v1
+        id: trigger-preview
+        with:
+          url: ${{ secrets.RENDER_DEPLOY_HOOK }}
+          method: 'GET'
+          timeout: 15000
+
   deploy:
     concurrency:
       group: deploy-${{ github.ref }}
       cancel-in-progress: true
     needs:
       - release
-      - docker-build
-    if: ${{ needs.docker-build.result == 'success' || needs.docker-build.result == 'skipped' }}
+      - docker
+    if: ${{ needs.docker.result == 'success' || needs.docker.result == 'skipped' }}
     name: Deploy Prisma Migrations
     runs-on: ubuntu-latest
     environment: ${{ (github.ref_name == 'develop' && 'Staging') || (github.ref_name == 'main' && 'Production') || '' }}
@@ -185,7 +232,7 @@ jobs:
     concurrency:
       group: sync-main-develop
       cancel-in-progress: true
-    needs: deploy
+    needs: release
     name: Sync main into develop
     runs-on: ubuntu-latest
     steps:
@@ -197,8 +244,7 @@ jobs:
 
       - name: Verify CI Passed for Last Merge from Develop
         run: |
-          # Fetch the last merge commit from develop to main
-          LAST_MERGE_SHA=$(git log --merges --pretty=format:'%H' -n 1 develop)
+          LAST_MERGE_SHA=$(git log --merges --pretty=format:'%H' -n 1 origin/develop)
           if [ -z "$LAST_MERGE_SHA" ]; then
             echo "No recent merge from develop found, skipping sync."
             exit 1
@@ -215,6 +261,7 @@ jobs:
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
+          git fetch origin develop:develop
           git checkout develop
           git pull origin develop
           git merge --no-edit main
