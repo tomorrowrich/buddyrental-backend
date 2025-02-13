@@ -46,6 +46,6 @@ if echo "$STAGED_FILES" | grep -q '^prisma/'; then
 fi
 
 echo "🏃 Running tests for changed JS/TS files..."
-[ -n "$TS_JS_FILES" ] && echo "$TS_JS_FILES" | xargs pnpm test || echo "No testable JS/TS files changed."
+[ -n "$TS_JS_FILES" ] && echo "$TS_JS_FILES" | xargs pnpm test -- --findRelatedTests || echo "No testable JS/TS files changed."
 
 echo "✅ Pre-commit checks passed!"
