@@ -11,6 +11,9 @@ on:
 
 jobs:
   build:
+    concurrency:
+      group: preview-build-${{ github.ref }}
+      cancel-in-progress: true
     name: Build and push Docker preview image
     runs-on: ubuntu-latest
     environment: Staging
@@ -52,6 +55,9 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
+    concurrency:
+      group: preview-deploy-${{ github.ref }}
+      cancel-in-progress: true
     name: Deploy preview to Render
     needs: build
     runs-on: ubuntu-latest
@@ -78,3 +84,4 @@ jobs:
             🚀 Preview deployment is ready!
             URL: ${{ fromJson(steps.trigger-preview.outputs.response).service.serviceDetails.url }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          allow-repeats: true

@@ -13,14 +13,14 @@ on:
       - develop
     tags:
       - 'v*'
-  pull_request:
-    branches:
-      - main
-      - develop
   workflow_dispatch:
 
 jobs:
   build-test:
+    concurrency:
+      group: build-test-${{ github.ref }}-${{ matrix.task }}
+      cancel-in-progress: true
+    if: startsWith(github.ref, 'refs/heads/')
     name: Build and Test
     runs-on: ubuntu-latest
     strategy:
@@ -56,7 +56,10 @@ jobs:
           fi
 
   release:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/')
+    concurrency:
+      group: release-${{ github.ref }}
+      cancel-in-progress: true
+    if: startsWith(github.ref, 'refs/heads/')
     name: Semantic Release
     needs: build-test
     runs-on: ubuntu-latest
@@ -96,9 +99,12 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
   docker-build:
+    concurrency:
+      group: docker-build-${{ github.ref }}
+      cancel-in-progress: true
     needs: release
     name: Build and Push Image ${{ needs.release.outputs.version }}
-    if: github.event_name == 'push' && needs.release.outputs.version != ''
+    if: ${{ needs.release.outputs.version != '' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -140,10 +146,13 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
+    concurrency:
+      group: deploy-${{ github.ref }}
+      cancel-in-progress: true
     needs:
       - release
       - docker-build
-    if: github.event_name == 'push' && (${{ needs.docker-build.result == 'success' || needs.docker-build.result == 'skipped' }})
+    if: ${{ needs.docker-build.result == 'success' || needs.docker-build.result == 'skipped' }}
     name: Deploy Prisma Migrations
     runs-on: ubuntu-latest
     environment: ${{ (github.ref_name == 'develop' && 'Staging') || (github.ref_name == 'main' && 'Production') || '' }}
@@ -171,8 +180,41 @@ jobs:
       - name: Migrate Prisma
         run: pnpm prisma migrate deploy
 
-      - name: Trigger Render Deploy
-        uses: fjogeleit/http-request-action@v1
+  sync:
+    if: github.ref_name == 'main'
+    concurrency:
+      group: sync-main-develop
+      cancel-in-progress: true
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
         with:
-          url: ${{ secrets.RENDER_DEPLOY_HOOK }}
-          method: 'GET'
+          ref: main
+          fetch-depth: 0
+
+      - name: Verify CI Passed for Last Merge from Develop
+        run: |
+          # Fetch the last merge commit from develop to main
+          LAST_MERGE_SHA=$(git log --merges --pretty=format:'%H' -n 1 develop)
+          if [ -z "$LAST_MERGE_SHA" ]; then
+            echo "No recent merge from develop found, skipping sync."
+            exit 1
+          fi
+          CI_STATUS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/commits/$LAST_MERGE_SHA/status" | jq -r '.state')
+          if [[ "$CI_STATUS" != "success" ]]; then
+            echo "CI checks for the last merge did NOT pass. Aborting sync."
+            exit 1
+          fi
+          echo "CI checks passed. Proceeding with the sync."
+
+      - name: Merge main into develop
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git checkout develop
+          git pull origin develop
+          git merge --no-edit main
+          git push origin develop

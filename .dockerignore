@@ -42,3 +42,14 @@ LICENSE
 .dockerignore
 docker-compose*
 Dockerfile
+
+.github
+.husky
+.prettierignore
+.prettierrc
+.eslintrc
+.eslintignore
+eslint.config.mjs
+release.config.js
+.commitlintrc.js
+CHANGELOG.md
