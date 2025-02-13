@@ -1,3 +1,9 @@
+## [1.2.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0...v1.2.1) (2025-02-13)
+
+### Bug Fixes
+
+- **docker:** prisma client missing ([d2fdcae](https://github.com/tomorrowrich/buddyrental-backend/commit/d2fdcae699632a80a43219466eb50fbef6f7c9d9))
+
 # [1.2.0](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.1.1...v1.2.0) (2025-02-13)
 
 ### Bug Fixes
