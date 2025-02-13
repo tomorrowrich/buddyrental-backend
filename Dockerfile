@@ -28,6 +28,7 @@ RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 
 COPY --from=builder --chown=nodeuser:nodejs /app/prisma ./prisma
 COPY --from=builder --chown=nodeuser:nodejs /app/node_modules/@prisma/client ./node_modules/@prisma/client
+COPY --from=builder --chown=nodeuser:nodejs /app/node_modules/.pnpm/ ./node_modules/.pnpm/
 COPY --from=builder --chown=nodeuser:nodejs /app/dist ./dist
 
 USER nodeuser
