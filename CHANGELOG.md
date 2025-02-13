@@ -1,3 +1,9 @@
+# [1.2.0-beta.19](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.18...v1.2.0-beta.19) (2025-02-13)
+
+### Features
+
+- **viewBookingHistory:** implement booking history api ([#50](https://github.com/tomorrowrich/buddyrental-backend/issues/50)) ([28877d7](https://github.com/tomorrowrich/buddyrental-backend/commit/28877d7cb8994d0141fa14b944dbdb5f34de6d03))
+
 # [1.2.0-beta.18](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.0-beta.17...v1.2.0-beta.18) (2025-02-12)
 
 ### Bug Fixes
