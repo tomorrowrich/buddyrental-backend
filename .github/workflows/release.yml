@@ -226,28 +226,3 @@ jobs:
 
       - name: Migrate Prisma
         run: pnpm prisma migrate deploy
-
-  sync:
-    concurrency:
-      group: sync-main-develop
-      cancel-in-progress: true
-    needs:
-      - release
-    name: Sync main into develop
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout main branch
-        uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
-
-      - name: Merge main into develop
-        run: |
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
-          git fetch origin develop:develop
-          git checkout develop
-          git pull origin develop
-          git merge --no-edit main
-          git push origin develop
