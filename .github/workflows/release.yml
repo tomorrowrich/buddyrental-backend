@@ -18,7 +18,7 @@ on:
 jobs:
   build-test:
     concurrency:
-      group: build-test-${{ github.ref }}
+      group: build-test-${{ github.ref }}-${{ matrix.task }}
       cancel-in-progress: true
     if: startsWith(github.ref, 'refs/heads/')
     name: Build and Test
