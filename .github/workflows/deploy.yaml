@@ -3,6 +3,9 @@ name: Preview Docker Image on Render
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - develop
   workflow_dispatch:
     inputs:
       sha:

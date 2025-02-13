@@ -1,3 +1,9 @@
+# Skip all pre-commit tasks if a merge commit is in progress
+if [ -f ".git/MERGE_HEAD" ]; then
+  echo "Merge commit detected. Skipping pre-commit checks."
+  exit 0
+fi
+
 # Get staged files once for reuse
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACMR)
 
