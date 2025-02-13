@@ -232,10 +232,7 @@ jobs:
       group: sync-main-develop
       cancel-in-progress: true
     needs:
-      - deploy
-      - trigger-devel
-      - trigger-prod
-    if: ${{ (needs.deploy.result == 'success' || needs.deploy.result == 'skipped') && (needs.trigger-devel.result == 'success' || needs.trigger-devel.result == 'skipped') && (needs.trigger-prod.result == 'success' || needs.trigger-prod.result == 'skipped') && (github.ref_name == 'main') }}
+      - release
     name: Sync main into develop
     runs-on: ubuntu-latest
     steps:
