@@ -53,3 +53,4 @@ eslint.config.mjs
 release.config.js
 .commitlintrc.js
 CHANGELOG.md
+Dockerfile

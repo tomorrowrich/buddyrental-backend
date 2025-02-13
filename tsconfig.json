@@ -25,5 +25,5 @@
     }
   },
   "modulePaths": ["<rootDir>"],
-  "include": ["src/**/*", "test/**/*"]
+  "include": ["src/**/*", "test/**/*", "generated/**/*"]
 }
