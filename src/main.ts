@@ -14,17 +14,20 @@ async function bootstrap() {
     },
   });
   app.setGlobalPrefix('/api');
-  const config = new DocumentBuilder()
-    .setTitle('BuddyRental')
-    .setDescription('The renter of buddies')
-    .setVersion('1.0')
-    .addSecurity('bearer', {
-      type: 'http',
-      scheme: 'bearer',
-    })
-    .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/docs', app, documentFactory);
+
+  if (process.env.NODE_ENV !== 'production') {
+    const config = new DocumentBuilder()
+      .setTitle('BuddyRental')
+      .setDescription('The renter of buddies')
+      .setVersion('1.0')
+      .addSecurity('bearer', {
+        type: 'http',
+        scheme: 'bearer',
+      })
+      .build();
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('/', app, documentFactory);
+  }
 
   await app.listen(process.env.PORT ?? 55000);
 }
