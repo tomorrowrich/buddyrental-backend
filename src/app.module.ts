@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { CredentialsModule } from './credentials/credentials.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { ConfigModule } from '@nestjs/config';
+import { AdminModule } from './admin/admin.module';
 import mockConfig from './config/mock.config';
 
 @Module({
@@ -20,6 +21,7 @@ import mockConfig from './config/mock.config';
       isGlobal: true,
       load: [mockConfig],
     }),
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],
