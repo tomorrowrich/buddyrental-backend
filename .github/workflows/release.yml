@@ -228,7 +228,6 @@ jobs:
         run: pnpm prisma migrate deploy
 
   sync:
-    if: github.ref_name == 'main'
     concurrency:
       group: sync-main-develop
       cancel-in-progress: true
@@ -236,6 +235,7 @@ jobs:
       - deploy
       - trigger-devel
       - trigger-prod
+    if: ${{ (needs.deploy.result == 'success' || needs.deploy.result == 'skipped') && (needs.trigger-devel.result == 'success' || needs.trigger-devel.result == 'skipped') && (needs.trigger-prod.result == 'success' || needs.trigger-prod.result == 'skipped') && (github.ref_name == 'main') }}
     name: Sync main into develop
     runs-on: ubuntu-latest
     steps:
