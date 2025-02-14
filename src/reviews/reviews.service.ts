@@ -35,4 +35,8 @@ export class ReviewsService {
   async remove(id: number) {
     return await this.prisma.review.delete({ where: { reviewId: id } });
   }
+
+  async hello() {
+    return 'OK';
+  }
 }
