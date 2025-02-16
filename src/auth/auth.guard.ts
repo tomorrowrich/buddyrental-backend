@@ -9,7 +9,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request as ExpressRequest } from 'express';
 
-// Imported from NestJS documentation: https://docs.nestjs.com/security/authentication
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -30,8 +29,7 @@ export class AuthGuard implements CanActivate {
       }>(token, {
         secret: this.config.get<string>('auth.secret_key'),
       });
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
+
       request.user = { userId: payload.sub, email: payload.email };
     } catch {
       throw new UnauthorizedException('Unable to authorize token');

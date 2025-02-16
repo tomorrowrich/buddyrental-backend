@@ -3,9 +3,11 @@ import { AuthService } from './auth.service';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { ConfigModule } from '@nestjs/config';
-import mockConfig from '@app/config/mock.config';
+import config from '@app/config';
 import { UsersService } from '@app/users/users.service';
 import { PrismaService } from '@app/prisma/prisma.service';
+import { RegisterDto } from './dtos/register.dto';
+import { randomUUID } from 'node:crypto';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -16,12 +18,8 @@ describe('AuthService', () => {
     sign: jest
       .fn()
       .mockImplementation(
-        (payload: { sub: string; email: string }, options?: JwtSignOptions) => {
-          const secretString = options?.secret?.toString() || 'sekritsekrit';
-          const expiresIn = options?.expiresIn?.toString() || '42069s';
-          return (
-            payload.sub + payload.email.toUpperCase() + secretString + expiresIn
-          );
+        (payload: string | object | Buffer, options?: JwtSignOptions) => {
+          return 'token';
         },
       ),
   };
@@ -31,13 +29,46 @@ describe('AuthService', () => {
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
-          load: [mockConfig],
+          load: [config],
         }),
       ],
       providers: [
         AuthService,
         UsersService,
-        PrismaService,
+        {
+          provide: PrismaService,
+          useValue: {
+            user: {
+              create: jest.fn().mockImplementation((data: User) => {
+                mockDatabase.users.push(data);
+                return { ...data, userId: randomUUID() };
+              }),
+              findFirst: jest.fn().mockImplementation((data: Partial<User>) => {
+                return mockDatabase.users.find(
+                  (user) =>
+                    user.email === data.email || user.userId === data.userId,
+                );
+              }),
+
+              findMany: jest.fn().mockImplementation(() => {
+                return mockDatabase.users;
+              }),
+              softDelete: jest
+                .fn()
+                .mockImplementation((data: Partial<User>) => {
+                  mockDatabase.users = mockDatabase.users.map((user) => {
+                    if (user.userId === data.userId) {
+                      return { ...user, deletedAt: new Date() };
+                    }
+                    return user;
+                  });
+                }),
+              findDeleted: jest.fn().mockImplementation(() => {
+                return mockDatabase.users.filter((user) => user.deletedAt);
+              }),
+            },
+          },
+        },
         {
           provide: JwtService,
           useValue: mockJwtService,
@@ -50,8 +81,34 @@ describe('AuthService', () => {
     mockDatabase.users = [];
   });
 
+  afterEach(() => {
+    mockDatabase.users = [];
+  });
+
   it('should be defined', () => {
     expect(authService).toBeDefined();
     expect(usersService).toBeDefined();
+  });
+
+  describe('register', () => {
+    it('should register a new user', async () => {
+      const registerDto: RegisterDto = {
+        email: 'test@example.com',
+        password: 'password',
+        dateOfBirth: '2000-01-01',
+        address: '123 Test St',
+        firstName: 'Test',
+        city: 'Test City',
+        lastName: 'User',
+        gender: 'MALE',
+        phone: '1234567890',
+        citizenId: '1234567890',
+        postalCode: '12345',
+        nickname: 'testuser',
+        profilePicture: 'test.jpg',
+      };
+      const userId = await authService.register(registerDto);
+      expect(userId).toBeDefined();
+    });
   });
 });

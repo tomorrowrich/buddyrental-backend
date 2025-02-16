@@ -7,27 +7,13 @@ describe('ReservationService', () => {
   let reservationService: ReservationService;
   let prismaService: PrismaService;
 
-  const mockReservations = [
-    {
-      id: 'res1',
-      userId: 'cust1',
-      reservationDate: new Date('2023-10-01'),
-      buddy: { buddyId: 'buddy1' },
-    },
-    {
-      id: 'res2',
-      userId: 'cust1',
-      reservationDate: new Date('2023-09-30'),
-      buddy: { buddyId: 'buddy2' },
-    },
-  ];
+  const mockReservations = [];
 
   const prismaServiceMock = {
     reservationRecord: {
       findMany: jest.fn(),
     },
   };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -59,7 +45,7 @@ describe('ReservationService', () => {
             select: { buddyId: true },
           },
         },
-        orderBy: { reservationDate: 'desc' },
+        orderBy: { reservationStart: 'desc' },
       });
       expect(result).toEqual(mockReservations);
     });
@@ -76,7 +62,7 @@ describe('ReservationService', () => {
             select: { buddyId: true },
           },
         },
-        orderBy: { reservationDate: 'desc' },
+        orderBy: { reservationStart: 'desc' },
       });
       expect(result).toEqual([]);
     });

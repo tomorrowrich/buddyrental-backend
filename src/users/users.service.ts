@@ -1,69 +1,95 @@
 import { Injectable, ValidationPipe } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { User } from '@prisma/client';
+import { PrismaService } from '@app/prisma/prisma.service';
+import { UserGender } from '@prisma/client';
+import { RegisterDto } from '@app/auth/dtos/register.dto';
+import { hash, verify } from 'argon2';
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async create(payload: RegisterDto) {
     const validationPipe = new ValidationPipe({ transform: true });
-    await validationPipe.transform(createUserDto, { type: 'body' });
+    await validationPipe.transform(payload, { type: 'body' });
+
+    if (!payload.password.startsWith('$argon2')) {
+      payload.password = await hash(payload.password);
+    }
+
     const user = await this.prisma.user.create({
       data: {
-        firstName: createUserDto.firstName,
-        lastName: createUserDto.lastName,
-        citizenId: createUserDto.idCard,
-        email: createUserDto.email,
-        phoneNumber: createUserDto.phone,
-        password: createUserDto.password,
-        displayName: createUserDto.nickname,
-        gender: createUserDto.gender,
-        dateOfBirth: createUserDto.dateOfBirth,
-        address: createUserDto.address,
-        city: createUserDto.city,
-        zipcode: createUserDto.zipcode,
+        firstName: payload.firstName,
+        lastName: payload.lastName,
+        citizenId: payload.citizenId,
+        email: payload.email,
+        phoneNumber: payload.phone,
+        password: payload.password,
+        displayName: payload.nickname,
+        gender: payload.gender as UserGender,
+        dateOfBirth: payload.dateOfBirth,
+        address: payload.address,
+        city: payload.city,
+        postalCode: payload.postalCode,
+      },
+      omit: {
+        password: true,
       },
     });
 
     return user;
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.prisma.user.findMany();
+  async verifyPassword(userId: string, password: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { userId: userId },
+    });
+
+    if (!user) {
+      return false;
+    }
+
+    return await verify(user.password, password);
   }
 
-  async findOne(userId: string): Promise<User> {
+  async findAll() {
+    return await this.prisma.user.findMany({ omit: { password: true } });
+  }
+
+  async findOne(userId: string) {
     return await this.prisma.user.findUniqueOrThrow({
       where: { userId: userId },
+      omit: { password: true },
     });
   }
 
-  //looks up database for users with the given email
-  //and returns true if there are no such users
-  async findUserWithEmail(email: string): Promise<User | null> {
+  async findUserWithEmail(email: string) {
     const user = await this.prisma.user.findFirst({
       where: { email: email },
+      omit: { password: true },
     });
     return user;
   }
 
-  async findUnverified(): Promise<User[]> {
+  async findUnverifiedUsers() {
     return await this.prisma.user.findMany({
       where: { verified: false },
+      omit: { password: true },
     });
   }
 
-  async update(userId: string, updateUserDto: UpdateUserDto): Promise<User> {
+  async update(userId: string, updateUserDto: UpdateUserDto) {
     return await this.prisma.user.update({
       where: { userId: userId },
       data: updateUserDto,
+      omit: { password: true },
     });
   }
 
-  async remove(userId: string): Promise<User> {
-    return await this.prisma.user.delete({ where: { userId } });
+  async remove(userId: string) {
+    return await this.prisma.user.delete({
+      where: { userId },
+      omit: { password: true },
+    });
   }
 }

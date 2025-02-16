@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class BuddyService {
   constructor(private prisma: PrismaService) {}
 
-  async updatePricing(buddyId: string, minPrice: number, maxPrice: number) {
+  async updatePricing(buddyId: string, priceMin: number, priceMax: number) {
     const buddy = await this.prisma.buddy.findUnique({ where: { buddyId } });
     if (!buddy) {
       throw new NotFoundException(`Buddy with ID ${buddyId} not found`);
@@ -13,7 +13,7 @@ export class BuddyService {
 
     return this.prisma.buddy.update({
       where: { buddyId },
-      data: { minPrice, maxPrice },
+      data: { priceMin, priceMax },
     });
   }
 }
