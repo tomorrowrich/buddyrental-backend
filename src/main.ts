@@ -3,17 +3,35 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
+import helmet from '@fastify/helmet';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
-    cors: {
-      origin: '*',
-      credentials: true,
-      exposedHeaders: ['Authorization', 'Content-Type'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-    },
-  });
+  const allowedOrigins = [
+    /^http:\/\/localhost:3000$/,
+    /^https:\/\/mybuddyrental\.netlify\.app$/,
+    /^https:\/\/*mybuddyrental\.netlify\.app$/,
+  ];
+
+  const corsOptions = {
+    origin: allowedOrigins,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,UPDATE',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
+    maxAge: 86400,
+  };
+
+  const adapter = new FastifyAdapter({ logger: true });
+  adapter.register(helmet);
+  adapter.enableCors(corsOptions);
+
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    adapter,
+  );
   app.setGlobalPrefix('/api');
 
   if (process.env.NODE_ENV !== 'production') {
@@ -32,14 +50,7 @@ async function bootstrap() {
 
   const config = app.get(ConfigService);
 
-  await app.listen(config.getOrThrow('port'), () => {
-    console.log(`Listening on port ${config.getOrThrow('port')}`);
-    if (process.env.NODE_ENV !== 'production') {
-      void app.getUrl().then((url) => {
-        console.log(`Swagger UI available at ${url}`);
-      });
-    }
-  });
+  await app.listen(config.getOrThrow('port'));
 }
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();
