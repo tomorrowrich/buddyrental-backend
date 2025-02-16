@@ -3,11 +3,6 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-import helmet from '@fastify/helmet';
 
 async function bootstrap() {
   const allowedOrigins = [
@@ -24,14 +19,10 @@ async function bootstrap() {
     maxAge: 86400,
   };
 
-  const adapter = new FastifyAdapter({ logger: true });
-  adapter.register(helmet);
-  adapter.enableCors(corsOptions);
-
-  const app = await NestFactory.create<NestFastifyApplication>(
-    AppModule,
-    adapter,
-  );
+  const app = await NestFactory.create(AppModule, {
+    bufferLogs: true,
+    cors: corsOptions,
+  });
   app.setGlobalPrefix('/api');
 
   if (process.env.NODE_ENV !== 'production') {

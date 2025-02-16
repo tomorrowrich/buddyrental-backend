@@ -10,19 +10,18 @@ datasource db {
 
 model Admin {
   adminId   String @id @unique @default(uuid()) @map("admin_id") @db.Uuid
-  userId    String @unique @map("user_id") @db.Uuid
   firstName String @map("first_name") @db.VarChar(64)
   lastName  String @map("last_name") @db.VarChar(64)
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
-
-  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  User      User?     @relation(fields: [adminId], references: [userId], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model User {
   userId         String              @id @unique @default(uuid()) @map("user_id") @db.Uuid
+  adminId        String?             @map("admin_id") @db.Uuid
   firstName      String              @map("first_name") @db.VarChar(64)
   lastName       String              @map("last_name") @db.VarChar(64)
   email          String              @unique @map("email") @db.VarChar(255)
@@ -41,7 +40,7 @@ model User {
   reviewsMade    Review[]            @relation("ReviewToCommenter")
   buddy          Buddy?
   reservations   ReservationRecord[]
-  admin          Admin[]
+  Admin          Admin?
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
