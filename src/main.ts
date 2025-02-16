@@ -2,6 +2,7 @@ import 'module-alias/register';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -29,7 +30,16 @@ async function bootstrap() {
     SwaggerModule.setup('/', app, documentFactory);
   }
 
-  await app.listen(process.env.PORT ?? 55000);
+  const config = app.get(ConfigService);
+
+  await app.listen(config.getOrThrow('port'), () => {
+    console.log(`Listening on port ${config.getOrThrow('port')}`);
+    if (process.env.NODE_ENV !== 'production') {
+      void app.getUrl().then((url) => {
+        console.log(`Swagger UI available at ${url}`);
+      });
+    }
+  });
 }
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();

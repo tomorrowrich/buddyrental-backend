@@ -8,73 +8,144 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Credential {
-  userId   String  @id @unique @default(uuid()) @map("user_id") @db.Uuid
-  email    String  @unique
-  password String
-  verified Boolean @default(false)
+model Admin {
+  adminId   String @id @unique @default(uuid()) @map("admin_id") @db.Uuid
+  userId    String @unique @map("user_id") @db.Uuid
+  firstName String @map("first_name") @db.VarChar(64)
+  lastName  String @map("last_name") @db.VarChar(64)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
 
 model User {
-  userId    String @id @unique @default(uuid()) @map("user_id") @db.Uuid
-  firstName String @map("first_name")
-  lastName  String @map("last_name")
-  citizenId String @map("citizen_id")
+  userId         String              @id @unique @default(uuid()) @map("user_id") @db.Uuid
+  firstName      String              @map("first_name") @db.VarChar(64)
+  lastName       String              @map("last_name") @db.VarChar(64)
+  email          String              @unique @map("email") @db.VarChar(255)
+  password       String              @map("password") @db.Text
+  citizenId      String              @unique @map("citizen_id")
+  phoneNumber    String              @map("phone_number")
+  verified       Boolean             @default(false)
+  displayName    String?             @map("display_name") @db.VarChar(255)
+  gender         UserGender          @map("gender")
+  dateOfBirth    DateTime            @map("date_of_birth") @db.Date
+  address        String              @db.VarChar(255)
+  city           String              @db.VarChar(64)
+  postalCode     String              @db.VarChar(16)
+  profilePicture String?             @map("profile_picture") @db.Text
+  description    String?             @db.Text
+  reviewsMade    Review[]            @relation("ReviewToCommenter")
+  buddy          Buddy?
+  reservations   ReservationRecord[]
+  admin          Admin[]
 
-  email       String  @unique
-  phoneNumber String  @map("phone_number")
-  password    String  @db.VarChar(64)
-  verified    Boolean @default(false)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
-  displayName String?  @map("display_name") @db.VarChar(255)
-  gender      String
-  dateOfBirth DateTime @map("date_of_birth")
-
-  address String
-  city    String
-  zipcode String
-
-  profilePicture  String?             @map("profile_picture")
-  description     String?
-  reviewsMade     Review[]            @relation("ReviewToCommenter")
-  reviewsReceived Review[]            @relation("ReviewToProfile")
-  buddy           Buddy?
-  reservations    ReservationRecord[]
+  @@unique([email, phoneNumber])
 }
 
 model Buddy {
-  buddyId                String @id @unique @default(uuid()) @map("buddy_id") @db.Uuid
-  withdrawableCoinAmount Float  @map("withdrawable_coin_amount")
-  averageRating          Float? @map("average_rating")
-  minPrice               Float  @map("min_price")
-  maxPrice               Float  @map("max_price")
+  buddyId             String              @id @unique @default(uuid()) @map("buddy_id") @db.Uuid
+  balanceWithdrawable Float               @map("balance_withdrawable") @db.DoublePrecision
+  ratingAvg           Float?              @map("rating_avg") @db.DoublePrecision
+  totalReviews        Int                 @default(0) @map("total_reviews")
+  priceMin            Float               @map("price_min") @db.DoublePrecision
+  priceMax            Float?              @map("price_max") @db.DoublePrecision
+  tagsCount           Int                 @default(0) @map("tags_count")
+  userId              String?             @unique @map("user_id") @db.Uuid
+  user                User?               @relation(fields: [userId], references: [userId], onDelete: SetNull)
+  reservations        ReservationRecord[]
+  reviews             Review[]            @relation("ReviewToProfile")
+  tags                BuddyTag[]
 
-  user         User                @relation(fields: [buddyId], references: [userId], onDelete: Cascade)
-  reservations ReservationRecord[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([ratingAvg, priceMin, priceMax])
+  @@index([tagsCount])
+}
+
+model Tag {
+  tagId   String     @id @unique @default(uuid()) @map("tag_id") @db.Uuid
+  name    String     @map("name") @db.Text
+  buddies BuddyTag[]
+
+  @@index([name])
+}
+
+model BuddyTag {
+  buddyId String @map("buddy_id") @db.Uuid
+  tagId   String @map("tag_id") @db.Uuid
+
+  buddy Buddy @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
+  tag   Tag   @relation(fields: [tagId], references: [tagId], onDelete: Cascade)
+
+  @@id([buddyId, tagId])
+  @@index([buddyId])
+  @@index([tagId])
 }
 
 model Review {
-  reviewId    Int      @id @default(autoincrement())
-  commenterId String   @db.Uuid
-  profileId   String   @db.Uuid
-  createdAt   DateTime @default(now())
-  rating      Int
-  comment     String
+  reviewId    Int    @id @default(autoincrement())
+  commenterId String @db.Uuid
+  profileId   String @db.Uuid
+  rating      Int    @db.SmallInt
+  comment     String @db.Text
+  commenter   User   @relation("ReviewToCommenter", fields: [commenterId], references: [userId], onDelete: Cascade)
+  profile     Buddy  @relation("ReviewToProfile", fields: [profileId], references: [buddyId], onDelete: Cascade)
 
-  commenter User @relation("ReviewToCommenter", fields: [commenterId], references: [userId], onDelete: Cascade)
-  profile   User @relation("ReviewToProfile", fields: [profileId], references: [userId], onDelete: Cascade)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([commenterId])
+  @@index([profileId])
+  @@index([profileId, createdAt])
+  @@index([deletedAt])
 }
 
 model ReservationRecord {
-  reservationId   String   @id @unique @default(uuid()) @map("reservation_id") @db.Uuid
-  priceCoin       Float    @map("price_coin")
-  reservationDate DateTime @map("reservation_date")
-  status          String   @map("status")
-  createTimestamp DateTime @default(now()) @map("create_timestamp")
+  reservationId    String            @id @unique @default(uuid()) @map("reservation_id") @db.Uuid
+  price            Float             @map("price") @db.DoublePrecision
+  reservationStart DateTime          @map("reservation_start") @db.Timestamp
+  reservationEnd   DateTime          @map("reservation_end") @db.Timestamp
+  status           ReservationStatus @map("status")
+  userId           String            @map("user_id") @db.Uuid
+  buddyId          String            @map("buddy_id") @db.Uuid
+  user             User              @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  buddy            Buddy             @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
 
-  userId  String @map("user_id") @db.Uuid
-  buddyId String @map("buddy_id") @db.Uuid
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
-  user  User  @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  buddy Buddy @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
+  @@index([userId])
+  @@index([buddyId])
+  @@index([reservationStart])
+  @@index([status])
+  @@index([deletedAt])
+  @@index([userId, reservationStart])
+  @@index([buddyId, reservationStart])
+}
+
+enum ReservationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum UserGender {
+  MALE
+  FEMALE
+  OTHER
+  UNKNOWN
 }

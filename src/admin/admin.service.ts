@@ -1,16 +1,13 @@
 import { UsersService } from '@app/users/users.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { VerifyDto } from './dtos/verify.dto';
 
 @Injectable()
 export class AdminService {
   constructor(private usersService: UsersService) {}
 
-  async getVerify(): Promise<Omit<User, 'password'>[]> {
-    return (await this.usersService.findUnverified()).map(
-      ({ password: _password, ...profile }) => profile,
-    );
+  async getVerify() {
+    return this.usersService.findUnverifiedUsers();
   }
 
   async verifyUser(verifyDto: VerifyDto) {
@@ -28,12 +25,10 @@ export class AdminService {
 
   async rejectUser(userId: string) {
     const user = await this.usersService.remove(userId);
-    const { password: _password, ...profile } = user;
-    return profile;
+    return { user };
   }
   async acceptUser(userId: string) {
     const user = await this.usersService.update(userId, { verified: true });
-    const { password: _password, ...profile } = user;
-    return profile;
+    return { user };
   }
 }
