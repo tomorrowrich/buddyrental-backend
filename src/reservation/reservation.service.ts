@@ -13,7 +13,7 @@ export class ReservationService {
           select: { buddyId: true },
         },
       },
-      orderBy: { reservationDate: 'desc' },
+      orderBy: { reservationStart: 'desc' },
     });
   }
 }

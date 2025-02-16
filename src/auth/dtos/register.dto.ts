@@ -5,9 +5,15 @@ import {
   IsString,
   Matches,
   IsOptional,
+  IsAlpha,
+  IsDateString,
+  IsUrl,
+  IsPostalCode,
+  IsIdentityCard,
+  IsStrongPassword,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Gender } from '@app/users/entities/user.entity';
+import { UserGender } from '@prisma/client';
 
 export class RegisterDto {
   @ApiProperty({ description: 'First name of the user', example: 'John' })
@@ -21,10 +27,9 @@ export class RegisterDto {
   lastName: string;
 
   @ApiProperty({ description: 'ID Card number', example: '123456789' })
-  @IsString()
+  @IsIdentityCard()
   @IsNotEmpty()
-  @Matches(/^\d+$/, { message: 'ID Card must contain only numbers' })
-  idCard: string;
+  citizenId: string;
 
   @ApiProperty({
     description: 'Email address of the user',
@@ -44,35 +49,38 @@ export class RegisterDto {
   phone: string;
 
   @ApiProperty({
-    description: 'SHA-256 hashed password',
-    example: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+    description:
+      'Password must be at least 8 characters long and include at least one upper case, one lower case, one numeric, and one special character',
+    example: 'Password123!',
   })
-  @IsString()
+  @IsStrongPassword()
   @IsNotEmpty()
-  @Matches(/^[a-fA-F0-9]{64}$/, {
-    message: 'Password must be a valid SHA-256 hash',
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/, {
+    message:
+      'Password must be at least 8 characters long and include at least one upper case, one lower case, one numeric, and one special character',
   })
   password: string;
 
-  @ApiProperty({ description: 'User nickname', example: 'Xx_Mist3rJohn_xX' })
+  @ApiProperty({ description: 'User nickname, alphabet only', example: 'John' })
   @IsString()
   @IsOptional()
+  @IsAlpha()
   nickname?: string;
 
   @ApiProperty({
     description: 'Gender of the user',
-    enum: Gender,
-    example: 'M',
+    enum: UserGender as object,
+    example: 'MALE',
   })
-  @IsEnum(Gender)
+  @IsEnum(UserGender as object)
   @IsNotEmpty()
-  gender: Gender;
+  gender: string;
 
   @ApiProperty({
     description: 'Date of birth of the user (as a string)',
-    example: '1990-01-01',
+    example: new Date().toISOString(),
   })
-  @IsString()
+  @IsDateString()
   @IsNotEmpty()
   dateOfBirth: string;
 
@@ -86,23 +94,20 @@ export class RegisterDto {
 
   @ApiProperty({ description: 'City of residence', example: 'Tennessee' })
   @IsString()
+  @IsAlpha()
   @IsNotEmpty()
   city: string;
 
-  @ApiProperty({ description: 'Zipcode', example: '12345' })
-  @IsString()
+  @ApiProperty({ description: 'Postal code', example: '12345' })
+  @IsPostalCode()
   @IsNotEmpty()
-  @Matches(/^\d{5}$/, { message: 'Zipcode must be a 5-digit number' })
-  zipcode: string;
+  postalCode: string;
 
   @ApiProperty({
-    description: 'Base64 encoded profile picture',
+    description: 'URL to the profile picture',
     required: false,
   })
-  @IsString()
   @IsOptional()
-  @Matches(/^data:image\/[a-zA-Z]+;base64,[A-Za-z0-9+/=]+$/, {
-    message: 'Invalid base64-encoded image',
-  })
+  @IsUrl()
   profilePicture?: string;
 }

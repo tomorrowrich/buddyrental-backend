@@ -1,10 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsStrongPassword,
+  Matches,
+} from 'class-validator';
 
 export class LoginDto {
   @ApiProperty({
     description: 'The client key',
-    example: 'MOCK_CLIENT_KEY',
+    example: 'DEFAULT_CLIENT_KEY',
   })
   clientKey: string;
 
@@ -17,13 +22,15 @@ export class LoginDto {
   email: string;
 
   @ApiProperty({
-    description: 'SHA-256 hashed password',
-    example: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+    description:
+      'Password must be at least 8 characters long and include at least one upper case, one lower case, one numeric, and one special character',
+    example: 'Password123!',
   })
-  @IsString()
+  @IsStrongPassword()
   @IsNotEmpty()
-  @Matches(/^[a-fA-F0-9]{64}$/, {
-    message: 'Password must be a valid SHA-256 hash',
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/, {
+    message:
+      'Password must be at least 8 characters long and include at least one upper case, one lower case, one numeric, and one special character',
   })
   password: string;
 }

@@ -1,9 +1,9 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import { ReservationController } from './reservation.controller';
-import { PrismaService } from '../prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { LoggerMiddleware } from '@app/middleware/logger.middleware';
+import { PrismaService } from '@app/prisma/prisma.service';
 
 @Module({
   imports: [JwtModule],

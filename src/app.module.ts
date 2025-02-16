@@ -4,22 +4,22 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { CredentialsModule } from './credentials/credentials.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './admin/admin.module';
-import mockConfig from './config/mock.config';
+import configLoader from './config';
 
 @Module({
   imports: [
     PrismaModule,
     UsersModule,
     AuthModule,
-    CredentialsModule,
     ReservationModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [mockConfig],
+      cache: true,
+      load: [configLoader],
+      envFilePath: ['.env'],
     }),
     AdminModule,
   ],

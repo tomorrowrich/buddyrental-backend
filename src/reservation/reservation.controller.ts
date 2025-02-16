@@ -1,17 +1,21 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
-import { AuthGuard } from '@app/auth/auth.guard';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { LoggedIn } from '@app/auth/auth.decorator';
 
 @Controller('reservation')
 export class ReservationController {
   constructor(private readonly reservationService: ReservationService) {}
 
   @Get('history')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  getBookingHistory(@Req() req: AuthenticatedRequest) {
-    return this.reservationService.getBookingHistory(req.user.userId);
+  @LoggedIn()
+  async getBookingHistory(@Req() req: AuthenticatedRequest) {
+    const bookingHistory = await this.reservationService.getBookingHistory(
+      req.user.userId,
+    );
+    return {
+      success: true,
+      data: bookingHistory,
+    };
   }
 }

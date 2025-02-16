@@ -2,16 +2,26 @@ import 'module-alias/register';
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
+  const allowedOrigins = [
+    /^http:\/\/localhost:3000$/,
+    /^https:\/\/mybuddyrental\.netlify\.app$/,
+    /^https:\/\/*mybuddyrental\.netlify\.app$/,
+  ];
+
+  const corsOptions = {
+    origin: allowedOrigins,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,UPDATE',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
+    maxAge: 86400,
+  };
+
   const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
-    cors: {
-      origin: '*',
-      credentials: true,
-      exposedHeaders: ['Authorization', 'Content-Type'],
-      allowedHeaders: ['Content-Type', 'Authorization'],
-    },
+    bufferLogs: true,
+    cors: corsOptions,
   });
   app.setGlobalPrefix('/api');
 
@@ -29,7 +39,9 @@ async function bootstrap() {
     SwaggerModule.setup('/', app, documentFactory);
   }
 
-  await app.listen(process.env.PORT ?? 55000);
+  const config = app.get(ConfigService);
+
+  await app.listen(config.getOrThrow('port'));
 }
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();

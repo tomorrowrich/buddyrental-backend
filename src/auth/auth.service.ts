@@ -8,7 +8,6 @@ import { RegisterDto } from './dtos/register.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '@app/users/users.service';
-import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -27,19 +26,23 @@ export class AuthService {
     this.CLIENT_KEY = temp;
   }
 
-  async register(registerDto: RegisterDto): Promise<string> {
-    const check = await this.usersService.findUserWithEmail(registerDto.email);
-    if (!check) {
-      const { dateOfBirth, ...registerDto1 } = registerDto;
-      const obj = new Date(dateOfBirth);
-      const createUserDto = { ...registerDto1, dateOfBirth: obj };
-      return (await this.usersService.create(createUserDto)).userId;
-    } else {
+  async register(registerDto: RegisterDto) {
+    const existingUser = await this.usersService.findUserWithEmail(
+      registerDto.email,
+    );
+    if (existingUser) {
       throw new ForbiddenException('Duplicate user');
     }
+
+    const createUserDto = {
+      ...registerDto,
+    };
+
+    await this.usersService.create(createUserDto);
+    return true;
   }
 
-  validateClientKey(clientKey: string): void {
+  private validateClientKey(clientKey: string): void {
     if (!clientKey) {
       throw new BadRequestException('No client key');
     }
@@ -48,42 +51,40 @@ export class AuthService {
     }
   }
 
-  async signin(data: {
+  async login(data: {
     email: string;
     password: string;
+    clientKey: string;
   }): Promise<{ accessToken: string }> {
+    this.validateClientKey(data.clientKey);
     const user = await this.usersService.findUserWithEmail(data.email);
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    if (user?.password !== data.password) {
-      throw new UnauthorizedException();
+    const passwordMatch = await this.usersService.verifyPassword(
+      user.userId,
+      data.password,
+    );
+
+    if (!passwordMatch) {
+      throw new UnauthorizedException('Invalid email or password');
     }
 
     const accessToken = this.jwtService.sign(
       { sub: user.userId, email: user.email },
-      { expiresIn: this.config.get<string | number>('auth.expiration_time') },
+      { expiresIn: this.config.get<string>('auth.expiration_time') },
     );
 
     return { accessToken };
   }
 
-  async verifyStatus(userId: string): Promise<boolean> {
-    const user = await this.usersService.findOne(userId);
-    if (!user) {
-      throw new UnauthorizedException('No such user');
-    }
-    return user.verified;
-  }
-
-  async me(userId: string): Promise<Omit<User, 'password'>> {
-    const user = await this.usersService.findOne(userId);
+  async me(userId: string) {
+    const user = await this.usersService.findOne(userId).catch(() => null);
     if (!user) {
       throw new UnauthorizedException();
     }
 
-    const { password: _password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+    return { user };
   }
 }
