@@ -18,7 +18,6 @@ jobs:
     concurrency:
       group: build-test-${{ github.ref }}-${{ matrix.task }}
       cancel-in-progress: true
-    if: startsWith(github.ref, 'refs/heads/')
     name: Build and Test
     runs-on: ubuntu-latest
     strategy:
