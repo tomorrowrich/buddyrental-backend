@@ -68,6 +68,7 @@ export class UsersService {
   async findOne(userId: string) {
     return await this.prisma.user.findUniqueOrThrow({
       where: { userId: userId, deletedAt: null },
+      where: { userId: userId },
       omit: { password: true },
     });
   }
@@ -102,7 +103,7 @@ export class UsersService {
     if (!userExists) {
       throw new NotFoundException('User not found');
     }
-
+    
     return await this.prisma.user.update({
       where: { userId: userId, deletedAt: null },
       data: updateUserDto,
