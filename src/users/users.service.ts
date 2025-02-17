@@ -1,4 +1,9 @@
-import { Injectable, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  ValidationPipe,
+} from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '@app/prisma/prisma.service';
 import { UserGender } from '@prisma/client';
@@ -53,19 +58,23 @@ export class UsersService {
   }
 
   async findAll() {
-    return await this.prisma.user.findMany({ omit: { password: true } });
+    return await this.prisma.user.findMany({
+      omit: { password: true },
+      where: { deletedAt: null },
+      orderBy: { createdAt: 'desc' },
+    });
   }
 
   async findOne(userId: string) {
     return await this.prisma.user.findUniqueOrThrow({
-      where: { userId: userId },
+      where: { userId: userId, deletedAt: null },
       omit: { password: true },
     });
   }
 
   async findUserWithEmail(email: string) {
     const user = await this.prisma.user.findFirst({
-      where: { email: email },
+      where: { email: email, deletedAt: null },
       omit: { password: true },
     });
     return user;
@@ -73,22 +82,85 @@ export class UsersService {
 
   async findUnverifiedUsers() {
     return await this.prisma.user.findMany({
-      where: { verified: false },
+      where: { verified: false, deletedAt: null },
       omit: { password: true },
     });
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto) {
+    if (
+      updateUserDto.gender &&
+      !Object.values(UserGender).includes(updateUserDto.gender)
+    ) {
+      throw new BadRequestException('Invalid gender');
+    }
+    const userExists = await this.prisma.user.findUnique({
+      where: { userId: userId, deletedAt: null },
+      omit: { password: true },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('User not found');
+    }
+
     return await this.prisma.user.update({
-      where: { userId: userId },
+      where: { userId: userId, deletedAt: null },
       data: updateUserDto,
       omit: { password: true },
     });
   }
 
+  async verifyUser(userId: string) {
+    const userExists = await this.prisma.user.findUnique({
+      where: { userId, deletedAt: null },
+      omit: { password: true },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (userExists.verified) {
+      throw new BadRequestException('User already verified');
+    }
+
+    return await this.prisma.user.update({
+      where: { userId, deletedAt: null, verified: false },
+      data: { verified: true },
+      omit: { password: true },
+    });
+  }
+
+  async rejectUser(userId: string, _reason: string) {
+    const userExists = await this.prisma.user.findUnique({
+      where: { userId, deletedAt: null },
+      omit: { password: true },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('User not found');
+    }
+
+    return await this.prisma.user.update({
+      where: { userId, deletedAt: null },
+      data: { verified: false },
+      omit: { password: true },
+    });
+  }
+
   async remove(userId: string) {
-    return await this.prisma.user.delete({
-      where: { userId },
+    const userExists = await this.prisma.user.findUnique({
+      where: { userId, deletedAt: null },
+      omit: { password: true },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('User not found');
+    }
+
+    return await this.prisma.user.update({
+      where: { userId, deletedAt: null },
+      data: { deletedAt: new Date() },
       omit: { password: true },
     });
   }
