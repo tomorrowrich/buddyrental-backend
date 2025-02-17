@@ -17,18 +17,18 @@ export class AdminService {
     }
 
     if (verifyDto.accept) {
-      return this.acceptUser(verifyDto.userId);
+      await this.usersService.verifyUser(verifyDto.userId);
+      return { success: true, message: 'User verified' };
     } else {
-      return this.rejectUser(verifyDto.userId);
+      if (!verifyDto.reason) {
+        throw new BadRequestException('Reason is required for rejection');
+      }
+      await this.usersService.rejectUser(verifyDto.userId, verifyDto.reason);
+      return {
+        success: true,
+        reason: verifyDto.reason,
+        message: 'User rejected',
+      };
     }
-  }
-
-  async rejectUser(userId: string) {
-    const user = await this.usersService.remove(userId);
-    return { user };
-  }
-  async acceptUser(userId: string) {
-    const user = await this.usersService.update(userId, { verified: true });
-    return { user };
   }
 }
