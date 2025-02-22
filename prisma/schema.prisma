@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres"]
 }
 
 datasource db {
@@ -37,6 +38,7 @@ model User {
   postalCode     String              @db.VarChar(16)
   profilePicture String?             @map("profile_picture") @db.Text
   description    String?             @db.Text
+  interests      Tag[]
   reviewsMade    Review[]            @relation("ReviewToCommenter")
   buddy          Buddy?
   reservations   ReservationRecord[]
@@ -61,7 +63,7 @@ model Buddy {
   user                User?               @relation(fields: [userId], references: [userId], onDelete: SetNull)
   reservations        ReservationRecord[]
   reviews             Review[]            @relation("ReviewToProfile")
-  tags                BuddyTag[]
+  tags                Tag[]
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -72,23 +74,12 @@ model Buddy {
 }
 
 model Tag {
-  tagId   String     @id @unique @default(uuid()) @map("tag_id") @db.Uuid
-  name    String     @map("name") @db.Text
-  buddies BuddyTag[]
+  tagId   String  @id @unique @default(uuid()) @map("tag_id") @db.Uuid
+  name    String  @map("name") @db.Text
+  buddies Buddy[]
+  users   User[]
 
   @@index([name])
-}
-
-model BuddyTag {
-  buddyId String @map("buddy_id") @db.Uuid
-  tagId   String @map("tag_id") @db.Uuid
-
-  buddy Buddy @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
-  tag   Tag   @relation(fields: [tagId], references: [tagId], onDelete: Cascade)
-
-  @@id([buddyId, tagId])
-  @@index([buddyId])
-  @@index([tagId])
 }
 
 model Review {

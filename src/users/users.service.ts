@@ -164,4 +164,48 @@ export class UsersService {
       omit: { password: true },
     });
   }
+
+  async updateInterests(userId: string, tagIds: string[]) {
+    if (!tagIds || tagIds.length === 0) {
+      throw new BadRequestException('At least one tag is required');
+    }
+    const tags = await this.prisma.tag.findMany({
+      where: { tagId: { in: tagIds } },
+    });
+
+    if (tags.length !== tagIds.length) {
+      throw new NotFoundException('One or more tags not found');
+    }
+
+    if (tags.length > 5) {
+      throw new BadRequestException('You cannot assign more than 5 tags');
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: { userId },
+      include: { interests: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const assignedUser = await this.prisma.user.update({
+      where: { userId },
+      data: {
+        interests: {
+          set: tags,
+        },
+      },
+      include: { interests: true },
+    });
+
+    const interests = assignedUser.interests.map((interest) => interest.name);
+
+    return {
+      success: true,
+      message: 'Interests updated successfully',
+      interests,
+    };
+  }
 }
