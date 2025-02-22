@@ -20,8 +20,7 @@
     "rootDir": "./src",
     "paths": {
       "@app/*": ["src/*"],
-      "@test/*": ["test/*"],
-      "@lib/*": ["src/common/*"]
+      "@test/*": ["test/*"]
     }
   },
   "modulePaths": ["<rootDir>"],

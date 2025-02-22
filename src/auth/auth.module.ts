@@ -23,6 +23,7 @@ import { UsersModule } from '@app/users/users.module';
   ],
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {
   configure(consumer: MiddlewareConsumer) {

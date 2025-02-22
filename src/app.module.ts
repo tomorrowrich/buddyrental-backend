@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './admin/admin.module';
+import { InterestsModule } from './interests/interests.module';
 import configLoader from './config';
 
 @Module({
@@ -22,6 +23,7 @@ import configLoader from './config';
       envFilePath: ['.env'],
     }),
     AdminModule,
+    InterestsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
