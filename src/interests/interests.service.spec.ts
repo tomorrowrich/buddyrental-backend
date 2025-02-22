@@ -126,7 +126,7 @@ describe('InterestsService', () => {
       const result = await service.searchRelatedInterests('Test');
       expect(result).toEqual({ tags: searchResult });
       expect(mockPrismaService.tag.findMany).toHaveBeenCalledWith({
-        where: { name: { contains: 'Test' } },
+        where: { name: { contains: 'Test', mode: 'insensitive' } },
         orderBy: {
           _relevance: {
             fields: ['name'],

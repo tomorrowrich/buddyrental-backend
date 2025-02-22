@@ -8,6 +8,7 @@ import { ReservationModule } from './reservation/reservation.module';
 import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './admin/admin.module';
 import { InterestsModule } from './interests/interests.module';
+import { BuddyModule } from './buddy/buddy.module';
 import configLoader from './config';
 
 @Module({
@@ -24,6 +25,7 @@ import configLoader from './config';
     }),
     AdminModule,
     InterestsModule,
+    BuddyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -21,8 +21,8 @@ export class InterestsController {
 
   @Get('suggestions')
   @LoggedIn()
-  getSuggestions() {
-    return this.interestsService.getSuggestions();
+  getSuggestions(@Query('take') take: string) {
+    return this.interestsService.getSuggestions(+take);
   }
 
   @Get('search')

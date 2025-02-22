@@ -62,6 +62,7 @@ export class InterestsService {
       tags: await this.prisma.tag.findMany({
         where: {
           name: {
+            mode: 'insensitive',
             contains: query,
           },
         },
