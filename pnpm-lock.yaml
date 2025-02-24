@@ -37,6 +37,9 @@ importers:
       class-validator:
         specifier: ^0.14.1
         version: 0.14.1
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       module-alias:
         specifier: ^2.2.3
         version: 2.2.3
@@ -3513,6 +3516,12 @@ packages:
         integrity: sha512-wAV9QHOsNbwnWdNW2FYvE1P56wtgSbM+3SZcdGiWQILwVjACCXDCI3Ai8QlCjMDB8YK5zySiXZYBiwGmNY3lnw==,
       }
     engines: { node: '>=12' }
+
+  dayjs@1.11.13:
+    resolution:
+      {
+        integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==,
+      }
 
   debug@2.6.9:
     resolution:
@@ -10340,6 +10349,8 @@ snapshots:
       type-fest: 1.4.0
 
   dargs@8.1.0: {}
+
+  dayjs@1.11.13: {}
 
   debug@2.6.9:
     dependencies:

@@ -1,8 +1,16 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsInt, Min, IsEnum, IsDateString } from 'class-validator';
+import {
+  IsOptional,
+  IsInt,
+  Min,
+  IsEnum,
+  IsDateString,
+  Validate,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ReservationStatus } from '@prisma/client';
 import { AccountType } from '@app/interfaces/account_type.user.interface';
+import { IsStartBeforeEnd } from '../validators/is_start_before_end.validator';
 
 export class ScheduleQueryDto {
   @ApiPropertyOptional({
@@ -11,8 +19,10 @@ export class ScheduleQueryDto {
     example: 'customer',
   })
   @IsOptional()
-  @IsEnum(AccountType as object)
-  role?: string;
+  @IsEnum(AccountType as object, {
+    message: "Invalid role. Use 'customer' or 'buddy'.",
+  })
+  role?: AccountType;
 
   @ApiPropertyOptional({
     description: 'Filter by status',
@@ -21,13 +31,14 @@ export class ScheduleQueryDto {
   })
   @IsEnum(ReservationStatus as object)
   @IsOptional()
-  status?: string;
+  status?: ReservationStatus;
 
   @ApiPropertyOptional({
     description: 'Filter by start date (YYYY-MM-DD)',
     example: '2024-02-01',
   })
   @IsOptional()
+  @Validate(IsStartBeforeEnd)
   @IsDateString()
   startDate?: string;
 
