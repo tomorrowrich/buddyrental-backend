@@ -3,6 +3,8 @@ import { AdminService } from './admin.service';
 import { VerifyDto } from './dtos/verify.dto';
 import { AuthGuard } from '@app/auth/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiPaginatedResponse } from '@app/interfaces/api-paginated-response.decorator';
+import { UserResponseDto } from '@app/users/dto/user-response.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -11,6 +13,7 @@ export class AdminController {
   @Get('verify')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
+  @ApiPaginatedResponse(UserResponseDto)
   getVerify() {
     return this.adminService.getVerify();
   }
