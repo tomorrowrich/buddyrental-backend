@@ -7,7 +7,9 @@ import { AuthModule } from './auth/auth.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './admin/admin.module';
+import { SupabaseModule } from 'nestjs-supabase-js';
 import configLoader from './config';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -22,6 +24,11 @@ import configLoader from './config';
       envFilePath: ['.env'],
     }),
     AdminModule,
+    StorageModule,
+    SupabaseModule.forRoot({
+      supabaseKey: process.env.S3_KEY!,
+      supabaseUrl: process.env.S3_URL!,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
