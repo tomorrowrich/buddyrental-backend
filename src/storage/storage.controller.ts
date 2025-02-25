@@ -42,11 +42,11 @@ export class StorageController {
   }
 
   @Get(':category/:filename')
-  async getFileUrl(
+  getFileUrl(
     @Param('category') category: StorageCategory,
     @Param('filename') filename: string,
-  ): Promise<StorageDto> {
-    const url = await this.storageService.getObject(category, filename);
+  ): StorageDto {
+    const url = this.storageService.getObject(category, filename);
     return { url };
   }
 

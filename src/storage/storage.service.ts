@@ -31,7 +31,7 @@ export class StorageService {
       const filename = `${userId}`;
       const filePath = this.getFilePath(category, filename);
 
-      const { data, error } = await this.supabase.storage
+      const { error } = await this.supabase.storage
         .from(this.bucket)
         .upload(filePath, buffer, {
           contentType: mimetype,
@@ -46,16 +46,19 @@ export class StorageService {
 
       return urlData.publicUrl;
     } catch (error) {
-      throw new Error(`Failed to upload object: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Failed to upload object: ${error.message}`);
+      }
+      throw new Error('An unknown error occurred.');
     }
   }
 
-  async getObject(category: string, filename: string): Promise<string> {
+  getObject(category: string, filename: string): string {
     try {
       this.validateCategory(category);
       const filePath = this.getFilePath(category, filename);
 
-      const { data } = await this.supabase.storage
+      const { data } = this.supabase.storage
         .from(this.bucket)
         .getPublicUrl(filePath);
 
@@ -63,7 +66,10 @@ export class StorageService {
 
       return data.publicUrl;
     } catch (error) {
-      throw new Error(`Failed to get object: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Failed to get object: ${error.message}`);
+      }
+      throw new Error('An unknown error occurred.');
     }
   }
 
@@ -80,7 +86,10 @@ export class StorageService {
 
       return !error;
     } catch (error) {
-      throw new Error(`Failed to delete object: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Failed to delete object: ${error.message}`);
+      }
+      throw new Error('An unknown error occurred.');
     }
   }
 
@@ -96,7 +105,10 @@ export class StorageService {
 
       return data.map((file) => file.name);
     } catch (error) {
-      throw new Error(`Failed to list object: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Failed to list object: ${error.message}`);
+      }
+      throw new Error('An unknown error occurred.');
     }
   }
 
@@ -120,7 +132,10 @@ export class StorageService {
       }
       return true;
     } catch (error) {
-      throw new Error(`Failed to update access control: ${error.message}`);
+      if (error instanceof Error) {
+        throw new Error(`Failed to update access control: ${error.message}`);
+      }
+      throw new Error('An unknown error occurred.');
     }
   }
 }

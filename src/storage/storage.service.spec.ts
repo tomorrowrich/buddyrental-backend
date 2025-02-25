@@ -65,12 +65,12 @@ describe('StorageService', () => {
   });
 
   describe('getObject', () => {
-    it('should return the public URL of a file', async () => {
+    it('should return the public URL of a file', () => {
       mockSupabaseClient.storage.getPublicUrl.mockReturnValue({
         data: { publicUrl: 'https://example.com/file.jpg' },
       });
 
-      const result = await service.getObject('profiles', 'file.jpg');
+      const result = service.getObject('profiles', 'file.jpg');
 
       expect(result).toBe('https://example.com/file.jpg');
     });
