@@ -1,3 +1,11 @@
+# [1.3.0-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.1...v1.3.0-beta.2) (2025-02-22)
+
+### Features
+
+- **buddy:** implement tags and interest ([58f9bbc](https://github.com/tomorrowrich/buddyrental-backend/commit/58f9bbcd38862ba8eb2fc8a08a853be5304b9935))
+- **user:** interests api ([356ab44](https://github.com/tomorrowrich/buddyrental-backend/commit/356ab442a135691f8d9712e92873323cd79d247d))
+- **user:** interests api ([#82](https://github.com/tomorrowrich/buddyrental-backend/issues/82)) ([146de7c](https://github.com/tomorrowrich/buddyrental-backend/commit/146de7c7b092da707758a5b1e5a4cb8d73691829))
+
 # [1.3.0-beta.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.3...v1.3.0-beta.1) (2025-02-17)
 
 ### Bug Fixes
