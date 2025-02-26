@@ -57,6 +57,23 @@ export class InterestsService {
     return this.prisma.tag.findMany();
   }
 
+  async getMyInterests(userId: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        userId,
+      },
+      include: {
+        interests: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return { interests: user.interests };
+  }
+
   async searchRelatedInterests(query: string) {
     return {
       tags: await this.prisma.tag.findMany({
