@@ -19,7 +19,11 @@ echo "$STAGED_FILES" | grep -q '^prisma/' && {
 echo "🔍 Running linter..."
 # Lint only staged .ts/.js files
 TS_JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.(ts|js)$' || true)
-[ -n "$TS_JS_FILES" ] && pnpm eslint $TS_JS_FILES --fix || echo "No JS/TS files to lint."
+if [ -n "$TS_JS_FILES" ]; then
+  echo "$TS_JS_FILES" | xargs pnpm eslint --fix
+else
+  echo "No JS/TS files to lint."
+fi
 
 # Update index for formatted/linted files
 git update-index --again
@@ -45,7 +49,11 @@ if echo "$STAGED_FILES" | grep -q '^prisma/'; then
   fi
 fi
 
-echo "🏃 Running tests for changed JS/TS files..."
-[ -n "$TS_JS_FILES" ] && echo "$TS_JS_FILES" | xargs pnpm test -- --findRelatedTests || echo "No testable JS/TS files changed."
+if [ -n "$TS_JS_FILES" ]; then
+  echo "🏃 Running tests for changed JS/TS files..."
+  echo "$TS_JS_FILES" | xargs pnpm test -- --findRelatedTests
+else
+  echo "No testable JS/TS files changed."
+fi
 
 echo "✅ Pre-commit checks passed!"
