@@ -96,21 +96,19 @@ export class UsersService {
   }
 
   async findUnverifiedUsers(
-    @Query('page') page: number = 1,
-    @Query('perPage') perPage: number = 10,
+    page: number = 1,
+    perPage: number = 10,
   ): Promise<PaginatedOutputDto<UserResponseDto>> {
-    const paginate = createPaginator({ perPage });
+    const paginate = createPaginator({ perPage, page });
 
-    return paginate<UserResponseDto, Prisma.UserFindManyArgs>(
+    const unverified = await paginate<UserResponseDto, Prisma.UserFindManyArgs>(
       this.prisma,
       {
         where: { verified: false, deletedAt: null },
         omit: { password: true },
       },
-      {
-        page,
-      },
     );
+    return unverified;
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto) {
