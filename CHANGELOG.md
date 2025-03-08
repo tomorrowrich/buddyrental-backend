@@ -1,3 +1,9 @@
+# [1.3.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.2...v1.3.0-beta.3) (2025-02-26)
+
+### Features
+
+- **buddy, interests:** add profile and interests retrieval endpoints ([#90](https://github.com/tomorrowrich/buddyrental-backend/issues/90)) ([9d702dd](https://github.com/tomorrowrich/buddyrental-backend/commit/9d702dd59611881deafd2cf19f5c66988a03e29f))
+
 # [1.3.0-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.1...v1.3.0-beta.2) (2025-02-22)
 
 ### Features
