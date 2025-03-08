@@ -10,8 +10,11 @@ export class InterestsController {
 
   @Get()
   @LoggedIn()
-  getAllInterests() {
-    return this.interestsService.getAllInterests();
+  getAllInterests(
+    @Query('page') page: string,
+    @Query('perPage') perPage: string,
+  ) {
+    return this.interestsService.getAllInterests(+page || 0, +perPage || 0);
   }
 
   @Get('me')

@@ -101,6 +101,7 @@ export class UsersService {
   ): Promise<PaginatedOutputDto<UserResponseDto>> {
     const paginate = createPaginator({ perPage, page });
 
+    // equivalent to paginating `this.prisma.user.findMany(...);`
     const unverified = await paginate<UserResponseDto, Prisma.UserFindManyArgs>(
       this.prisma,
       {
