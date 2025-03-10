@@ -4,6 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '@app/prisma/prisma.service';
+import { PaginatedOutputDto } from '@app/interfaces/paginated-output.dto';
+import { Prisma, Tag } from '@prisma/client';
+import { createPaginator } from 'prisma-pagination';
 
 @Injectable()
 export class InterestsService {
@@ -53,8 +56,15 @@ export class InterestsService {
     });
   }
 
-  async getAllInterests() {
-    return this.prisma.tag.findMany();
+  async getAllInterests(
+    page: number = 1,
+    perPage: number = 10,
+  ): Promise<PaginatedOutputDto<Tag>> {
+    const paginate = createPaginator({ perPage, page });
+
+    // equivalent to paginating `this.prisma.tag.findMany();`
+    const tags = await paginate<Tag, Prisma.TagFindManyArgs>(this.prisma);
+    return tags;
   }
 
   async getMyInterests(userId: string) {

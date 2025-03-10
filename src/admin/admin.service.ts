@@ -6,8 +6,8 @@ import { VerifyDto } from './dtos/verify.dto';
 export class AdminService {
   constructor(private usersService: UsersService) {}
 
-  async getVerify() {
-    return this.usersService.findUnverifiedUsers();
+  async getVerify(page: number = 1, perPage: number = 10) {
+    return this.usersService.findUnverifiedUsers(page, perPage);
   }
 
   async verifyUser(verifyDto: VerifyDto) {

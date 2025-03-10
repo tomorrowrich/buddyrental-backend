@@ -4,12 +4,14 @@ import { RegisterDto } from './dtos/register.dto';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
 import { LoginDto } from './dtos/login.dto';
 import { LoggedIn } from './auth.decorator';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @ApiResponse({ status: 201, description: 'User registered successfully' })
   async register(@Body() registerDto: RegisterDto) {
     await this.authService.register(registerDto);
     return { success: true, message: 'User registered successfully' };

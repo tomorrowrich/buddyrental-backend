@@ -2,13 +2,17 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '@app/prisma/prisma.service';
-import { UserGender } from '@prisma/client';
+import { Prisma, UserGender } from '@prisma/client';
 import { RegisterDto } from '@app/auth/dtos/register.dto';
 import { hash, verify } from 'argon2';
+import { createPaginator } from 'prisma-pagination';
+import { UserResponseDto } from './dto/user-response.dto';
+import { PaginatedOutputDto } from '@app/interfaces/paginated-output.dto';
 
 @Injectable()
 export class UsersService {
@@ -57,12 +61,23 @@ export class UsersService {
     return await verify(user.password, password);
   }
 
-  async findAll() {
-    return await this.prisma.user.findMany({
-      omit: { password: true },
-      where: { deletedAt: null },
-      orderBy: { createdAt: 'desc' },
-    });
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('perPage') perPage: number = 10,
+  ): Promise<PaginatedOutputDto<UserResponseDto>> {
+    const paginate = createPaginator({ perPage });
+
+    return paginate<UserResponseDto, Prisma.UserFindManyArgs>(
+      this.prisma,
+      {
+        omit: { password: true },
+        where: { deletedAt: null },
+        orderBy: { createdAt: 'desc' },
+      },
+      {
+        page,
+      },
+    );
   }
 
   async findOne(userId: string) {
@@ -80,11 +95,21 @@ export class UsersService {
     return user;
   }
 
-  async findUnverifiedUsers() {
-    return await this.prisma.user.findMany({
-      where: { verified: false, deletedAt: null },
-      omit: { password: true },
-    });
+  async findUnverifiedUsers(
+    page: number = 1,
+    perPage: number = 10,
+  ): Promise<PaginatedOutputDto<UserResponseDto>> {
+    const paginate = createPaginator({ perPage, page });
+
+    // equivalent to paginating `this.prisma.user.findMany(...);`
+    const unverified = await paginate<UserResponseDto, Prisma.UserFindManyArgs>(
+      this.prisma,
+      {
+        where: { verified: false, deletedAt: null },
+        omit: { password: true },
+      },
+    );
+    return unverified;
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto) {
