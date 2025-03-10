@@ -17,6 +17,13 @@ export class BuddyService {
     });
   }
 
+  async getBuddyProfile(buddyId: string) {
+    return this.prisma.buddy.findUnique({
+      where: { buddyId },
+      include: { tags: true },
+    });
+  }
+
   async updateOfferedServices(buddyId: string, tagsIds: string[]) {
     const tags = await this.prisma.tag.findMany({
       where: { tagId: { in: tagsIds } },

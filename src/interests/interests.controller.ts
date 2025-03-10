@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req } from '@nestjs/common';
 import { InterestsService } from './interests.service';
 import { CreateInterestDto } from './dto/create-interest.dto';
 import { LoggedIn } from '@app/auth/auth.decorator';
+import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
 
 @Controller('interests')
 export class InterestsController {
@@ -11,6 +12,12 @@ export class InterestsController {
   @LoggedIn()
   getAllInterests() {
     return this.interestsService.getAllInterests();
+  }
+
+  @Get('me')
+  @LoggedIn()
+  getMyInterests(@Req() req: AuthenticatedRequest) {
+    return this.interestsService.getMyInterests(req.user.userId);
   }
 
   @Post()
