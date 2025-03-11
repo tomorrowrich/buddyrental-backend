@@ -24,7 +24,7 @@ import { PrismaService } from '@app/prisma/prisma.service';
   ],
   controllers: [AuthController],
   providers: [AuthService, PrismaService],
-  exports: [AuthService, JwtModule],
+  exports: [AuthService, JwtModule, PrismaService],
 })
 export class AuthModule {
   configure(consumer: MiddlewareConsumer) {

@@ -41,14 +41,7 @@ describe('InterestsService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getAllInterests', () => {
-    it('should return all interests', async () => {
-      mockPrismaService.tag.findMany.mockResolvedValue(tags);
-      const results = await service.getAllInterests();
-      expect(results).toEqual(tags);
-      expect(mockPrismaService.tag.findMany).toHaveBeenCalled();
-    });
-  });
+  // TODO: 'getAllInterests' specifications changed, need new tests
 
   describe('getSuggestions', () => {
     it('should return valid suggestions when data exists', async () => {

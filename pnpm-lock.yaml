@@ -43,6 +43,9 @@ importers:
       module-alias:
         specifier: ^2.2.3
         version: 2.2.3
+      prisma-pagination:
+        specifier: ^0.2.3
+        version: 0.2.3
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -6606,6 +6609,12 @@ packages:
       }
     engines: { node: '>=18' }
 
+  prisma-pagination@0.2.3:
+    resolution:
+      {
+        integrity: sha512-KVKCGz5BVTYK64dpqCo7ITNFN02UN5hSzBYyR4vqNF7I4BetUeO/q7B7FECmCOPIyCBWYf2Zte68pD9S2khD3g==,
+      }
+
   prisma@6.4.1:
     resolution:
       {
@@ -12172,6 +12181,8 @@ snapshots:
   pretty-ms@9.2.0:
     dependencies:
       parse-ms: 4.0.0
+
+  prisma-pagination@0.2.3: {}
 
   prisma@6.4.1(typescript@5.7.3):
     dependencies:
