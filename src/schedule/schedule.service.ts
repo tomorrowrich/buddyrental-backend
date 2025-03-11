@@ -1,6 +1,8 @@
 import { PrismaService } from '@app/prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ScheduleQueryDto } from './dtos/schedule_query.dto';
+import { Prisma, ReservationRecord } from '@prisma/client';
+import { createPaginator } from 'prisma-pagination';
 
 @Injectable()
 export class ScheduleService {
@@ -29,7 +31,7 @@ export class ScheduleService {
     } else if (query.role == 'buddy') {
       prismaOptions.where['buddyId'] = userId;
     } else {
-      return "Invalid role. Use 'customer' or 'buddy'.";
+      throw new BadRequestException("Invalid role. Use 'customer' or 'buddy'.");
     }
 
     if (query.status) {
@@ -46,9 +48,16 @@ export class ScheduleService {
       prismaOptions.where['reservationEnd'] = { lte: new Date(query.endDate) };
     }
 
-    //perform query
+    //initialize paginator
+    const paginate = createPaginator({
+      perPage: query.limit,
+      page: query.page,
+    });
 
-    const result = await this.prisma.reservationRecord.findMany({
+    const result = await paginate<
+      ReservationRecord,
+      Prisma.ReservationRecordFindManyArgs
+    >(this.prisma, {
       where: prismaOptions.where,
       include: {},
       orderBy: {
@@ -59,9 +68,9 @@ export class ScheduleService {
     //write return message
 
     const returnMessage = {
-      reservations: result,
+      output: result,
     };
-    if (result.length === 0) {
+    if (result.data.length === 0) {
       returnMessage['message'] = 'No reservations found.';
     }
     return returnMessage;
