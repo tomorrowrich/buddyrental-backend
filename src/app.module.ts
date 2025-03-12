@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './admin/admin.module';
 import { InterestsModule } from './interests/interests.module';
 import { BuddyModule } from './buddy/buddy.module';
+import { ChatModule } from './chat/chat.module';
 import configLoader from './config';
 
 @Module({
@@ -26,6 +27,7 @@ import configLoader from './config';
     AdminModule,
     InterestsModule,
     BuddyModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

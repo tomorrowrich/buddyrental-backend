@@ -48,7 +48,9 @@ model User {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  accessToken  String? @map("access_token")
+  accessToken String?       @map("access_token")
+  Chat        Chat[]
+  ChatMessage ChatMessage[]
 
   @@unique([email, phoneNumber])
 }
@@ -70,6 +72,7 @@ model Buddy {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
+  Chat      Chat[]
 
   @@index([ratingAvg, priceMin, priceMax])
   @@index([tagsCount])
@@ -125,6 +128,49 @@ model ReservationRecord {
   @@index([deletedAt])
   @@index([userId, reservationStart])
   @@index([buddyId, reservationStart])
+}
+
+model Chat {
+  id         String @id @default(uuid()) @map("id") @db.Uuid
+  buddyId    String @map("buddy_id") @db.Uuid
+  customerId String @map("customer_id") @db.Uuid
+  buddy      Buddy  @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
+  customer   User   @relation(fields: [customerId], references: [userId], onDelete: Cascade)
+
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  deletedAt   DateTime?     @map("deleted_at")
+  ChatMessage ChatMessage[]
+
+  @@index([buddyId])
+  @@index([customerId])
+  @@index([deletedAt])
+}
+
+model ChatMessage {
+  id       String            @id @default(uuid()) @map("id") @db.Uuid
+  chatId   String            @map("chat_id") @db.Uuid
+  sender   User              @relation(fields: [senderId], references: [userId], onDelete: Cascade)
+  senderId String            @map("sender_id") @db.Uuid
+  content  String            @map("content") @db.Text
+  meta     Json              @map("meta") @db.Json
+  status   ChatMessageStatus @map("status")
+  readAt   DateTime?         @map("read_at")
+  chat     Chat              @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([chatId])
+  @@index([senderId])
+  @@index([deletedAt])
+}
+
+enum ChatMessageStatus {
+  WAITING
+  SENT
+  READ
 }
 
 enum ReservationStatus {

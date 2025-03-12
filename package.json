@@ -27,7 +27,9 @@
     "@nestjs/core": "^11.0.11",
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/platform-express": "^11.0.11",
+    "@nestjs/platform-socket.io": "^11.0.11",
     "@nestjs/swagger": "^11.0.6",
+    "@nestjs/websockets": "^11.0.11",
     "@prisma/client": "^6.5.0",
     "argon2": "^0.41.1",
     "class-transformer": "^0.5.1",
@@ -36,6 +38,7 @@
     "prisma-pagination": "^0.2.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
+    "socket.io": "^4.8.1",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
