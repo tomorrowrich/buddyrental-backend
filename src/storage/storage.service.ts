@@ -1,11 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { SupabaseClient } from '@supabase/supabase-js';
+import { InjectSupabaseClient } from 'nestjs-supabase-js';
 
 @Injectable()
 export class StorageService {
-  constructor(private readonly supabase: SupabaseClient) {}
-
-  private bucket = process.env.S3_BUCKET_NAME || 'storage';
+  constructor(
+    @InjectSupabaseClient() private readonly supabase: SupabaseClient,
+    @Inject('STORAGE_BUCKET') private readonly bucket: string,
+  ) {}
 
   private validateCategory(category: string): void {
     const validCategories = ['chats', 'profiles', 'personal'];
@@ -21,14 +23,14 @@ export class StorageService {
   }
 
   async uploadObject(
-    userId: string,
+    name: string,
     category: string,
     buffer: Buffer,
     mimetype: string,
   ): Promise<string> {
     try {
       this.validateCategory(category);
-      const filename = `${userId}`;
+      const filename = `${name}`;
       const filePath = this.getFilePath(category, filename);
 
       const { error } = await this.supabase.storage

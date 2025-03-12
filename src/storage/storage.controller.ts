@@ -31,7 +31,6 @@ export class StorageController {
     @Param('category') category: StorageCategory,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(file);
     const { buffer, mimetype } = file;
     return await this.storageService.uploadObject(
       req.user.userId,

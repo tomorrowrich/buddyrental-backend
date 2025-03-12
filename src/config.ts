@@ -10,4 +10,9 @@ export default () => ({
       process.env.DATABASE_URL ||
       'postgresql://user:password@localhost:5432/db',
   },
+  storage: {
+    url: process.env.S3_URL || 'https://user.supabase.co',
+    key: process.env.S3_KEY || 'DEFAULT_ACCESS_KEY',
+    bucket: process.env.S3_BUCKET_NAME || 'storage',
+  },
 });

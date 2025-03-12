@@ -20,7 +20,7 @@ export class StorageDto {
   success?: boolean;
 
   @ApiProperty({ description: 'Storage category', required: false })
-  category?: string;
+  category?: StorageCategory;
 
   @ApiProperty({ description: 'Filename of the file', required: false })
   filename?: string;
