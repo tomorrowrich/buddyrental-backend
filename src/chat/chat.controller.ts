@@ -1,9 +1,10 @@
 import { LoggedIn } from '@app/auth/auth.decorator';
-import { Controller, Get, Param, Query, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
 import { Chat, ChatMessage } from '@prisma/client';
 import { ChatService } from './chat.service';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
 import { ApiQuery } from '@nestjs/swagger';
+import { CreateChatDto } from './chat.type';
 
 @Controller('chat')
 export class ChatController {
@@ -13,6 +14,15 @@ export class ChatController {
   @Get()
   async getChatLists(@Req() req: AuthenticatedRequest): Promise<Chat[]> {
     return this.chatService.getChats(req.user.userId);
+  }
+
+  @LoggedIn()
+  @Post()
+  async createChat(
+    @Req() req: AuthenticatedRequest,
+    @Body() payload: CreateChatDto,
+  ): Promise<Chat> {
+    return this.chatService.createChat(req.user.userId, payload.buddyId);
   }
 
   @LoggedIn()

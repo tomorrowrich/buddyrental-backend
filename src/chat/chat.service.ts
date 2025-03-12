@@ -1,5 +1,6 @@
 import { PrismaService } from '@app/prisma/prisma.service';
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -25,6 +26,22 @@ export class ChatService {
   }
 
   async createChat(userId: string, buddyId: string): Promise<Chat> {
+    if (!buddyId || !userId) {
+      throw new BadRequestException('Buddy ID and User ID are required');
+    }
+
+    const existedChat = await this.prisma.chat.findFirst({
+      where: {
+        OR: [
+          { buddyId, customerId: userId },
+          { buddyId: userId, customerId: buddyId },
+        ],
+      },
+    });
+
+    if (existedChat) {
+      return existedChat;
+    }
     const chat = await this.prisma.chat.create({
       data: {
         buddyId,
