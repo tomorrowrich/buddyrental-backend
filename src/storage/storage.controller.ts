@@ -9,7 +9,7 @@ import {
   Req,
   BadRequestException,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { StorageService } from './storage.service';
 import { StorageDto } from './dto/storage.dto';
 import { StorageCategory } from './dto/storage.dto';
@@ -25,6 +25,15 @@ export class StorageController {
   @LoggedIn()
   @Post('profiles')
   @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+    },
+  })
   async uploadProfile(
     @Req() req: AuthenticatedRequest,
     @UploadedFile() file: Express.Multer.File,
@@ -48,6 +57,15 @@ export class StorageController {
 
   @Post(':category/:filename')
   @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+    },
+  })
   async uploadObject(
     @Param('category') category: StorageCategory,
     @Param('filename') filename: string,
