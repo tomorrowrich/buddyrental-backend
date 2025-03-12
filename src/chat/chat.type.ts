@@ -1,0 +1,24 @@
+import { IsObject, IsOptional, IsUUID } from 'class-validator';
+
+export class ChatMessage {
+  @IsUUID()
+  @IsOptional()
+  id?: string;
+
+  @IsUUID()
+  chatId: string;
+
+  @IsUUID()
+  senderId: string;
+
+  @IsUUID()
+  content: string;
+
+  @IsObject()
+  meta: {
+    id: string;
+    timestamp: Date;
+    type: 'text' | 'image' | 'appointment' | 'file';
+    content: string;
+  };
+}

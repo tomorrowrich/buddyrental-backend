@@ -5,6 +5,7 @@ import { SupabaseModule } from 'nestjs-supabase-js';
 import { LoggerMiddleware } from '@app/middleware/logger.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PrismaService } from '@app/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   controllers: [StorageController],
   providers: [
     StorageService,
+    PrismaService,
     {
       provide: 'STORAGE_BUCKET',
       useFactory: (configService: ConfigService) =>

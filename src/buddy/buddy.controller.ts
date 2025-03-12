@@ -1,20 +1,55 @@
-import { Controller, Patch, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Patch,
+  Body,
+  Put,
+  Req,
+  ValidationPipe,
+  Get,
+} from '@nestjs/common';
 import { BuddyService } from './buddy.service';
 import { UpdatePricingDto } from './dto/update-pricing.dto';
+import { LoggedIn, Roles } from '@app/auth/auth.decorator';
+import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
+import { UpdateOfferedServicesDto } from './dto/update-offered-services.dto';
+import { AuthUserRole } from '@app/auth/role.enum';
 
 @Controller('buddy')
 export class BuddyController {
   constructor(private readonly buddyService: BuddyService) {}
 
-  @Patch(':id/pricing')
+  @Patch('pricing')
+  @LoggedIn()
+  @Roles(AuthUserRole.BUDDY)
   updatePricing(
-    @Param('id') buddyId: string,
+    @Req() req: AuthenticatedRequest,
     @Body() updatePricingDto: UpdatePricingDto,
   ) {
     return this.buddyService.updatePricing(
-      buddyId,
+      req.user.buddyId!,
       updatePricingDto.minPrice,
       updatePricingDto.maxPrice,
+    );
+  }
+
+  @Get('profile/:id')
+  @LoggedIn()
+  getProfile(@Req() req: AuthenticatedRequest) {
+    return this.buddyService.getBuddyProfile(req.user.buddyId!);
+  }
+
+  @Put('offered-services')
+  @LoggedIn()
+  @Roles(AuthUserRole.BUDDY)
+  async updateOfferedServices(
+    @Req() req: AuthenticatedRequest,
+    @Body() payload: UpdateOfferedServicesDto,
+  ) {
+    const validationPipe = new ValidationPipe({ transform: true });
+    await validationPipe.transform(payload, { type: 'body' });
+    return await this.buddyService.updateOfferedServices(
+      req.user.buddyId!,
+      payload.services,
     );
   }
 }

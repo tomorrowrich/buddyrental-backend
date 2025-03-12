@@ -2,13 +2,17 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PrismaService } from '@app/prisma/prisma.service';
-import { UserGender } from '@prisma/client';
+import { Prisma, UserGender } from '@prisma/client';
 import { RegisterDto } from '@app/auth/dtos/register.dto';
 import { hash, verify } from 'argon2';
+import { createPaginator } from 'prisma-pagination';
+import { UserResponseDto } from './dto/user-response.dto';
+import { PaginatedOutputDto } from '@app/interfaces/paginated-output.dto';
 
 @Injectable()
 export class UsersService {
@@ -57,12 +61,23 @@ export class UsersService {
     return await verify(user.password, password);
   }
 
-  async findAll() {
-    return await this.prisma.user.findMany({
-      omit: { password: true },
-      where: { deletedAt: null },
-      orderBy: { createdAt: 'desc' },
-    });
+  async findAll(
+    @Query('page') page: number = 1,
+    @Query('perPage') perPage: number = 10,
+  ): Promise<PaginatedOutputDto<UserResponseDto>> {
+    const paginate = createPaginator({ perPage });
+
+    return paginate<UserResponseDto, Prisma.UserFindManyArgs>(
+      this.prisma,
+      {
+        omit: { password: true },
+        where: { deletedAt: null },
+        orderBy: { createdAt: 'desc' },
+      },
+      {
+        page,
+      },
+    );
   }
 
   async findOne(userId: string) {
@@ -80,11 +95,21 @@ export class UsersService {
     return user;
   }
 
-  async findUnverifiedUsers() {
-    return await this.prisma.user.findMany({
-      where: { verified: false, deletedAt: null },
-      omit: { password: true },
-    });
+  async findUnverifiedUsers(
+    page: number = 1,
+    perPage: number = 10,
+  ): Promise<PaginatedOutputDto<UserResponseDto>> {
+    const paginate = createPaginator({ perPage, page });
+
+    // equivalent to paginating `this.prisma.user.findMany(...);`
+    const unverified = await paginate<UserResponseDto, Prisma.UserFindManyArgs>(
+      this.prisma,
+      {
+        where: { verified: false, deletedAt: null },
+        omit: { password: true },
+      },
+    );
+    return unverified;
   }
 
   async update(userId: string, updateUserDto: UpdateUserDto) {
@@ -163,5 +188,49 @@ export class UsersService {
       data: { deletedAt: new Date() },
       omit: { password: true },
     });
+  }
+
+  async updateInterests(userId: string, tagIds: string[]) {
+    if (!tagIds || tagIds.length === 0) {
+      throw new BadRequestException('At least one tag is required');
+    }
+    const tags = await this.prisma.tag.findMany({
+      where: { tagId: { in: tagIds } },
+    });
+
+    if (tags.length !== tagIds.length) {
+      throw new NotFoundException('One or more tags not found');
+    }
+
+    if (tags.length > 5) {
+      throw new BadRequestException('You cannot assign more than 5 tags');
+    }
+
+    const user = await this.prisma.user.findFirst({
+      where: { userId },
+      include: { interests: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const assignedUser = await this.prisma.user.update({
+      where: { userId },
+      data: {
+        interests: {
+          set: tags,
+        },
+      },
+      include: { interests: true },
+    });
+
+    const interests = assignedUser.interests.map((interest) => interest.name);
+
+    return {
+      success: true,
+      message: 'Interests updated successfully',
+      interests,
+    };
   }
 }
