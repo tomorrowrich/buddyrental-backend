@@ -1,3 +1,16 @@
+# [1.3.0-beta.6](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.5...v1.3.0-beta.6) (2025-03-12)
+
+### Bug Fixes
+
+- **storage:** add profile upload and remove setacl ([39ff92e](https://github.com/tomorrowrich/buddyrental-backend/commit/39ff92ee51bb6faf4397b9b4cc3ead5db8534f35))
+- **storage:** config in unit test ([e61d840](https://github.com/tomorrowrich/buddyrental-backend/commit/e61d84018c9a3fba14cdfe5e58c50663d09d42ad))
+- **storage:** error type ([e6a614e](https://github.com/tomorrowrich/buddyrental-backend/commit/e6a614e5c0a3a722f15ff0a0be70a8f2df90f352))
+
+### Features
+
+- **storage:** init storage module ([8ac8057](https://github.com/tomorrowrich/buddyrental-backend/commit/8ac8057de8229482e5b685babeb65abc3fecdda8))
+- **storage:** upload pic in swaggar ([62091ca](https://github.com/tomorrowrich/buddyrental-backend/commit/62091ca038b100cb8411d94995160e1e6756f95f))
+
 # [1.3.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.4...v1.3.0-beta.5) (2025-03-12)
 
 ### Bug Fixes
