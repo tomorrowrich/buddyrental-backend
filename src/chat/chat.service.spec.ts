@@ -6,7 +6,7 @@ import { ChatMessageStatus } from '@prisma/client';
 
 describe('ChatService', () => {
   let service: ChatService;
-  let prismaService: PrismaService;
+  let _prismaService: PrismaService;
 
   const mockPrismaService = {
     chat: {
@@ -37,7 +37,7 @@ describe('ChatService', () => {
     }).compile();
 
     service = module.get<ChatService>(ChatService);
-    prismaService = module.get<PrismaService>(PrismaService);
+    _prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {

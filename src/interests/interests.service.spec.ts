@@ -5,7 +5,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('InterestsService', () => {
   let service: InterestsService;
-  let tags: { name: string }[];
+  let _tags: { name: string }[];
   const mockPrismaService = {
     $queryRaw: jest.fn(),
     tag: {
@@ -16,7 +16,7 @@ describe('InterestsService', () => {
   };
 
   beforeEach(async () => {
-    tags = [{ name: 'Test1' }, { name: 'Test2' }, { name: 'Test3' }];
+    _tags = [{ name: 'Test1' }, { name: 'Test2' }, { name: 'Test3' }];
 
     // Reset mocks for each test.
     mockPrismaService.$queryRaw.mockReset();

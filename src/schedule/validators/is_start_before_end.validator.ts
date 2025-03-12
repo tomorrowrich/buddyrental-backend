@@ -14,10 +14,13 @@ export class IsStartBeforeEnd implements ValidatorConstraintInterface {
 
     if (!startDate || !endDate) return true; // Skip validation if either date is missing
 
-    return dayjs(startDate).isBefore(dayjs(endDate));
+    const start = dayjs(startDate);
+    const end = dayjs(endDate);
+
+    return start.isBefore(end);
   }
 
-  defaultMessage(args: ValidationArguments) {
+  defaultMessage(_args: ValidationArguments) {
     return 'Invalid date range: startDate must be before endDate.';
   }
 }

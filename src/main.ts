@@ -4,14 +4,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 
-export const allowedOrigins = [
-  /^http:\/\/localhost:3000$/,
-  /^https:\/\/mybuddyrental\.netlify\.app$/,
-  /^https:\/\/*mybuddyrental\.netlify\.app$/,
-];
-
 export const corsOptions = {
-  origin: allowedOrigins,
+  origin: '*',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,UPDATE',
   allowedHeaders: 'Content-Type, Authorization',
   credentials: true,
