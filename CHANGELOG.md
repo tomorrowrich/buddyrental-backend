@@ -1,3 +1,16 @@
+# [1.3.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.4...v1.3.0-beta.5) (2025-03-12)
+
+### Bug Fixes
+
+- linting ([23891da](https://github.com/tomorrowrich/buddyrental-backend/commit/23891da3641e58740c8156a6303f975ec42caedf))
+
+### Features
+
+- **chat:** authentication ([96796f4](https://github.com/tomorrowrich/buddyrental-backend/commit/96796f43ce2cf37bf4dc4551ab654611c8a655e5))
+- **chat:** common chat ([f8b8939](https://github.com/tomorrowrich/buddyrental-backend/commit/f8b8939779583540bd3bae83ab52b9bacd60e685))
+- **chat:** create chat api ([b6b95e3](https://github.com/tomorrowrich/buddyrental-backend/commit/b6b95e3ed0997d4f87ca0e2faf5ab9e720ae2ca1))
+- **chat:** create chat service ([aab964b](https://github.com/tomorrowrich/buddyrental-backend/commit/aab964b56c28b695725dfd0cf1fb056e061d7895))
+
 # [1.3.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.3...v1.3.0-beta.4) (2025-03-12)
 
 ### Bug Fixes
