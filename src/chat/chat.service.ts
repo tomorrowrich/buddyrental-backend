@@ -10,6 +10,20 @@ import { Chat, ChatMessage, ChatMessageStatus } from '@prisma/client';
 export class ChatService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getChatById(id: string): Promise<Chat> {
+    const chat = await this.prisma.chat.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!chat) {
+      throw new NotFoundException('Chat not found');
+    }
+
+    return chat;
+  }
+
   async createChat(userId: string, buddyId: string): Promise<Chat> {
     const chat = await this.prisma.chat.create({
       data: {

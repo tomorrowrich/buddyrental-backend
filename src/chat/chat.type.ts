@@ -22,3 +22,8 @@ export class ChatMessage {
     content: string;
   };
 }
+
+export interface ChatGatewayAuthPayload {
+  token: string;
+  userid: string;
+}
