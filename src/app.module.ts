@@ -12,6 +12,7 @@ import { BuddyModule } from './buddy/buddy.module';
 import { ChatModule } from './chat/chat.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import configLoader from './config';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import configLoader from './config';
       envFilePath: ['.env'],
     }),
     AdminModule,
+    StorageModule,
     InterestsModule,
     BuddyModule,
     ChatModule,
