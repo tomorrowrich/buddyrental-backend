@@ -7,7 +7,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 describe('AdminService', () => {
   let service: AdminService;
   let configService: ConfigService;
-  let jwtService: JwtService;
+  let _jwtService: JwtService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,7 +24,7 @@ describe('AdminService', () => {
 
     service = module.get<AdminService>(AdminService);
     configService = module.get<ConfigService>(ConfigService);
-    jwtService = module.get<JwtService>(JwtService);
+    _jwtService = module.get<JwtService>(JwtService);
   });
 
   it('should be defined', () => {

@@ -18,7 +18,7 @@ describe('AuthService', () => {
     sign: jest
       .fn()
       .mockImplementation(
-        (payload: string | object | Buffer, options?: JwtSignOptions) => {
+        (_payload: string | object | Buffer, _options?: JwtSignOptions) => {
           return 'token';
         },
       ),
