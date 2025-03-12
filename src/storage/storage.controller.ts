@@ -2,13 +2,12 @@ import {
   Controller,
   Get,
   Delete,
-  Put,
   Param,
-  Query,
   Post,
   UseInterceptors,
   UploadedFile,
   Req,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { StorageService } from './storage.service';
@@ -24,16 +23,44 @@ export class StorageController {
   constructor(private readonly storageService: StorageService) {}
 
   @LoggedIn()
-  @Post(':category')
+  @Post('profiles')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadObject(
+  async uploadProfile(
     @Req() req: AuthenticatedRequest,
-    @Param('category') category: StorageCategory,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    const category = StorageCategory.PROFILES;
     const { buffer, mimetype } = file;
     return await this.storageService.uploadObject(
       req.user.userId,
+      category,
+      buffer,
+      mimetype,
+    );
+  }
+
+  @LoggedIn()
+  @Get('profiles')
+  async getProfile(@Req() req: AuthenticatedRequest) {
+    const url = this.storageService.getObject('profiles', req.user.userId);
+    return { url };
+  }
+
+  @Post(':category/:filename')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadObject(
+    @Param('category') category: StorageCategory,
+    @Param('filename') filename: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (category === StorageCategory.PROFILES) {
+      throw new BadRequestException(
+        'Uploading directly to the profile is not allowed.',
+      );
+    }
+    const { buffer, mimetype } = file;
+    return await this.storageService.uploadObject(
+      filename,
       category,
       buffer,
       mimetype,
@@ -63,20 +90,6 @@ export class StorageController {
     @Param('filename') filename: string,
   ): Promise<StorageDto> {
     const success = await this.storageService.deleteObject(category, filename);
-    return { success };
-  }
-
-  @Put(':category/:filename/acl')
-  async updateAcl(
-    @Param('category') category: StorageCategory,
-    @Param('filename') filename: string,
-    @Query('isPublic') isPublic: boolean,
-  ): Promise<StorageDto> {
-    const success = await this.storageService.setAcl(
-      category,
-      filename,
-      isPublic,
-    );
     return { success };
   }
 }

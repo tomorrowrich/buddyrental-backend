@@ -37,7 +37,7 @@ export class StorageService {
         .from(this.bucket)
         .upload(filePath, buffer, {
           contentType: mimetype,
-          upsert: false,
+          upsert: true,
         });
 
       if (error) throw error;
@@ -109,33 +109,6 @@ export class StorageService {
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to list object: ${error.message}`);
-      }
-      throw new Error('An unknown error occurred.');
-    }
-  }
-
-  async setAcl(
-    category: string,
-    filename: string,
-    isPublic: boolean,
-  ): Promise<boolean> {
-    try {
-      this.validateCategory(category);
-      const filePath = this.getFilePath(category, filename);
-
-      if (isPublic) {
-        await this.supabase.storage
-          .from(this.bucket)
-          .createSignedUrl(filePath, 100000);
-      } else {
-        // Remove public access by moving to a new path with restricted permissions
-        const tempPath = `private/${category}/${filename}`;
-        await this.supabase.storage.from(this.bucket).move(filePath, tempPath);
-      }
-      return true;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to update access control: ${error.message}`);
       }
       throw new Error('An unknown error occurred.');
     }

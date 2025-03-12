@@ -36,7 +36,7 @@ describe('StorageService', () => {
   describe('uploadObject', () => {
     it('should upload a file and return the public URL', async () => {
       const mockBuffer = Buffer.from('file data');
-      const category = 'profiles';
+      const category = 'chats';
       const userId = 'user1';
       const mimetype = 'image/jpeg';
 
@@ -56,9 +56,9 @@ describe('StorageService', () => {
       );
 
       expect(mockSupabaseClient.storage.upload).toHaveBeenCalledWith(
-        'profiles/user1',
+        'chats/user1',
         expect.any(Buffer),
-        { contentType: 'image/jpeg', upsert: false },
+        { contentType: 'image/jpeg', upsert: true },
       );
 
       expect(result).toBe('https://mock-url');
@@ -71,7 +71,7 @@ describe('StorageService', () => {
         data: { publicUrl: 'https://example.com/file.jpg' },
       });
 
-      const result = service.getObject('profiles', 'file.jpg');
+      const result = service.getObject('chats', 'file.jpg');
 
       expect(result).toBe('https://example.com/file.jpg');
     });
@@ -100,30 +100,6 @@ describe('StorageService', () => {
       const result = await service.listObjects('profiles');
 
       expect(result).toEqual(['file1.jpg', 'file2.jpg']);
-    });
-  });
-
-  describe('setAcl', () => {
-    it('should make a file public', async () => {
-      mockSupabaseClient.storage.createSignedUrl.mockResolvedValue({
-        data: {},
-        error: null,
-      });
-
-      const result = await service.setAcl('profiles', 'file.jpg', true);
-
-      expect(result).toBe(true);
-    });
-
-    it('should make a file private', async () => {
-      mockSupabaseClient.storage.move.mockResolvedValue({
-        data: {},
-        error: null,
-      });
-
-      const result = await service.setAcl('profiles', 'file.jpg', false);
-
-      expect(result).toBe(true);
     });
   });
 });
