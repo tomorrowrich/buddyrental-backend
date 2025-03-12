@@ -1,3 +1,10 @@
+# [1.3.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.3...v1.3.0-beta.4) (2025-03-12)
+
+### Bug Fixes
+
+- test semver ([9fb9c02](https://github.com/tomorrowrich/buddyrental-backend/commit/9fb9c0262edba2b3befc31cb8031a30f4a6ab0a9))
+- test semver ([#95](https://github.com/tomorrowrich/buddyrental-backend/issues/95)) ([ececd87](https://github.com/tomorrowrich/buddyrental-backend/commit/ececd87c64a17737313047f645244509d81dd56b))
+
 # [1.3.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.2...v1.3.0-beta.3) (2025-02-26)
 
 ### Features
