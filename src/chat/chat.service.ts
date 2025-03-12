@@ -10,6 +10,17 @@ import { Chat, ChatMessage, ChatMessageStatus } from '@prisma/client';
 export class ChatService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async createChat(userId: string, buddyId: string): Promise<Chat> {
+    const chat = await this.prisma.chat.create({
+      data: {
+        buddyId,
+        customerId: userId,
+      },
+    });
+
+    return chat;
+  }
+
   async getChats(userId: string): Promise<Chat[]> {
     return await this.prisma.chat.findMany({
       where: {

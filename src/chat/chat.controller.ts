@@ -3,6 +3,7 @@ import { Controller, Get, Param, Query, Req } from '@nestjs/common';
 import { Chat, ChatMessage } from '@prisma/client';
 import { ChatService } from './chat.service';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('chat')
 export class ChatController {
@@ -15,6 +16,8 @@ export class ChatController {
   }
 
   @LoggedIn()
+  @ApiQuery({ name: 'limit', required: false })
+  @ApiQuery({ name: 'offset', required: false })
   @Get(':chatId/messages')
   async getHistory(
     @Param('chatId') chatId: string,

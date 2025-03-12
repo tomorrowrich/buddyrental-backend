@@ -142,6 +142,7 @@ model Chat {
   deletedAt   DateTime?     @map("deleted_at")
   ChatMessage ChatMessage[]
 
+  @@unique([buddyId, customerId])
   @@index([buddyId])
   @@index([customerId])
   @@index([deletedAt])
