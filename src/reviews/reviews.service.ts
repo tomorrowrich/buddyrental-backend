@@ -2,6 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { PrismaService } from '@app/prisma/prisma.service';
+import { PaginatedOutputDto } from '@app/interfaces/paginated-output.dto';
+import { Prisma, Review } from '@prisma/client';
+import { createPaginator } from 'prisma-pagination';
 
 @Injectable()
 export class ReviewsService {
@@ -11,12 +14,33 @@ export class ReviewsService {
     return await this.prisma.review.create({ data: createReviewDto });
   }
 
-  async findAll() {
-    return await this.prisma.review.findMany();
+  async findAll(
+    page: number = 1,
+    perPage: number = 10,
+  ): Promise<PaginatedOutputDto<Review>> {
+    const paginate = createPaginator({ perPage, page });
+    // equivalent to paginating `this.prisma.review.findMany();`
+    const reviews = await paginate<Review, Prisma.ReviewFindManyArgs>(
+      this.prisma,
+    );
+    return reviews;
   }
 
-  async findOnProfile(id: string) {
-    return await this.prisma.review.findMany({ where: { profileId: id } });
+  async findOnProfile(
+    id: string,
+    page: number = 1,
+    perPage: number = 10,
+  ): Promise<PaginatedOutputDto<Review>> {
+    const paginate = createPaginator({ perPage, page });
+
+    // equivalent to paginating `this.prisma.review.findMany(...)`
+    const profileReviews = await paginate<Review, Prisma.ReviewFindManyArgs>(
+      this.prisma,
+      {
+        where: { profileId: id },
+      },
+    );
+    return profileReviews;
   }
 
   async findOne(id: number) {

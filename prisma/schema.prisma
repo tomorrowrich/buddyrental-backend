@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres"]
 }
 
 datasource db {
@@ -37,6 +38,7 @@ model User {
   postalCode     String              @db.VarChar(16)
   profilePicture String?             @map("profile_picture") @db.Text
   description    String?             @db.Text
+  interests      Tag[]
   reviewsMade    Review[]            @relation("ReviewToCommenter")
   buddy          Buddy?
   reservations   ReservationRecord[]
@@ -45,6 +47,10 @@ model User {
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
+
+  accessToken String?       @map("access_token")
+  Chat        Chat[]
+  ChatMessage ChatMessage[]
 
   @@unique([email, phoneNumber])
 }
@@ -61,34 +67,24 @@ model Buddy {
   user                User?               @relation(fields: [userId], references: [userId], onDelete: SetNull)
   reservations        ReservationRecord[]
   reviews             Review[]            @relation("ReviewToProfile")
-  tags                BuddyTag[]
+  tags                Tag[]
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
+  Chat      Chat[]
 
   @@index([ratingAvg, priceMin, priceMax])
   @@index([tagsCount])
 }
 
 model Tag {
-  tagId   String     @id @unique @default(uuid()) @map("tag_id") @db.Uuid
-  name    String     @map("name") @db.Text
-  buddies BuddyTag[]
+  tagId   String  @id @unique @default(uuid()) @map("tag_id") @db.Uuid
+  name    String  @map("name") @db.Text
+  buddies Buddy[]
+  users   User[]
 
   @@index([name])
-}
-
-model BuddyTag {
-  buddyId String @map("buddy_id") @db.Uuid
-  tagId   String @map("tag_id") @db.Uuid
-
-  buddy Buddy @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
-  tag   Tag   @relation(fields: [tagId], references: [tagId], onDelete: Cascade)
-
-  @@id([buddyId, tagId])
-  @@index([buddyId])
-  @@index([tagId])
 }
 
 model Review {
@@ -132,6 +128,50 @@ model ReservationRecord {
   @@index([deletedAt])
   @@index([userId, reservationStart])
   @@index([buddyId, reservationStart])
+}
+
+model Chat {
+  id         String @id @default(uuid()) @map("id") @db.Uuid
+  buddyId    String @map("buddy_id") @db.Uuid
+  customerId String @map("customer_id") @db.Uuid
+  buddy      Buddy  @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
+  customer   User   @relation(fields: [customerId], references: [userId], onDelete: Cascade)
+
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  deletedAt   DateTime?     @map("deleted_at")
+  ChatMessage ChatMessage[]
+
+  @@unique([buddyId, customerId])
+  @@index([buddyId])
+  @@index([customerId])
+  @@index([deletedAt])
+}
+
+model ChatMessage {
+  id       String            @id @default(uuid()) @map("id") @db.Uuid
+  chatId   String            @map("chat_id") @db.Uuid
+  sender   User              @relation(fields: [senderId], references: [userId], onDelete: Cascade)
+  senderId String            @map("sender_id") @db.Uuid
+  content  String            @map("content") @db.Text
+  meta     Json              @map("meta") @db.Json
+  status   ChatMessageStatus @map("status")
+  readAt   DateTime?         @map("read_at")
+  chat     Chat              @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([chatId])
+  @@index([senderId])
+  @@index([deletedAt])
+}
+
+enum ChatMessageStatus {
+  WAITING
+  SENT
+  READ
 }
 
 enum ReservationStatus {
