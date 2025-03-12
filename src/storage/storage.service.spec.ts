@@ -22,6 +22,7 @@ describe('StorageService', () => {
       providers: [
         StorageService,
         { provide: SupabaseClient, useValue: mockSupabaseClient },
+        { provide: 'STORAGE_BUCKET', useValue: 'storage' },
       ],
     }).compile();
 
