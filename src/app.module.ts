@@ -10,6 +10,7 @@ import { AdminModule } from './admin/admin.module';
 import { InterestsModule } from './interests/interests.module';
 import { BuddyModule } from './buddy/buddy.module';
 import { ChatModule } from './chat/chat.module';
+import { ScheduleModule } from './schedule/schedule.module';
 import configLoader from './config';
 
 @Module({
@@ -28,6 +29,7 @@ import configLoader from './config';
     InterestsModule,
     BuddyModule,
     ChatModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
