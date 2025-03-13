@@ -1,3 +1,66 @@
+# [1.3.0-beta.6](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.5...v1.3.0-beta.6) (2025-03-12)
+
+### Bug Fixes
+
+- **storage:** add profile upload and remove setacl ([39ff92e](https://github.com/tomorrowrich/buddyrental-backend/commit/39ff92ee51bb6faf4397b9b4cc3ead5db8534f35))
+- **storage:** config in unit test ([e61d840](https://github.com/tomorrowrich/buddyrental-backend/commit/e61d84018c9a3fba14cdfe5e58c50663d09d42ad))
+- **storage:** error type ([e6a614e](https://github.com/tomorrowrich/buddyrental-backend/commit/e6a614e5c0a3a722f15ff0a0be70a8f2df90f352))
+
+### Features
+
+- **storage:** init storage module ([8ac8057](https://github.com/tomorrowrich/buddyrental-backend/commit/8ac8057de8229482e5b685babeb65abc3fecdda8))
+- **storage:** upload pic in swaggar ([62091ca](https://github.com/tomorrowrich/buddyrental-backend/commit/62091ca038b100cb8411d94995160e1e6756f95f))
+
+# [1.3.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.4...v1.3.0-beta.5) (2025-03-12)
+
+### Bug Fixes
+
+- linting ([23891da](https://github.com/tomorrowrich/buddyrental-backend/commit/23891da3641e58740c8156a6303f975ec42caedf))
+
+### Features
+
+- **chat:** authentication ([96796f4](https://github.com/tomorrowrich/buddyrental-backend/commit/96796f43ce2cf37bf4dc4551ab654611c8a655e5))
+- **chat:** common chat ([f8b8939](https://github.com/tomorrowrich/buddyrental-backend/commit/f8b8939779583540bd3bae83ab52b9bacd60e685))
+- **chat:** create chat api ([b6b95e3](https://github.com/tomorrowrich/buddyrental-backend/commit/b6b95e3ed0997d4f87ca0e2faf5ab9e720ae2ca1))
+- **chat:** create chat service ([aab964b](https://github.com/tomorrowrich/buddyrental-backend/commit/aab964b56c28b695725dfd0cf1fb056e061d7895))
+
+# [1.3.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.3...v1.3.0-beta.4) (2025-03-12)
+
+### Bug Fixes
+
+- test semver ([9fb9c02](https://github.com/tomorrowrich/buddyrental-backend/commit/9fb9c0262edba2b3befc31cb8031a30f4a6ab0a9))
+- test semver ([#95](https://github.com/tomorrowrich/buddyrental-backend/issues/95)) ([ececd87](https://github.com/tomorrowrich/buddyrental-backend/commit/ececd87c64a17737313047f645244509d81dd56b))
+
+# [1.3.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.2...v1.3.0-beta.3) (2025-02-26)
+
+### Features
+
+- **buddy, interests:** add profile and interests retrieval endpoints ([#90](https://github.com/tomorrowrich/buddyrental-backend/issues/90)) ([9d702dd](https://github.com/tomorrowrich/buddyrental-backend/commit/9d702dd59611881deafd2cf19f5c66988a03e29f))
+
+# [1.3.0-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0-beta.1...v1.3.0-beta.2) (2025-02-22)
+
+### Features
+
+- **buddy:** implement tags and interest ([58f9bbc](https://github.com/tomorrowrich/buddyrental-backend/commit/58f9bbcd38862ba8eb2fc8a08a853be5304b9935))
+- **user:** interests api ([356ab44](https://github.com/tomorrowrich/buddyrental-backend/commit/356ab442a135691f8d9712e92873323cd79d247d))
+- **user:** interests api ([#82](https://github.com/tomorrowrich/buddyrental-backend/issues/82)) ([146de7c](https://github.com/tomorrowrich/buddyrental-backend/commit/146de7c7b092da707758a5b1e5a4cb8d73691829))
+
+# [1.3.0-beta.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.3...v1.3.0-beta.1) (2025-02-17)
+
+### Bug Fixes
+
+- **user:** admin_id to user ([5ef9f2a](https://github.com/tomorrowrich/buddyrental-backend/commit/5ef9f2ac1cb854419fa03295938e71f8affdbcea))
+- **users:** duplicate merge ([91117ee](https://github.com/tomorrowrich/buddyrental-backend/commit/91117ee13ff02b3f160b6280aa550f4f9cbe3d7f))
+
+### Features
+
+- **users:** update user profile ([f74d7b9](https://github.com/tomorrowrich/buddyrental-backend/commit/f74d7b9876ce7ec7a4b1ab4f283d1b59ddee4962))
+- **users:** update user profile ([#70](https://github.com/tomorrowrich/buddyrental-backend/issues/70)) ([1d8f167](https://github.com/tomorrowrich/buddyrental-backend/commit/1d8f1675431431785848af4d8499888e043bd629))
+
+### Performance Improvements
+
+- **core:** increase performance by fastify ([c1498cb](https://github.com/tomorrowrich/buddyrental-backend/commit/c1498cb1deb4631dedc497a846b7b97c21f6b603))
+
 ## [1.2.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.2...v1.2.3) (2025-02-13)
 
 ### Bug Fixes

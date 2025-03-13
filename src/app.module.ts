@@ -7,7 +7,12 @@ import { AuthModule } from './auth/auth.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './admin/admin.module';
+import { InterestsModule } from './interests/interests.module';
+import { BuddyModule } from './buddy/buddy.module';
+import { ChatModule } from './chat/chat.module';
+import { ScheduleModule } from './schedule/schedule.module';
 import configLoader from './config';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
@@ -22,6 +27,11 @@ import configLoader from './config';
       envFilePath: ['.env'],
     }),
     AdminModule,
+    StorageModule,
+    InterestsModule,
+    BuddyModule,
+    ChatModule,
+    ScheduleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

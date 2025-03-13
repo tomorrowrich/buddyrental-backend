@@ -6,7 +6,6 @@ export const userPassword = Prisma.defineExtension({
   query: {
     user: {
       async create({ args, query }) {
-        console.log(args.data);
         if (!args.data.password.startsWith('$argon2')) {
           args.data.password = await hash(args.data.password);
         }
