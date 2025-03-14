@@ -10,6 +10,7 @@ import { PrismaService } from '@app/prisma/prisma.service';
 import { Prisma, UserGender } from '@prisma/client';
 import { RegisterDto } from '@app/auth/dtos/register.dto';
 import { hash, verify } from 'argon2';
+import { randomBytes } from 'node:crypto';
 import { createPaginator } from 'prisma-pagination';
 import { UserResponseDto } from './dto/user-response.dto';
 import { PaginatedOutputDto } from '@app/interfaces/paginated-output.dto';
@@ -171,6 +172,44 @@ export class UsersService {
       data: { verified: false },
       omit: { password: true },
     });
+  }
+
+  async requestPasswordReset(email: string) {
+    const userExists = await this.prisma.user.findUnique({
+      where: { email, deletedAt: null },
+      omit: { password: true },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('Token not found');
+    }
+
+    const token = randomBytes(32).toString('hex');
+    await this.prisma.user.update({
+      where: { email, deletedAt: null },
+      data: { resetPasswordToken: token },
+    });
+
+    return { token };
+  }
+
+  async resetPassword(token: string, password: string, email: string) {
+    const userExists = await this.prisma.user.findUnique({
+      where: { resetPasswordToken: token, email: email },
+      omit: { password: true },
+    });
+
+    if (!userExists) {
+      throw new NotFoundException('Token not found');
+    }
+
+    const hashedPassword = await hash(password);
+    await this.prisma.user.update({
+      where: { resetPasswordToken: token, email },
+      data: { password: hashedPassword, resetPasswordToken: null },
+    });
+
+    return { message: 'Password reset successfully' };
   }
 
   async remove(userId: string) {
