@@ -1,3 +1,10 @@
+# [1.4.0-beta.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0...v1.4.0-beta.1) (2025-03-19)
+
+### Features
+
+- **users:** reset password ([53fbe39](https://github.com/tomorrowrich/buddyrental-backend/commit/53fbe39dd387731d854ae12fbce0440c2c9cc393))
+- **users:** reset password ([#101](https://github.com/tomorrowrich/buddyrental-backend/issues/101)) ([bbb8f6e](https://github.com/tomorrowrich/buddyrental-backend/commit/bbb8f6e063a6d7b4d07e61324c2ba2e96867b647))
+
 # [1.3.0](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.2.3...v1.3.0) (2025-03-13)
 
 ### Bug Fixes
