@@ -12,6 +12,20 @@ export const corsOptions = {
   maxAge: 86400,
 };
 async function bootstrap() {
+  const allowedOrigins = [
+    /^http:\/\/localhost:3000$/,
+    /^https:\/\/mybuddyrental\.netlify\.app$/,
+    /^https:\/\/*mybuddyrental\.netlify\.app$/,
+  ];
+
+  const corsOptions = {
+    origin: allowedOrigins,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,UPDATE',
+    allowedHeaders: 'Content-Type, Authorization',
+    credentials: true,
+    maxAge: 86400,
+  };
+
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
     cors: corsOptions,
