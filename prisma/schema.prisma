@@ -21,36 +21,36 @@ model Admin {
 }
 
 model User {
-  userId         String              @id @unique @default(uuid()) @map("user_id") @db.Uuid
-  adminId        String?             @map("admin_id") @db.Uuid
-  firstName      String              @map("first_name") @db.VarChar(64)
-  lastName       String              @map("last_name") @db.VarChar(64)
-  email          String              @unique @map("email") @db.VarChar(255)
-  password       String              @map("password") @db.Text
-  citizenId      String              @unique @map("citizen_id")
-  phoneNumber    String              @map("phone_number")
-  verified       Boolean             @default(false)
-  displayName    String?             @map("display_name") @db.VarChar(255)
-  gender         UserGender          @map("gender")
-  dateOfBirth    DateTime            @map("date_of_birth") @db.Date
-  address        String              @db.VarChar(255)
-  city           String              @db.VarChar(64)
-  postalCode     String              @db.VarChar(16)
-  profilePicture String?             @map("profile_picture") @db.Text
-  description    String?             @db.Text
-  interests      Tag[]
-  reviewsMade    Review[]            @relation("ReviewToCommenter")
-  buddy          Buddy?
-  reservations   ReservationRecord[]
-  Admin          Admin?
+  userId             String              @id @unique @default(uuid()) @map("user_id") @db.Uuid
+  adminId            String?             @map("admin_id") @db.Uuid
+  firstName          String              @map("first_name") @db.VarChar(64)
+  lastName           String              @map("last_name") @db.VarChar(64)
+  email              String              @unique @map("email") @db.VarChar(255)
+  password           String              @map("password") @db.Text
+  citizenId          String              @unique @map("citizen_id")
+  phoneNumber        String              @map("phone_number")
+  verified           Boolean             @default(false)
+  displayName        String?             @map("display_name") @db.VarChar(255)
+  gender             UserGender          @map("gender")
+  dateOfBirth        DateTime            @map("date_of_birth") @db.Date
+  address            String              @db.VarChar(255)
+  city               String              @db.VarChar(64)
+  postalCode         String              @db.VarChar(16)
+  profilePicture     String?             @map("profile_picture") @db.Text
+  description        String?             @db.Text
+  accessToken        String?             @map("access_token")
+  resetPasswordToken String?             @map("reset_password_token") @db.VarChar(255)
+  interests          Tag[]
+  reviewsMade        Review[]            @relation("ReviewToCommenter")
+  Chat               Chat[]
+  ChatMessage        ChatMessage[]
+  buddy              Buddy?
+  reservations       ReservationRecord[]
+  Admin              Admin?
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
-
-  accessToken String?       @map("access_token")
-  Chat        Chat[]
-  ChatMessage ChatMessage[]
 
   @@unique([email, phoneNumber])
 }
