@@ -6,6 +6,7 @@ import {
   Req,
   ValidationPipe,
   Get,
+  Param,
 } from '@nestjs/common';
 import { BuddyService } from './buddy.service';
 import { UpdatePricingDto } from './dto/update-pricing.dto';
@@ -34,8 +35,8 @@ export class BuddyController {
 
   @Get('profile/:id')
   @LoggedIn()
-  getProfile(@Req() req: AuthenticatedRequest) {
-    return this.buddyService.getBuddyProfile(req.user.buddyId!);
+  getProfile(@Param('id') buddyId: string) {
+    return this.buddyService.getBuddyProfile(buddyId);
   }
 
   @Put('offered-services')
