@@ -58,6 +58,7 @@ model User {
 model Buddy {
   buddyId             String              @id @unique @default(uuid()) @map("buddy_id") @db.Uuid
   balanceWithdrawable Float               @map("balance_withdrawable") @db.DoublePrecision
+  description         String              @default("") @map("description") @db.Text
   ratingAvg           Float?              @map("rating_avg") @db.DoublePrecision
   totalReviews        Int                 @default(0) @map("total_reviews")
   priceMin            Float               @map("price_min") @db.DoublePrecision
