@@ -6,6 +6,7 @@ import {
   Req,
   ValidationPipe,
   Get,
+  Post,
 } from '@nestjs/common';
 import { BuddyService } from './buddy.service';
 import { UpdatePricingDto } from './dto/update-pricing.dto';
@@ -19,7 +20,7 @@ import { MakeBuddyDto } from './dto/make-buddy.dto';
 export class BuddyController {
   constructor(private readonly buddyService: BuddyService) {}
 
-  @Put('make-buddy')
+  @Post()
   @LoggedIn()
   @Roles(AuthUserRole.USER)
   makeBuddy(

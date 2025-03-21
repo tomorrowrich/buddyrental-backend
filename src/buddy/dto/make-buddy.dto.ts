@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, Min } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class MakeBuddyDto {
   @ApiProperty({ example: 100, description: 'Minimum price the buddy charges' })
@@ -9,6 +9,12 @@ export class MakeBuddyDto {
 
   @ApiProperty({ example: 500, description: 'Maximum price the buddy charges' })
   @IsNumber()
+  @IsOptional()
   @Min(0)
-  maxPrice: number;
+  maxPrice?: number;
+
+  @ApiProperty({ description: 'The user id' })
+  @IsString()
+  @IsOptional()
+  userId?: string;
 }
