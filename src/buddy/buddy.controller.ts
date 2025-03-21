@@ -13,10 +13,21 @@ import { LoggedIn, Roles } from '@app/auth/auth.decorator';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
 import { UpdateOfferedServicesDto } from './dto/update-offered-services.dto';
 import { AuthUserRole } from '@app/auth/role.enum';
+import { MakeBuddyDto } from './dto/make-buddy.dto';
 
 @Controller('buddy')
 export class BuddyController {
   constructor(private readonly buddyService: BuddyService) {}
+
+  @Put('make-buddy')
+  @LoggedIn()
+  @Roles(AuthUserRole.USER)
+  makeBuddy(
+    @Req() req: AuthenticatedRequest,
+    @Body() makeBuddyDto: MakeBuddyDto,
+  ) {
+    return this.buddyService.makeBuddy(req.user.userId, makeBuddyDto);
+  }
 
   @Patch('pricing')
   @LoggedIn()

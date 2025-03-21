@@ -1,9 +1,36 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MakeBuddyDto } from './dto/make-buddy.dto';
 
 @Injectable()
 export class BuddyService {
   constructor(private prisma: PrismaService) {}
+
+  async makeBuddy(userId: string, makeBuddyDto: MakeBuddyDto) {
+    const user = await this.prisma.user.findUnique({
+      where: { userId: userId },
+      include: { buddy: true },
+    });
+    if (!user) {
+      throw new NotFoundException(`User with this ID not found`);
+    }
+    if (user.buddy) {
+      throw new ForbiddenException(`User is already a buddy`);
+    }
+
+    return this.prisma.buddy.create({
+      data: {
+        balanceWithdrawable: 0,
+        priceMin: makeBuddyDto.minPrice,
+        priceMax: makeBuddyDto.maxPrice,
+        userId: userId,
+      },
+    });
+  }
 
   async updatePricing(buddyId: string, priceMin: number, priceMax: number) {
     const buddy = await this.prisma.buddy.findUnique({ where: { buddyId } });
