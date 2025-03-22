@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { LoggerMiddleware } from '@app/middleware/logger.middleware';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UsersModule } from '@app/users/users.module';
 import { PrismaService } from '@app/prisma/prisma.service';
@@ -24,8 +24,8 @@ import { UsersService } from '@app/users/users.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService, UsersService],
-  exports: [AuthService, PrismaService, UsersService],
+  providers: [AuthService, PrismaService, UsersService, JwtService],
+  exports: [AuthService, PrismaService, UsersService, JwtService],
 })
 export class AuthModule {
   configure(consumer: MiddlewareConsumer) {
