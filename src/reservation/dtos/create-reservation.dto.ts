@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Schedule, ReservationRecord } from '@prisma/client';
 import { IsDateString, IsNumber, IsUUID } from 'class-validator';
 
 export class CreateReservationDto {
@@ -25,5 +24,5 @@ export class CreateReservationResponseDto {
   success: boolean;
 
   @ApiProperty()
-  data: { schedule: Schedule; reservation: ReservationRecord };
+  data: object;
 }
