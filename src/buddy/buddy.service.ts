@@ -47,7 +47,7 @@ export class BuddyService {
   async getBuddyProfile(buddyId: string) {
     return this.prisma.buddy.findUnique({
       where: { buddyId },
-      include: { tags: true },
+      include: { tags: true, user: true, reviews: true },
     });
   }
 
