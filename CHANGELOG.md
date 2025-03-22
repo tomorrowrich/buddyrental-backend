@@ -1,3 +1,9 @@
+# [1.4.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.3...v1.4.0-beta.4) (2025-03-22)
+
+### Features
+
+- **auth:** fix missing jwtservice ([6f6d58a](https://github.com/tomorrowrich/buddyrental-backend/commit/6f6d58ab96963362c8bfe81528f5ed2f70588d39))
+
 # [1.4.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.2...v1.4.0-beta.3) (2025-03-22)
 
 ### Features
