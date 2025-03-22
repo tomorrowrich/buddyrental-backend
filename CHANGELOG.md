@@ -1,3 +1,9 @@
+# [1.4.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.2...v1.4.0-beta.3) (2025-03-22)
+
+### Features
+
+- **reservation:** common api ([b7208c9](https://github.com/tomorrowrich/buddyrental-backend/commit/b7208c9763b8d10a9dd150fe8ba26337730ead2e))
+
 # [1.4.0-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.1...v1.4.0-beta.2) (2025-03-22)
 
 ### Bug Fixes
