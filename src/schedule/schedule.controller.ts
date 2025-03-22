@@ -7,11 +7,12 @@ import {
   Request,
 } from '@nestjs/common';
 import { ScheduleQueryDto } from './dtos/schedule_query.dto';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoggedIn } from '@app/auth/auth.decorator';
 import { ScheduleService } from './schedule.service';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
 
+@ApiTags('Schedule')
 @Controller('schedule')
 export class ScheduleController {
   constructor(private readonly scheduleService: ScheduleService) {}

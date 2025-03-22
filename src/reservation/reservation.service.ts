@@ -16,28 +16,64 @@ export class ReservationService {
     private scheduleService: ScheduleService,
   ) {}
 
-  async getReservationHistory(buddyId: string) {
-    return this.prisma.reservationRecord.findMany({
+  async getReservationHistory(buddyId: string, take = 10, skip = 0) {
+    const data = await this.prisma.reservationRecord.findMany({
       where: { buddyId: buddyId },
       include: {
-        user: true,
+        user: {
+          select: {
+            userId: true,
+            firstName: true,
+            lastName: true,
+            profilePicture: true,
+          },
+        },
       },
+      take,
+      skip,
       orderBy: { reservationStart: 'desc' },
     });
+    const totalCount = await this.prisma.reservationRecord
+      .count({
+        where: { buddyId },
+      })
+      .then((count) => Math.ceil(count / take));
+    return {
+      data,
+      totalCount,
+    };
   }
 
-  async getBookingHistory(userId: string) {
-    return this.prisma.reservationRecord.findMany({
+  async getBookingHistory(userId: string, take = 10, skip = 0) {
+    const data = await this.prisma.reservationRecord.findMany({
       where: { userId },
       include: {
         buddy: {
           include: {
-            user: true,
+            user: {
+              select: {
+                userId: true,
+                firstName: true,
+                lastName: true,
+                profilePicture: true,
+              },
+            },
           },
         },
       },
+      take,
+      skip,
       orderBy: { reservationStart: 'desc' },
     });
+    const totalCount = await this.prisma.reservationRecord
+      .count({
+        where: { userId },
+      })
+      .then((count) => Math.ceil(count / take));
+    return {
+      data,
+      totalCount,
+    };
   }
 
   async createReservation(userId: string, payload: CreateReservationDto) {
@@ -57,6 +93,10 @@ export class ReservationService {
       throw new BadRequestException(
         'Reservation end date must be after start date',
       );
+    }
+
+    if (userId === payload.buddyId) {
+      throw new BadRequestException('You cannot reserve yourself');
     }
 
     const buddy = await this.prisma.buddy.findUnique({
