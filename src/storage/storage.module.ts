@@ -6,6 +6,7 @@ import { LoggerMiddleware } from '@app/middleware/logger.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PrismaService } from '@app/prisma/prisma.service';
+import { AuthModule } from '@app/auth/auth.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PrismaService } from '@app/prisma/prisma.service';
     }),
     SupabaseModule.injectClient(),
     JwtModule,
+    AuthModule,
   ],
   controllers: [StorageController],
   providers: [

@@ -56,19 +56,21 @@ model User {
 }
 
 model Buddy {
-  buddyId             String              @id @unique @default(uuid()) @map("buddy_id") @db.Uuid
-  balanceWithdrawable Float               @map("balance_withdrawable") @db.DoublePrecision
-  description         String              @default("") @map("description") @db.Text
-  ratingAvg           Float?              @map("rating_avg") @db.DoublePrecision
-  totalReviews        Int                 @default(0) @map("total_reviews")
-  priceMin            Float               @map("price_min") @db.DoublePrecision
-  priceMax            Float?              @map("price_max") @db.DoublePrecision
-  tagsCount           Int                 @default(0) @map("tags_count")
-  userId              String?             @unique @map("user_id") @db.Uuid
-  user                User?               @relation(fields: [userId], references: [userId], onDelete: SetNull)
-  reservations        ReservationRecord[]
-  reviews             Review[]            @relation("ReviewToProfile")
-  tags                Tag[]
+  buddyId             String  @id @unique @default(uuid()) @map("buddy_id") @db.Uuid
+  balanceWithdrawable Float   @map("balance_withdrawable") @db.DoublePrecision
+  description         String  @default("") @map("description") @db.Text
+  ratingAvg           Float?  @map("rating_avg") @db.DoublePrecision
+  totalReviews        Int     @default(0) @map("total_reviews")
+  priceMin            Float   @map("price_min") @db.DoublePrecision
+  priceMax            Float?  @map("price_max") @db.DoublePrecision
+  tagsCount           Int     @default(0) @map("tags_count")
+  userId              String? @unique @map("user_id") @db.Uuid
+  user                User?   @relation(fields: [userId], references: [userId], onDelete: SetNull)
+
+  reservations ReservationRecord[]
+  schedules    Schedule[]
+  reviews      Review[]            @relation("ReviewToProfile")
+  tags         Tag[]
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -77,6 +79,25 @@ model Buddy {
 
   @@index([ratingAvg, priceMin, priceMax])
   @@index([tagsCount])
+}
+
+model Schedule {
+  scheduleId  String         @id @unique @default(uuid()) @map("schedule_id") @db.Uuid
+  buddyId     String         @db.Uuid
+  description String         @default("") @map("description") @db.Text
+  status      ScheduleStatus @default(AVAILABLE)
+  start       DateTime       @map("start")
+  end         DateTime       @map("end")
+
+  buddy       Buddy              @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
+  reservation ReservationRecord?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([buddyId])
+  @@index([status])
+  @@index([start, end])
 }
 
 model Tag {
@@ -115,8 +136,11 @@ model ReservationRecord {
   status           ReservationStatus @map("status")
   userId           String            @map("user_id") @db.Uuid
   buddyId          String            @map("buddy_id") @db.Uuid
-  user             User              @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  buddy            Buddy             @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
+  scheduleId       String            @unique @map("schedule_id") @db.Uuid
+
+  user     User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  buddy    Buddy    @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
+  schedule Schedule @relation(fields: [scheduleId], references: [scheduleId])
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -124,6 +148,7 @@ model ReservationRecord {
 
   @@index([userId])
   @@index([buddyId])
+  @@index([scheduleId])
   @@index([reservationStart])
   @@index([status])
   @@index([deletedAt])
@@ -181,6 +206,12 @@ enum ReservationStatus {
   REJECTED
   CANCELLED
   COMPLETED
+}
+
+enum ScheduleStatus {
+  AVAILABLE
+  UNCONFIRMED
+  BUSY
 }
 
 enum UserGender {
