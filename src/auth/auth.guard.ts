@@ -1,4 +1,5 @@
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
+import { UsersService } from '@app/users/users.service';
 import {
   CanActivate,
   ExecutionContext,
@@ -13,6 +14,7 @@ import { Request as ExpressRequest } from 'express';
 export class AuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
+    private userService: UsersService,
     private config: ConfigService,
   ) {}
 
@@ -30,7 +32,18 @@ export class AuthGuard implements CanActivate {
         secret: this.config.get<string>('auth.secret_key'),
       });
 
-      request.user = { userId: payload.sub, email: payload.email };
+      const user = await this.userService.getAllIdentities(payload.sub);
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      request.user = {
+        userId: user.userId,
+        email: payload.email,
+        adminId: user.adminId,
+        buddyId: user.buddyId,
+      };
     } catch {
       throw new UnauthorizedException('Unable to authorize token');
     }

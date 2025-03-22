@@ -88,6 +88,30 @@ export class UsersService {
     });
   }
 
+  async getAllIdentities(userId: string) {
+    return await this.prisma.user
+      .findFirst({
+        where: { userId: userId, deletedAt: null },
+        select: {
+          userId: true,
+          adminId: true,
+          buddy: {
+            select: {
+              buddyId: true,
+            },
+          },
+        },
+      })
+      .then((user) => {
+        if (!user) return null;
+        return {
+          userId: user.userId,
+          adminId: user.adminId || undefined,
+          buddyId: user?.buddy?.buddyId,
+        };
+      });
+  }
+
   async findUserWithEmail(email: string) {
     const user = await this.prisma.user.findFirst({
       where: { email: email, deletedAt: null },

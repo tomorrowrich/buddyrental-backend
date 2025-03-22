@@ -5,7 +5,7 @@ import { AuthUserRole } from './role.enum';
 import { RoleGuard } from './role.guard';
 
 export function LoggedIn() {
-  return applyDecorators(UseGuards(AuthGuard, RoleGuard), ApiBearerAuth());
+  return applyDecorators(ApiBearerAuth(), UseGuards(AuthGuard, RoleGuard));
 }
 
 export function Roles(...roles: AuthUserRole[]) {
