@@ -1,5 +1,5 @@
 import { PrismaService } from '@app/prisma/prisma.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Prisma, ReservationRecord, ScheduleStatus } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
 import { ScheduleQueryDto } from './dtos/schedule_query.dto';
@@ -8,11 +8,8 @@ import { ScheduleQueryDto } from './dtos/schedule_query.dto';
 export class ScheduleService {
   constructor(private prisma: PrismaService) {}
 
-  async getServices(query: ScheduleQueryDto, userId: string) {
+  async getServices(query: ScheduleQueryDto) {
     //prepare query
-    if (!query.role) {
-      query.role = 'customer';
-    }
     if (!query.page) {
       query.page = 1;
     }
@@ -26,13 +23,7 @@ export class ScheduleService {
       where: {},
     };
 
-    if (query.role == 'customer') {
-      prismaOptions.where['userId'] = userId;
-    } else if (query.role == 'buddy') {
-      prismaOptions.where['buddyId'] = userId;
-    } else {
-      throw new BadRequestException("Invalid role. Use 'customer' or 'buddy'.");
-    }
+    prismaOptions.where['buddyId'] = query.buddyId;
 
     if (query.status) {
       prismaOptions.where['status'] = query.status;

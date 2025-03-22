@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsOptional,
   IsInt,
@@ -6,22 +6,18 @@ import {
   IsEnum,
   IsDateString,
   Validate,
+  IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ReservationStatus } from '@prisma/client';
 import { IsStartBeforeEnd } from '../validators/is_start_before_end.validator';
 
 export class ScheduleQueryDto {
-  @ApiPropertyOptional({
-    description: 'User role',
-    enum: ['customer', 'buddy'] as object,
-    example: 'customer',
+  @ApiProperty({
+    description: 'The ID of the buddy to query schedule',
   })
-  @IsOptional()
-  @IsEnum(['customer', 'buddy'] as object, {
-    message: "Invalid role. Use 'customer' or 'buddy'.",
-  })
-  role?: string;
+  @IsUUID()
+  buddyId: string;
 
   @ApiPropertyOptional({
     description: 'Filter by status',
