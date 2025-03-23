@@ -6,21 +6,29 @@ import { ChatMessageStatus } from '@prisma/client';
 
 describe('ChatService', () => {
   let service: ChatService;
-  let _prismaService: PrismaService;
+  let prismaService: PrismaService;
 
   const mockPrismaService = {
     chat: {
       findMany: jest.fn(),
       findUnique: jest.fn(),
+      count: jest.fn(),
+      findFirst: jest.fn(),
+      create: jest.fn(),
     },
     chatMessage: {
       findUnique: jest.fn(),
       findMany: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
+      count: jest.fn(),
       updateMany: jest.fn(),
     },
     user: {
+      findUnique: jest.fn(),
+      findFirst: jest.fn(),
+    },
+    buddy: {
       findUnique: jest.fn(),
     },
   };
@@ -37,7 +45,7 @@ describe('ChatService', () => {
     }).compile();
 
     service = module.get<ChatService>(ChatService);
-    _prismaService = module.get<PrismaService>(PrismaService);
+    prismaService = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {
@@ -54,12 +62,14 @@ describe('ChatService', () => {
       const mockChats = [
         { id: 'chat1', buddyId: 'user2', customerId: 'user1' },
       ];
+      const mockTotalCount = 1;
 
       mockPrismaService.chat.findMany.mockResolvedValue(mockChats);
+      mockPrismaService.chat.count.mockResolvedValue(mockTotalCount);
 
       const result = await service.getChats(userId);
 
-      expect(result).toEqual(mockChats);
+      expect(result).toEqual({ data: mockChats, totalCount: mockTotalCount });
       expect(mockPrismaService.chat.findMany).toHaveBeenCalledWith({
         where: {
           OR: [{ buddyId: userId }, { customerId: userId }],
@@ -72,8 +82,15 @@ describe('ChatService', () => {
             },
           },
         },
+        take: 10,
+        skip: 0,
         orderBy: {
           updatedAt: 'desc',
+        },
+      });
+      expect(mockPrismaService.chat.count).toHaveBeenCalledWith({
+        where: {
+          OR: [{ buddyId: userId }, { customerId: userId }],
         },
       });
     });
@@ -83,18 +100,23 @@ describe('ChatService', () => {
     it('should return chat messages', async () => {
       const userId = 'user1';
       const chatId = 'chat1';
-      const limit = 10;
+      const take = 10;
       const skip = 0;
 
       const mockChat = { id: chatId, buddyId: 'user2', customerId: userId };
       const mockMessages = [{ id: 'msg1', content: 'Hello' }];
+      const mockTotalCount = 1;
 
       mockPrismaService.chat.findUnique.mockResolvedValue(mockChat);
       mockPrismaService.chatMessage.findMany.mockResolvedValue(mockMessages);
+      mockPrismaService.chatMessage.count.mockResolvedValue(mockTotalCount);
 
-      const result = await service.getHistory(userId, chatId, limit, skip);
+      const result = await service.getHistory(userId, chatId, take, skip);
 
-      expect(result).toEqual(mockMessages);
+      expect(result).toEqual({
+        data: mockMessages,
+        totalCount: mockTotalCount,
+      });
       expect(mockPrismaService.chat.findUnique).toHaveBeenCalledWith({
         where: {
           id: chatId,
@@ -104,8 +126,16 @@ describe('ChatService', () => {
       expect(mockPrismaService.chatMessage.findMany).toHaveBeenCalledWith({
         where: { chatId },
         orderBy: { createdAt: 'desc' },
-        take: limit,
-        skip: skip,
+        omit: {
+          chatId: true,
+          updatedAt: true,
+          deletedAt: true,
+        },
+        take,
+        skip,
+      });
+      expect(mockPrismaService.chatMessage.count).toHaveBeenCalledWith({
+        where: { chatId },
       });
     });
 
@@ -128,7 +158,7 @@ describe('ChatService', () => {
   });
 
   describe('createMessage', () => {
-    it('should create a message', async () => {
+    it('should create a message when sender is customer', async () => {
       const chatId = 'chat1';
       const senderId = 'user1';
       const content = 'Hello';
@@ -139,13 +169,17 @@ describe('ChatService', () => {
         content: 'Hello',
       };
 
-      const mockChat = { id: chatId, buddyId: 'user2', customerId: senderId };
+      const mockChat = { id: chatId, buddyId: 'buddy1', customerId: senderId };
       const mockMessage = { id: 'msg1', content, meta };
-      const mockUser = { userId: 'user2' };
+      const mockUser = { userId: senderId, buddy: { buddyId: null } };
+      const mockTargetUser = { userId: 'target1' };
 
+      mockPrismaService.user.findFirst.mockResolvedValue(mockUser);
       mockPrismaService.chat.findUnique.mockResolvedValue(mockChat);
       mockPrismaService.chatMessage.create.mockResolvedValue(mockMessage);
-      mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
+      mockPrismaService.buddy.findUnique.mockResolvedValue({
+        userId: 'target1',
+      });
 
       const result = await service.createMessage(
         chatId,
@@ -154,11 +188,60 @@ describe('ChatService', () => {
         meta,
       );
 
-      expect(result).toEqual({ message: mockMessage, sendto: mockUser.userId });
+      expect(result).toEqual({
+        message: mockMessage,
+        sendto: mockTargetUser.userId,
+      });
       expect(mockPrismaService.chatMessage.create).toHaveBeenCalledWith({
         data: {
           chatId,
-          senderId,
+          senderId: mockUser.userId,
+          content,
+          meta,
+          status: ChatMessageStatus.WAITING,
+        },
+      });
+    });
+
+    it('should create a message when sender is buddy', async () => {
+      const chatId = 'chat1';
+      const buddyId = 'buddy1';
+      const content = 'Hello';
+      const meta = {
+        id: 'meta1',
+        timestamp: new Date(),
+        type: 'text' as const,
+        content: 'Hello',
+      };
+
+      const mockChat = { id: chatId, buddyId, customerId: 'customer1' };
+      const mockMessage = { id: 'msg1', content, meta };
+      const mockUser = {
+        userId: 'user1',
+        buddy: { buddyId },
+      };
+      const mockTargetUser = { userId: 'customer1' };
+
+      mockPrismaService.user.findFirst.mockResolvedValue(mockUser);
+      mockPrismaService.chat.findUnique.mockResolvedValue(mockChat);
+      mockPrismaService.chatMessage.create.mockResolvedValue(mockMessage);
+      mockPrismaService.user.findUnique.mockResolvedValue(mockTargetUser);
+
+      const result = await service.createMessage(
+        chatId,
+        buddyId,
+        content,
+        meta,
+      );
+
+      expect(result).toEqual({
+        message: mockMessage,
+        sendto: mockTargetUser.userId,
+      });
+      expect(mockPrismaService.chatMessage.create).toHaveBeenCalledWith({
+        data: {
+          chatId,
+          senderId: mockUser.userId,
           content,
           meta,
           status: ChatMessageStatus.WAITING,
@@ -167,6 +250,8 @@ describe('ChatService', () => {
     });
 
     it('should throw NotFoundException if chat not found', async () => {
+      const mockUser = { userId: 'user1', buddy: null };
+      mockPrismaService.user.findFirst.mockResolvedValue(mockUser);
       mockPrismaService.chat.findUnique.mockResolvedValue(null);
 
       await expect(
@@ -179,15 +264,30 @@ describe('ChatService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should throw NotFoundException if user not found', async () => {
-      const mockChat = { id: 'chat1', buddyId: 'user2', customerId: 'user1' };
+    it('should throw NotFoundException if sender not found', async () => {
+      mockPrismaService.user.findFirst.mockResolvedValue(null);
 
+      await expect(
+        service.createMessage('chat1', 'user1', 'Hello', {
+          id: 'meta1',
+          timestamp: new Date(),
+          type: 'text',
+          content: 'Hello',
+        }),
+      ).rejects.toThrow(NotFoundException);
+    });
+
+    it('should throw NotFoundException if target user not found', async () => {
+      const mockChat = { id: 'chat1', buddyId: 'buddy1', customerId: 'user1' };
+      const mockUser = { userId: 'user1', buddy: { buddyId: 'buddy1' } };
+
+      mockPrismaService.user.findFirst.mockResolvedValue(mockUser);
       mockPrismaService.chat.findUnique.mockResolvedValue(mockChat);
       mockPrismaService.chatMessage.create.mockResolvedValue({});
       mockPrismaService.user.findUnique.mockResolvedValue(null);
 
       await expect(
-        service.createMessage('chat1', 'user1', 'Hello', {
+        service.createMessage('chat1', 'buddy1', 'Hello', {
           id: 'meta1',
           timestamp: new Date(),
           type: 'text',
@@ -210,7 +310,8 @@ describe('ChatService', () => {
       expect(result).toEqual(mockMessage);
       expect(mockPrismaService.chatMessage.update).toHaveBeenCalledWith({
         where: { id: messageId, chatId },
-        data: { readAt: expect.any(Date) as Date },
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        data: { readAt: expect.any(Date) },
       });
     });
   });
@@ -261,7 +362,8 @@ describe('ChatService', () => {
           readAt: null,
         },
         data: {
-          readAt: expect.any(Date) as Date,
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          readAt: expect.any(Date),
           status: ChatMessageStatus.READ,
         },
       });

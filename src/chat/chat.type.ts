@@ -1,10 +1,5 @@
 import { IsObject, IsOptional, IsUUID } from 'class-validator';
 
-export class CreateChatDto {
-  @IsUUID()
-  buddyId: string;
-}
-
 export class ChatMessage {
   @IsUUID()
   @IsOptional()
