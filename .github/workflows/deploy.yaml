@@ -124,7 +124,7 @@ jobs:
 
       - name: Deploy to deploys.app
         run: |
-          deploys get me
+          deploys me get
 
       # - name: Output Render service URL
       #   uses: mshick/add-pr-comment@v2
