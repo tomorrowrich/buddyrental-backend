@@ -40,9 +40,9 @@ jobs:
             -location=gke.cluster-rcf2 \
             -name=preview-${{ github.event.number }}
 
-      - name: Cleanup Database Schema
-        run: |
-          psql -c "DROP SCHEMA IF EXISTS \"preview-${{ github.event.number }}\" CASCADE;" ${{ secrets.DIRECT_URL }}
+      # - name: Cleanup Database Schema
+      #   run: |
+      #     psql -c "DROP SCHEMA IF EXISTS \"preview-${{ github.event.number }}\" CASCADE;" ${{ secrets.DIRECT_URL }}
 
       - name: Cleanup PR Comment
         uses: mshick/add-pr-comment@v2

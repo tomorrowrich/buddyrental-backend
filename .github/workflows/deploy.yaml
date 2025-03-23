@@ -6,11 +6,6 @@ on:
     branches:
       - main
       - develop
-  workflow_dispatch:
-    inputs:
-      sha:
-        description: 'SHA of the commit to preview'
-        required: false
 
 jobs:
   build:
@@ -125,6 +120,7 @@ jobs:
         with:
           url: 'https://api.deploys.app/deployment.deploy'
           method: 'POST'
+          timeout: 15000
           username: ${{ secrets.DEPLOYS_AUTH_USER }}
           password: ${{ secrets.DEPLOYS_AUTH_PASS }}
           contentType: 'application/json'
