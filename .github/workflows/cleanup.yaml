@@ -42,8 +42,7 @@ jobs:
 
       - name: Cleanup Database Schema
         run: |
-          psql ${{ secrets.DIRECT_URL }}
-          DROP SCHEMA IF EXISTS preview-${{ github.event.number }} CASCADE;
+          psql -c "DROP SCHEMA IF EXISTS preview-${{ github.event.number }} CASCADE;" ${{ secrets.DIRECT_URL }}
 
       - name: Cleanup PR Comment
         uses: mshick/add-pr-comment@v2
