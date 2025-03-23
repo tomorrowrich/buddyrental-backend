@@ -1,3 +1,22 @@
+# [1.4.0-beta.8](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.7...v1.4.0-beta.8) (2025-03-23)
+
+### Bug Fixes
+
+- **ci:** cleanup ([f70c712](https://github.com/tomorrowrich/buddyrental-backend/commit/f70c7122d8636f8edd84e06e96fc8f9e2e2fab9a))
+- **ci:** fix auth ([cada371](https://github.com/tomorrowrich/buddyrental-backend/commit/cada371ecb4454cbae1d99e9fe2a49680e03af6d))
+- **ci:** fix cleanup workflow ([c62033b](https://github.com/tomorrowrich/buddyrental-backend/commit/c62033ba35c4d6b255663d63b32d268ef617cc07))
+- **ci:** fix cleanup workflow ([b68de17](https://github.com/tomorrowrich/buddyrental-backend/commit/b68de17729342319374e09a2f3398ca7476efe90))
+- **ci:** fix cleanup workflow ([1019381](https://github.com/tomorrowrich/buddyrental-backend/commit/1019381a55c45e305fd949531c564496214cb94a))
+- **ci:** fix cleanup workflow ([f7b2bc6](https://github.com/tomorrowrich/buddyrental-backend/commit/f7b2bc682f1412e72f8060ffb50d69fe8ad5d3f7))
+- **ci:** fix cleanup workflow ([970fe07](https://github.com/tomorrowrich/buddyrental-backend/commit/970fe07dc4f5e617ed65e3f8d665ea8f0b7260a1))
+- **ci:** fix workflow ([7a70f89](https://github.com/tomorrowrich/buddyrental-backend/commit/7a70f89b983b762bfeb40ef054f98c1a57391a94))
+- **ci:** script executable ([38ffd7d](https://github.com/tomorrowrich/buddyrental-backend/commit/38ffd7deb14a9976b69ef7bf6fd3466c63b4df09))
+- **ci:** script executable ([4117223](https://github.com/tomorrowrich/buddyrental-backend/commit/41172235ea96c844affd61d8b552c06a80be75a2))
+- **ci:** typo ([6fa8be3](https://github.com/tomorrowrich/buddyrental-backend/commit/6fa8be383af18048afa2a19664b13c994f15da7e))
+- dependencies ([537ca9a](https://github.com/tomorrowrich/buddyrental-backend/commit/537ca9aca506368ebbec1a900d33a5bf5783e725))
+- typo ([1cd59c8](https://github.com/tomorrowrich/buddyrental-backend/commit/1cd59c858bb367d098732de82d32dd1b2b62361d))
+- typo ([6d36f24](https://github.com/tomorrowrich/buddyrental-backend/commit/6d36f249a75c47ea367f595eabbd63a88b993823))
+
 # [1.4.0-beta.7](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.6...v1.4.0-beta.7) (2025-03-23)
 
 ### Bug Fixes
