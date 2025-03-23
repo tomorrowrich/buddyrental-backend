@@ -117,7 +117,7 @@ jobs:
 
       - name: Create Route on Deploys.app
         run: |
-          deploys routes create \
+          deploys route create \
             -project=buddyrental-api \
             -location=gke.cluster-rcf2 \
             -domain=buddyrental-preview-${{ github.event.number }}.tonklaw.com \
