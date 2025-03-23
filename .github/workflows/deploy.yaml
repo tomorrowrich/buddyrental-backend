@@ -65,6 +65,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: Staging
+    env:
+      DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
+      DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -118,9 +121,6 @@ jobs:
 
       - name: Install Deploys CLI
         run: scripts/install-deploys-cli.sh
-        env:
-          DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
-          DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}
 
       - name: Deploy to deploys.app
         run: |
