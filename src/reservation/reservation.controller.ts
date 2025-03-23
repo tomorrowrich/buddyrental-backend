@@ -110,7 +110,7 @@ export class ReservationController {
     };
   }
 
-  @Patch('confirm/:id')
+  @Patch('confirm/:reservationId')
   @LoggedIn()
   @Roles(AuthUserRole.BUDDY)
   @ApiOperation({
@@ -118,7 +118,7 @@ export class ReservationController {
   })
   async updateReservation(
     @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
+    @Param('reservationId') id: string,
   ) {
     const reservation = await this.reservationService.confirmReservation(
       req.user.userId,
@@ -130,7 +130,7 @@ export class ReservationController {
     };
   }
 
-  @Patch('reject/:id')
+  @Patch('reject/:reservationId')
   @LoggedIn()
   @Roles(AuthUserRole.BUDDY)
   @ApiOperation({
@@ -138,7 +138,7 @@ export class ReservationController {
   })
   async rejectReservation(
     @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
+    @Param('reservationId') id: string,
   ) {
     const reservation = await this.reservationService.rejectReservation(
       req.user.userId,
@@ -150,14 +150,14 @@ export class ReservationController {
     };
   }
 
-  @Patch('cancel/:id')
+  @Patch('cancel/:reservationId')
   @LoggedIn()
   @ApiOperation({
     summary: 'Cancel Reservation',
   })
   async cancelReservation(
     @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
+    @Param('reservationId') id: string,
   ) {
     const reservation = await this.reservationService.cancelReservation(
       req.user.userId,
@@ -169,14 +169,14 @@ export class ReservationController {
     };
   }
 
-  @Patch('complete/:id')
+  @Patch('complete/:reservationId')
   @LoggedIn()
   @ApiOperation({
     summary: 'Mark Reservation as Completed',
   })
   async completeReservation(
     @Req() req: AuthenticatedRequest,
-    @Param('id') id: string,
+    @Param('reservationId') id: string,
   ) {
     const reservation = await this.reservationService.completeReservation(
       req.user.userId,

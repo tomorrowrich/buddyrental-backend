@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { ChatGatewayAuthPayload, ChatMessage } from './chat.type';
-import { isUUID, validate } from 'class-validator';
+import { isUUID } from 'class-validator';
 import { ChatService } from './chat.service';
 import { Chat } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
@@ -47,8 +47,7 @@ export class ChatGateway implements OnGatewayConnection {
             return client.emit('connected', { message: 'Connected!' });
           }
         })
-        .catch((error) => {
-          console.error('JWT verification error:', error);
+        .catch(() => {
           return client.disconnect();
         });
     }
@@ -57,40 +56,24 @@ export class ChatGateway implements OnGatewayConnection {
 
   @SubscribeMessage('message')
   async handleMessage(@MessageBody() message: ChatMessage): Promise<string> {
-    const verify = await validate(message, {
-      skipMissingProperties: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }).then((errors) => {
-      if (errors.length > 0) {
-        return 'FAILED';
-      }
-    });
+    return this.chatService
+      .createMessage(
+        message.chatId,
+        message.senderId,
+        message.content,
+        message.meta,
+      )
+      .then(async ({ message: msg, sendto }) => {
+        this.server.timeout(500).to(`chat-${sendto}`).emit('message', msg);
 
-    if (!verify) {
-      return 'FAILED';
-    }
-
-    const { message: msg, sendto } = await this.chatService.createMessage(
-      message.chatId,
-      message.senderId,
-      message.content,
-      message.meta,
-    );
-
-    let messageStatus: string = 'WAITING';
-
-    this.server
-      .timeout(500)
-      .to(`chat-${sendto}`)
-      .emit('message', msg, async (err: any) => {
-        if (!err) {
-          await this.chatService.updateMessageStatus(msg.id, 'SENT');
-          messageStatus = 'SENT';
-        }
+        return this.chatService
+          .updateMessageStatus(msg.id, 'SENT')
+          .then(() => `SENT ${message.id}`)
+          .catch(() => `WAITING ${message.id}`);
+      })
+      .catch((error: Error) => {
+        return `FAILED: ${error.message}`;
       });
-
-    return messageStatus;
   }
 
   @SubscribeMessage('operation')

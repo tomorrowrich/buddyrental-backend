@@ -52,8 +52,8 @@ export class ChatService {
     return chat;
   }
 
-  async getChats(userId: string): Promise<Chat[]> {
-    return await this.prisma.chat.findMany({
+  async getChats(userId: string, take = 10, skip = 0) {
+    const data = await this.prisma.chat.findMany({
       where: {
         OR: [{ buddyId: userId }, { customerId: userId }],
       },
@@ -65,18 +65,23 @@ export class ChatService {
           },
         },
       },
+      take,
+      skip,
       orderBy: {
         updatedAt: 'desc',
       },
     });
+
+    const totalCount = await this.prisma.chat.count({
+      where: {
+        OR: [{ buddyId: userId }, { customerId: userId }],
+      },
+    });
+
+    return { data, totalCount };
   }
 
-  async getHistory(
-    userId: string,
-    chatId: string,
-    limit: number,
-    skip: number,
-  ): Promise<ChatMessage[]> {
+  async getHistory(userId: string, chatId: string, take: number, skip: number) {
     const chat = await this.prisma.chat.findUnique({
       where: {
         id: chatId,
@@ -92,16 +97,29 @@ export class ChatService {
       throw new ForbiddenException('You are not involved in this chat');
     }
 
-    return await this.prisma.chatMessage.findMany({
+    const data = await this.prisma.chatMessage.findMany({
       where: {
         chatId,
       },
       orderBy: {
         createdAt: 'desc',
       },
-      take: limit,
+      omit: {
+        chatId: true,
+        updatedAt: true,
+        deletedAt: true,
+      },
+      take: take,
       skip: skip,
     });
+
+    const totalCount = await this.prisma.chatMessage.count({
+      where: {
+        chatId,
+      },
+    });
+
+    return { data, totalCount };
   }
 
   async createMessage(
@@ -115,6 +133,30 @@ export class ChatService {
       content: string;
     },
   ): Promise<{ message: ChatMessage; sendto: string }> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          { userId: senderId },
+          {
+            buddy: {
+              buddyId: senderId,
+            },
+          },
+        ],
+      },
+      include: {
+        buddy: {
+          select: {
+            buddyId: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Sender not found');
+    }
+
     const chat = await this.prisma.chat.findUnique({
       where: {
         id: chatId,
@@ -129,7 +171,7 @@ export class ChatService {
     const message = await this.prisma.chatMessage.create({
       data: {
         chatId,
-        senderId,
+        senderId: user.userId,
         content,
         meta: {
           id: meta.id,
@@ -140,16 +182,31 @@ export class ChatService {
         status: ChatMessageStatus.WAITING,
       },
     });
-    const user = await this.prisma.user.findUnique({
-      where: {
-        userId: chat.buddyId === senderId ? chat.customerId : chat.buddyId,
-      },
-    });
 
-    if (!user) {
-      throw new NotFoundException('User not found');
+    if (chat.buddyId == user.buddy?.buddyId) {
+      const user = await this.prisma.user.findUnique({
+        where: {
+          userId: chat.customerId,
+        },
+      });
+      if (!user) {
+        throw new NotFoundException('Target user not found');
+      }
+      return { message, sendto: user.userId };
+    } else {
+      const user = await this.prisma.buddy.findUnique({
+        where: {
+          buddyId: chat.buddyId,
+        },
+        select: {
+          userId: true,
+        },
+      });
+      if (!user || !user.userId) {
+        throw new NotFoundException('Target user not found');
+      }
+      return { message, sendto: user.userId };
     }
-    return { message, sendto: user.userId };
   }
 
   async readMessage(chatId: string, messageId: string): Promise<ChatMessage> {
