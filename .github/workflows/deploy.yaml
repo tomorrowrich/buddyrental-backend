@@ -94,7 +94,7 @@ jobs:
       group: preview-deploy-${{ github.ref }}
       cancel-in-progress: true
     name: Deploy preview to deploys.app
-    needs: migrate
+    needs: [migrate, build]
     runs-on: ubuntu-latest
     environment: Staging
     env:
