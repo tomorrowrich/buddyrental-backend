@@ -1,3 +1,10 @@
+# [1.4.0-beta.7](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.6...v1.4.0-beta.7) (2025-03-23)
+
+### Bug Fixes
+
+- **chat:** realtime and docs ([e64408f](https://github.com/tomorrowrich/buddyrental-backend/commit/e64408ff7d3e88e424ef57a24d19f36959fcb748))
+- **chat:** variable naming ([475a5cc](https://github.com/tomorrowrich/buddyrental-backend/commit/475a5cc633d4204d3872711f721450c3761f990f))
+
 # [1.4.0-beta.6](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.5...v1.4.0-beta.6) (2025-03-23)
 
 ### Features
