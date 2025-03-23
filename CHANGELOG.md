@@ -1,3 +1,9 @@
+# [1.4.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.4...v1.4.0-beta.5) (2025-03-23)
+
+### Bug Fixes
+
+- **reservation:** pagination ([c3d78d5](https://github.com/tomorrowrich/buddyrental-backend/commit/c3d78d5ca9ea6c6949db132894b513342e395b65))
+
 # [1.4.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.3...v1.4.0-beta.4) (2025-03-22)
 
 ### Features
