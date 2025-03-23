@@ -7,7 +7,7 @@ ARCH="amd64"
 EXT="tar.gz"
 FILENAME="deploys_${VERSION}_${PLATFORM}_${ARCH}.${EXT}"
 DOWNLOAD_URL="https://github.com/deploys-app/deploys/releases/download/v${VERSION}/${FILENAME}"
-CACHE_DIR="$HOME/.cache/deploys-action/${VERSION}"
+CACHE_DIR="$HOME/.cache/deploys-cli/${VERSION}"
 EXE_PATH="${CACHE_DIR}/deploys"
 
 # Functions
@@ -42,3 +42,6 @@ fi
 # Make the CLI executable
 chmod +x "${EXE_PATH}"
 echo "Executable path: ${EXE_PATH}"
+echo "Adding to PATH..."
+echo "export PATH=\$PATH:${CACHE_DIR}" >> $GITHUB_PATH
+echo "Installation complete."
