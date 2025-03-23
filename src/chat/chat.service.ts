@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Chat, ChatMessage, ChatMessageStatus } from '@prisma/client';
+import { ChatMessageMeta } from './chat.type';
 
 @Injectable()
 export class ChatService {
@@ -23,6 +24,29 @@ export class ChatService {
     }
 
     return chat;
+  }
+
+  async getChatSendto(chatId: string, senderId: string): Promise<string> {
+    const chat = await this.getChatById(chatId);
+    if (chat.customerId === senderId) {
+      const userId = await this.prisma.user
+        .findFirst({
+          where: {
+            buddy: {
+              buddyId: chat.buddyId,
+            },
+          },
+          select: {
+            userId: true,
+          },
+        })
+        .then((user) => user && user.userId);
+      if (userId) {
+        return userId;
+      }
+      throw new NotFoundException('User not found');
+    }
+    return chat.customerId;
   }
 
   async createChat(userId: string, buddyId: string): Promise<Chat> {
@@ -126,12 +150,7 @@ export class ChatService {
     chatId: string,
     senderId: string,
     content: string,
-    meta: {
-      id: string;
-      timestamp: Date;
-      type: 'text' | 'image' | 'appointment' | 'file';
-      content: string;
-    },
+    meta: ChatMessageMeta,
   ): Promise<{ message: ChatMessage; sendto: string }> {
     const user = await this.prisma.user.findFirst({
       where: {
@@ -174,7 +193,7 @@ export class ChatService {
         senderId: user.userId,
         content,
         meta: {
-          id: meta.id,
+          metaId: meta.metaId,
           timestamp: meta.timestamp,
           type: meta.type,
           content: meta.content,
