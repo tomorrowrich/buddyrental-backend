@@ -1,0 +1,54 @@
+name: Cleanup Merged PR
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+      - develop
+
+jobs:
+  cleanup:
+    name: Cleanup Preview Deployment
+    runs-on: ubuntu-latest
+    environment: Staging
+    env:
+      DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
+      DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Install Deploys CLI
+        run: scripts/install-deploys-cli.sh
+
+      - name: Cleanup Route on Deploys.app
+        run: |
+          deploys route delete \
+            -project=buddyrental-api \
+            -location=gke.cluster-rcf2 \
+            -domain=buddyrental-preview-${{ github.event.number }}.tonklaw.com
+
+      - name: Cleanup Deployment on Deploys.app
+        run: |
+          deploys deployment delete \
+            -project=buddyrental-api \
+            -location=gke.cluster-rcf2 \
+            -name=preview-${{ github.event.number }}
+
+      # - name: Cleanup Database Schema
+      #   run: |
+      #     psql -c "DROP SCHEMA IF EXISTS \"preview-${{ github.event.number }}\" CASCADE;" ${{ secrets.DIRECT_URL }}
+
+      - name: Cleanup PR Comment
+        uses: mshick/add-pr-comment@v2
+        with:
+          repo-token: ${{ secrets.DEPLOY_TOKEN }}
+          message: |
+            ### <span aria-hidden="true">😢</span> PR Deployment has been cleaned up...
+
+            The preview deployment has been cleaned up. The preview URL is no longer available. Reopen the PR to create a new preview deployment.

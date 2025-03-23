@@ -150,7 +150,7 @@ jobs:
     concurrency:
       group: trigger-devel-${{ github.ref }}
       cancel-in-progress: true
-    name: Deploy to Render
+    name: Deploy to Development
     needs:
       - docker
       - release
@@ -161,19 +161,25 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Create Render Deployment
-        uses: fjogeleit/http-request-action@v1
-        id: trigger-preview
-        with:
-          url: ${{ secrets.RENDER_DEPLOY_HOOK }}
-          method: 'GET'
-          timeout: 15000
+      - name: Install Deploys CLI
+        run: scripts/install-deploys-cli.sh
+
+      - name: Trigger Deployment
+        run: |
+          deploys deployment deploy \
+            -project=buddyrental-api \
+            -location=gke.cluster-rcf2 \
+            -name=development \
+            -image=ghcr.io/${{ github.repository }}:${{ needs.release.outputs.version }}
+        env:
+          DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
+          DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}
 
   trigger-prod:
     concurrency:
       group: trigger-prod-${{ github.ref }}
       cancel-in-progress: true
-    name: Deploy to Render
+    name: Deploy to Production
     needs:
       - docker
       - release
@@ -184,13 +190,19 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Create Render Deployment
-        uses: fjogeleit/http-request-action@v1
-        id: trigger-preview
-        with:
-          url: ${{ secrets.RENDER_DEPLOY_HOOK }}
-          method: 'GET'
-          timeout: 15000
+      - name: Install Deploys CLI
+        run: scripts/install-deploys-cli.sh
+
+      - name: Trigger Deployment
+        run: |
+          deploys deployment deploy \
+            -project=buddyrental-api \
+            -location=gke.cluster-rcf2 \
+            -name=production \
+            -image=ghcr.io/${{ github.repository }}:${{ needs.release.outputs.version }}
+        env:
+          DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
+          DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}
 
   deploy:
     concurrency:

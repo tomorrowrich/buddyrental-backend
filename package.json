@@ -1,6 +1,6 @@
 {
   "name": "buddyrental-backend",
-  "version": "1.4.0-beta.7",
+  "version": "1.4.0-beta.9",
   "description": "",
   "author": "",
   "private": true,
@@ -107,5 +107,6 @@
     "roots": [
       "<rootDir>/src/"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.6.2+sha1.7f417eb782bab712a1a9bd0206887dcee502d03e"
 }
