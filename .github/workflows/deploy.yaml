@@ -88,6 +88,7 @@ jobs:
 
       # I know there is a proper action for this, but it doesn't provide a way to configure ENV
       - name: Call Deploys.app Deploy API
+        id: deploy
         uses: fjogeleit/http-request-action@v1
         with:
           url: 'https://api.deploys.app/deployment.deploy'
@@ -108,12 +109,15 @@ jobs:
               }
             }
 
+      - name: Response from Deploys.app
+        run: echo ${{ steps.deploy.outputs.body }}
+
       - name: Install Deploys CLI
         run: scripts/install-deploys-cli.sh
 
       - name: Create Route on Deploys.app
         run: |
-          deploys route create \
+          deploys routes create \
             -project=buddyrental-api \
             -location=gke.cluster-rcf2 \
             -domain=buddyrental-preview-${{ github.event.number }}.tonklaw.com \
