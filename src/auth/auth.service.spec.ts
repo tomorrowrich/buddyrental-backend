@@ -8,6 +8,7 @@ import { UsersService } from '@app/users/users.service';
 import { PrismaService } from '@app/prisma/prisma.service';
 import { RegisterDto } from './dtos/register.dto';
 import { randomUUID } from 'node:crypto';
+import { ForbiddenException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -87,7 +88,6 @@ describe('AuthService', () => {
 
   it('should be defined', () => {
     expect(authService).toBeDefined();
-    expect(usersService).toBeDefined();
   });
 
   describe('register', () => {
@@ -109,6 +109,117 @@ describe('AuthService', () => {
       };
       const userId = await authService.register(registerDto);
       expect(userId).toBeDefined();
+    });
+
+    it('should not register a user with duplicate email', async () => {
+      const registerDto: RegisterDto = {
+        email: 'test@example.com',
+        password: 'password',
+        dateOfBirth: '2000-01-01',
+        address: '123 Test St',
+        firstName: 'Test',
+        city: 'Test City',
+        lastName: 'User',
+        gender: 'MALE',
+        phone: '1234567890',
+        citizenId: '1234567890',
+        postalCode: '12345',
+        nickname: 'testuser',
+        profilePicture: 'test.jpg',
+      };
+      const _oldUser = await authService.register(registerDto);
+      const nextRegisterDto: RegisterDto = {
+        email: 'test@example.com',
+        password: 'newPassword',
+        dateOfBirth: '2000-01-02',
+        address: '124 Test St',
+        firstName: 'Next-Test',
+        city: 'Test Town',
+        lastName: 'Mext-User',
+        gender: 'FEMALE',
+        phone: '0987654321',
+        citizenId: '0987654321',
+        postalCode: '54321',
+        nickname: 'newtestuser',
+        profilePicture: 'test.jpg',
+      };
+      await expect(authService.register(nextRegisterDto)).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+
+    it('should not register a user with duplicate phone number', async () => {
+      const registerDto: RegisterDto = {
+        email: 'test@example.com',
+        password: 'password',
+        dateOfBirth: '2000-01-01',
+        address: '123 Test St',
+        firstName: 'Test',
+        city: 'Test City',
+        lastName: 'User',
+        gender: 'MALE',
+        phone: '1234567890',
+        citizenId: '1234567890',
+        postalCode: '12345',
+        nickname: 'testuser',
+        profilePicture: 'test.jpg',
+      };
+      const _oldUser = await authService.register(registerDto);
+      const nextRegisterDto: RegisterDto = {
+        email: 'newtest@example.com',
+        password: 'newPassword',
+        dateOfBirth: '2000-01-02',
+        address: '124 Test St',
+        firstName: 'Next-Test',
+        city: 'Test Town',
+        lastName: 'Mext-User',
+        gender: 'FEMALE',
+        phone: '1234567890',
+        citizenId: '0987654321',
+        postalCode: '54321',
+        nickname: 'newtestuser',
+        profilePicture: 'test.jpg',
+      };
+      await expect(authService.register(nextRegisterDto)).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+
+    it('should not register a user with duplicate citizen id', async () => {
+      const registerDto: RegisterDto = {
+        email: 'test@example.com',
+        password: 'password',
+        dateOfBirth: '2000-01-01',
+        address: '123 Test St',
+        firstName: 'Test',
+        city: 'Test City',
+        lastName: 'User',
+        gender: 'MALE',
+        phone: '1234567890',
+        citizenId: '1234567890',
+        postalCode: '12345',
+        nickname: 'testuser',
+        profilePicture: 'test.jpg',
+      };
+      const _oldUser = await authService.register(registerDto);
+      const nextRegisterDto: RegisterDto = {
+        email: 'newtest@example.com',
+        password: 'newPassword',
+        dateOfBirth: '2000-01-02',
+        address: '124 Test St',
+        firstName: 'Next-Test',
+        city: 'Test Town',
+        lastName: 'Mext-User',
+        gender: 'FEMALE',
+        phone: '0987654321',
+        citizenId: '1234567890',
+        postalCode: '54321',
+        nickname: 'newtestuser',
+        profilePicture: 'test.jpg',
+      };
+      await expect(authService.register(nextRegisterDto)).rejects.toThrow(
+        ForbiddenException,
+      );
     });
   });
 });
