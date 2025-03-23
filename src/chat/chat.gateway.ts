@@ -8,7 +8,11 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ChatGatewayAuthPayload, ChatMessage } from './chat.type';
+import {
+  ChatGatewayAuthPayload,
+  ChatMessage,
+  ChatMessageMeta,
+} from './chat.type';
 import { isUUID, validate } from 'class-validator';
 import { ChatService } from './chat.service';
 import { Chat } from '@prisma/client';
@@ -47,8 +51,7 @@ export class ChatGateway implements OnGatewayConnection {
             return client.emit('connected', { message: 'Connected!' });
           }
         })
-        .catch((error) => {
-          console.error('JWT verification error:', error);
+        .catch(() => {
           return client.disconnect();
         });
     }
@@ -57,40 +60,49 @@ export class ChatGateway implements OnGatewayConnection {
 
   @SubscribeMessage('message')
   async handleMessage(@MessageBody() message: ChatMessage): Promise<string> {
-    const verify = await validate(message, {
-      skipMissingProperties: true,
-      whitelist: true,
+    const chatMessage = new ChatMessage();
+    const chatMessageMeta = new ChatMessageMeta();
+    chatMessage.trackId = message.trackId;
+    chatMessage.chatId = message.chatId;
+    chatMessage.senderId = message.senderId;
+    chatMessage.content = message.content;
+
+    chatMessageMeta.metaId = message.meta.metaId;
+    chatMessageMeta.content = message.meta.content;
+    chatMessageMeta.type = message.meta.type;
+    chatMessageMeta.timestamp = message.meta.timestamp;
+
+    chatMessage.meta = chatMessageMeta;
+    const errors = await validate(chatMessage, {
       forbidNonWhitelisted: true,
-    }).then((errors) => {
-      if (errors.length > 0) {
-        return 'FAILED';
-      }
     });
 
-    if (!verify) {
-      return 'FAILED';
+    if (errors.length > 0) {
+      for (const error of errors) {
+        console.log(error.children);
+      }
+      console.log('______________________');
+      return 'INVALID';
     }
 
-    const { message: msg, sendto } = await this.chatService.createMessage(
-      message.chatId,
-      message.senderId,
-      message.content,
-      message.meta,
-    );
+    return this.chatService
+      .createMessage(
+        message.chatId,
+        message.senderId,
+        message.content,
+        message.meta,
+      )
+      .then(async ({ message: msg, sendto }) => {
+        this.server.timeout(500).to(`chat-${sendto}`).emit('message', msg);
 
-    let messageStatus: string = 'WAITING';
-
-    this.server
-      .timeout(500)
-      .to(`chat-${sendto}`)
-      .emit('message', msg, async (err: any) => {
-        if (!err) {
-          await this.chatService.updateMessageStatus(msg.id, 'SENT');
-          messageStatus = 'SENT';
-        }
+        return this.chatService
+          .updateMessageStatus(msg.id, 'SENT')
+          .then(() => `SENT ${message.trackId}`)
+          .catch(() => `WAITING ${message.trackId}`);
+      })
+      .catch((error: Error) => {
+        return `FAILED: ${error.message}`;
       });
-
-    return messageStatus;
   }
 
   @SubscribeMessage('operation')
@@ -105,20 +117,22 @@ export class ChatGateway implements OnGatewayConnection {
       if (!chat) {
         return 'FAILED';
       }
-      const sendto =
-        chat.buddyId ===
-        (client.handshake.auth['userid'] || client.handshake.headers['userid'])
-          ? chat.customerId
-          : chat.buddyId;
+
+      const userId = (client.handshake.auth['userid'] ||
+        client.handshake.headers['userid']) as string;
+
+      const sendto = await this.chatService.getChatSendto(chatId, userId);
+
+      console.log(`sendto: ${sendto}`);
       const room = `operation-${sendto}`;
       if (command === 'focus') {
-        client.to(room).emit('operation', `focus ${chatId}`);
+        this.server.to(room).emit('operation', `focus ${chatId}`);
         return 'OK';
       } else if (command === 'unfocus') {
-        client.to(room).emit('operation', `unfocus ${chatId}`);
+        this.server.to(room).emit('operation', `unfocus ${chatId}`);
         return 'OK';
       } else if (command === 'read') {
-        client.to(room).emit('operation', `read ${chatId}`);
+        this.server.to(room).emit('operation', `read ${chatId}`);
         await this.chatService.markMessagesAsRead(chatId, client.id);
         return 'OK';
       }
@@ -134,7 +148,9 @@ export class ChatGateway implements OnGatewayConnection {
           ? chat.customerId
           : chat.buddyId;
       if (command === 'typing') {
-        client.to(`operation-${sendto}`).emit('operraion', `typing ${args}`);
+        this.server
+          .to(`operation-${sendto}`)
+          .emit('operraion', `typing ${args}`);
         return 'OK';
       }
     }

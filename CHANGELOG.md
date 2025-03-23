@@ -1,3 +1,29 @@
+# [1.4.0-beta.7](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.6...v1.4.0-beta.7) (2025-03-23)
+
+### Bug Fixes
+
+- **chat:** realtime and docs ([e64408f](https://github.com/tomorrowrich/buddyrental-backend/commit/e64408ff7d3e88e424ef57a24d19f36959fcb748))
+- **chat:** variable naming ([475a5cc](https://github.com/tomorrowrich/buddyrental-backend/commit/475a5cc633d4204d3872711f721450c3761f990f))
+
+# [1.4.0-beta.6](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.5...v1.4.0-beta.6) (2025-03-23)
+
+### Features
+
+- **auth:** write auth test conditions ([54563bd](https://github.com/tomorrowrich/buddyrental-backend/commit/54563bd0067d1a86f4f44ad8afefb0bb0cf6fc02))
+- **auth:** write auth test conditions ([#111](https://github.com/tomorrowrich/buddyrental-backend/issues/111)) ([3a1db8e](https://github.com/tomorrowrich/buddyrental-backend/commit/3a1db8ea14e3575f69cb07d3f36022dbcac79d26))
+
+# [1.4.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.4...v1.4.0-beta.5) (2025-03-23)
+
+### Bug Fixes
+
+- **reservation:** pagination ([c3d78d5](https://github.com/tomorrowrich/buddyrental-backend/commit/c3d78d5ca9ea6c6949db132894b513342e395b65))
+
+# [1.4.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.3...v1.4.0-beta.4) (2025-03-22)
+
+### Features
+
+- **auth:** fix missing jwtservice ([6f6d58a](https://github.com/tomorrowrich/buddyrental-backend/commit/6f6d58ab96963362c8bfe81528f5ed2f70588d39))
+
 # [1.4.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.2...v1.4.0-beta.3) (2025-03-22)
 
 ### Features

@@ -27,8 +27,10 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterDto) {
-    const existingUser = await this.usersService.findUserWithEmail(
+    const existingUser = await this.usersService.findExistingUser(
       registerDto.email,
+      registerDto.citizenId,
+      registerDto.phone,
     );
     if (existingUser) {
       throw new ForbiddenException('Duplicate user');

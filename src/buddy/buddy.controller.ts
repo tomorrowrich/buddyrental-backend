@@ -33,9 +33,9 @@ export class BuddyController {
     );
   }
 
-  @Get('profile/:id')
+  @Get('profile/:buddyId')
   @LoggedIn()
-  getProfile(@Param('id') buddyId: string) {
+  getProfile(@Param('buddyId') buddyId: string) {
     return this.buddyService.getBuddyProfile(buddyId);
   }
 
