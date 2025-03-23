@@ -1,3 +1,10 @@
+# [1.4.0-beta.9](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.8...v1.4.0-beta.9) (2025-03-23)
+
+### Bug Fixes
+
+- **ci:** forbidden request ([a067a3c](https://github.com/tomorrowrich/buddyrental-backend/commit/a067a3c395957403144e0089c467bd4eee75355e))
+- **ci:** forbidden request ([#115](https://github.com/tomorrowrich/buddyrental-backend/issues/115)) ([4d73365](https://github.com/tomorrowrich/buddyrental-backend/commit/4d73365cb849dea1fa4c708371d57e4e9e791738))
+
 # [1.4.0-beta.8](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.7...v1.4.0-beta.8) (2025-03-23)
 
 ### Bug Fixes
