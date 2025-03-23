@@ -1,9 +1,39 @@
-import { IsObject, IsOptional, IsUUID } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUUID,
+  ValidateIf,
+  ValidateNested,
+} from 'class-validator';
+
+export enum ChatMessageMetaType {
+  TEXT = 'text',
+  IMAGE = 'image',
+  APPOINTMENT = 'appointment',
+  FILE = 'file',
+}
+
+export class ChatMessageMeta {
+  @IsUUID()
+  metaId: string;
+
+  @IsDateString()
+  timestamp: string;
+
+  @IsEnum(ChatMessageMetaType)
+  type: ChatMessageMetaType;
+
+  @IsString()
+  @IsOptional()
+  @ValidateIf((o: ChatMessageMeta) => o.type !== ChatMessageMetaType.TEXT)
+  content?: string;
+}
 
 export class ChatMessage {
   @IsUUID()
-  @IsOptional()
-  id?: string;
+  trackId: string;
 
   @IsUUID()
   chatId: string;
@@ -11,16 +41,11 @@ export class ChatMessage {
   @IsUUID()
   senderId: string;
 
-  @IsUUID()
+  @IsString()
   content: string;
 
-  @IsObject()
-  meta: {
-    id: string;
-    timestamp: Date;
-    type: 'text' | 'image' | 'appointment' | 'file';
-    content: string;
-  };
+  @ValidateNested()
+  meta: ChatMessageMeta;
 }
 
 export interface ChatGatewayAuthPayload {

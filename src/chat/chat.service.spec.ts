@@ -1,12 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ChatService } from './chat.service';
 import { PrismaService } from '@app/prisma/prisma.service';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { ChatMessageStatus } from '@prisma/client';
+import { ChatMessageMeta, ChatMessageMetaType } from './chat.type';
 
 describe('ChatService', () => {
   let service: ChatService;
-  let prismaService: PrismaService;
+  let _prisma: PrismaService;
 
   const mockPrismaService = {
     chat: {
@@ -45,7 +50,7 @@ describe('ChatService', () => {
     }).compile();
 
     service = module.get<ChatService>(ChatService);
-    prismaService = module.get<PrismaService>(PrismaService);
+    _prisma = module.get<PrismaService>(PrismaService);
   });
 
   afterEach(() => {
@@ -54,6 +59,70 @@ describe('ChatService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('getChatById', () => {
+    it('should return a chat by id', async () => {
+      const mockChat = { id: 'chat1', buddyId: 'user2', customerId: 'user1' };
+      mockPrismaService.chat.findUnique.mockResolvedValue(mockChat);
+
+      const result = await service.getChatById('chat1');
+      expect(result).toEqual(mockChat);
+      expect(mockPrismaService.chat.findUnique).toHaveBeenCalledWith({
+        where: { id: 'chat1' },
+      });
+    });
+
+    it('should throw NotFoundException if chat not found', async () => {
+      mockPrismaService.chat.findUnique.mockResolvedValue(null);
+
+      await expect(service.getChatById('chat1')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('createChat', () => {
+    it('should create a new chat', async () => {
+      const mockChat = { id: 'chat1', buddyId: 'buddy1', customerId: 'user1' };
+      mockPrismaService.chat.findFirst.mockResolvedValue(null);
+      mockPrismaService.chat.create.mockResolvedValue(mockChat);
+
+      const result = await service.createChat('user1', 'buddy1');
+      expect(result).toEqual(mockChat);
+      expect(mockPrismaService.chat.findFirst).toHaveBeenCalledWith({
+        where: {
+          OR: [
+            { buddyId: 'buddy1', customerId: 'user1' },
+            { buddyId: 'user1', customerId: 'buddy1' },
+          ],
+        },
+      });
+      expect(mockPrismaService.chat.create).toHaveBeenCalledWith({
+        data: {
+          buddyId: 'buddy1',
+          customerId: 'user1',
+        },
+      });
+    });
+
+    it('should return existing chat if it exists', async () => {
+      const mockChat = { id: 'chat1', buddyId: 'buddy1', customerId: 'user1' };
+      mockPrismaService.chat.findFirst.mockResolvedValue(mockChat);
+
+      const result = await service.createChat('user1', 'buddy1');
+      expect(result).toEqual(mockChat);
+      expect(mockPrismaService.chat.create).not.toHaveBeenCalled();
+    });
+
+    it('should throw BadRequestException if userId or buddyId is missing', async () => {
+      await expect(service.createChat('', 'buddy1')).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.createChat('user1', '')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
   });
 
   describe('getChats', () => {
@@ -162,10 +231,10 @@ describe('ChatService', () => {
       const chatId = 'chat1';
       const senderId = 'user1';
       const content = 'Hello';
-      const meta = {
-        id: 'meta1',
-        timestamp: new Date(),
-        type: 'text' as const,
+      const meta: ChatMessageMeta = {
+        metaId: 'meta1',
+        timestamp: new Date().toISOString(),
+        type: ChatMessageMetaType.TEXT,
         content: 'Hello',
       };
 
@@ -197,7 +266,12 @@ describe('ChatService', () => {
           chatId,
           senderId: mockUser.userId,
           content,
-          meta,
+          meta: {
+            metaId: meta.metaId,
+            timestamp: meta.timestamp,
+            type: meta.type,
+            content: meta.content,
+          },
           status: ChatMessageStatus.WAITING,
         },
       });
@@ -207,10 +281,10 @@ describe('ChatService', () => {
       const chatId = 'chat1';
       const buddyId = 'buddy1';
       const content = 'Hello';
-      const meta = {
-        id: 'meta1',
-        timestamp: new Date(),
-        type: 'text' as const,
+      const meta: ChatMessageMeta = {
+        metaId: 'meta1',
+        timestamp: new Date().toISOString(),
+        type: ChatMessageMetaType.TEXT,
         content: 'Hello',
       };
 
@@ -243,7 +317,12 @@ describe('ChatService', () => {
           chatId,
           senderId: mockUser.userId,
           content,
-          meta,
+          meta: {
+            metaId: meta.metaId,
+            timestamp: meta.timestamp,
+            type: meta.type,
+            content: meta.content,
+          },
           status: ChatMessageStatus.WAITING,
         },
       });
@@ -256,9 +335,9 @@ describe('ChatService', () => {
 
       await expect(
         service.createMessage('chat1', 'user1', 'Hello', {
-          id: 'meta1',
-          timestamp: new Date(),
-          type: 'text',
+          metaId: 'meta1',
+          timestamp: new Date().toISOString(),
+          type: ChatMessageMetaType.TEXT,
           content: 'Hello',
         }),
       ).rejects.toThrow(NotFoundException);
@@ -269,9 +348,9 @@ describe('ChatService', () => {
 
       await expect(
         service.createMessage('chat1', 'user1', 'Hello', {
-          id: 'meta1',
-          timestamp: new Date(),
-          type: 'text',
+          metaId: 'meta1',
+          timestamp: new Date().toISOString(),
+          type: ChatMessageMetaType.TEXT,
           content: 'Hello',
         }),
       ).rejects.toThrow(NotFoundException);
@@ -288,9 +367,9 @@ describe('ChatService', () => {
 
       await expect(
         service.createMessage('chat1', 'buddy1', 'Hello', {
-          id: 'meta1',
-          timestamp: new Date(),
-          type: 'text',
+          metaId: 'meta1',
+          timestamp: new Date().toISOString(),
+          type: ChatMessageMetaType.TEXT,
           content: 'Hello',
         }),
       ).rejects.toThrow(NotFoundException);
