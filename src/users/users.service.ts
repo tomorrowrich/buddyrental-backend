@@ -139,14 +139,18 @@ export class UsersService {
     page: number = 1,
     perPage: number = 10,
   ): Promise<PaginatedOutputDto<UserResponseDto>> {
-    const paginate = createPaginator({ perPage, page });
+    // console.log(`Fetching unverified users - page: ${page}, perPage: ${perPage}`);
+    const paginate = createPaginator({
+      perPage: perPage || 10,
+      page: page || 1,
+    });
 
     // equivalent to paginating `this.prisma.user.findMany(...);`
     const unverified = await paginate<UserResponseDto, Prisma.UserFindManyArgs>(
-      this.prisma,
+      this.prisma.user,
       {
         where: { verified: false, deletedAt: null },
-        omit: { password: true },
+        omit: { password: true, accessToken: true, resetPasswordToken: true },
       },
     );
     return unverified;
