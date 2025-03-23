@@ -72,17 +72,6 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v3
 
-      # - name: Create Render service preview
-      #   uses: fjogeleit/http-request-action@v1
-      #   id: trigger-preview
-      #   with:
-      #     url: 'https://api.render.com/v1/services/${{ secrets.RENDER_PREVIEW_SERVICE_ID }}/preview'
-      #     method: 'POST'
-      #     bearerToken: ${{ secrets.RENDER_API_KEY }}
-      #     timeout: 15000
-      #     contentType: 'application/json'
-      #     data: '{"imagePath": "ghcr.io/${{ github.repository }}@${{ needs.build.outputs.build-image-digest }}","plan": "free","name": "buddyrental-backend-${{ github.sha }}"}'
-
       - name: Add Deploy Status to PR
         id: deploy-status
         uses: mshick/add-pr-comment@v2
@@ -122,15 +111,24 @@ jobs:
       - name: Install Deploys CLI
         run: scripts/install-deploys-cli.sh
 
-      - name: Deploy to deploys.app
+      - name: Create Route on Deploys.app
         run: |
-          deploys me get
+          deploys routes create \
+            -project=buddyrental-api \
+            -location=gke.cluster-rcf2 \
+            -domain=buddyrental-preview-${{ github.event.number }}.tonklaw.com \
+            -deployment=preview-${{ github.event.number }}
 
-      # - name: Output Render service URL
-      #   uses: mshick/add-pr-comment@v2
-      #   with:
-      #     message: |
-      #       🚀 Preview deployment is ready!
-      #       URL: ${{ fromJson(steps.trigger-preview.outputs.response).service.serviceDetails.url }}
-      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
-      #     allow-repeats: true
+      - name: Update Deploy Status to PR
+        uses: mshick/add-pr-comment@v2
+        with:
+          repo-token: ${{ secrets.DEPLOY_TOKEN }}
+          message: |
+            ### <span aria-hidden="true">🚀</span> Preview deployment is ready!
+
+            The preview deployment is ready. You can access the preview at [buddyrental-preview-${{ github.event.number }}.tonklaw.com](https://buddyrental-preview-${{ github.event.number }}.tonklaw.com).
+
+            | Name | Resource |
+            |:-:|------------------------|
+            |<span aria-hidden="true">🔨</span> Latest Commit | ${{ github.sha }} |
+            |<span aria-hidden="true">📦</span> Image Digest | ${{ needs.build.outputs.build-image-digest }} |
