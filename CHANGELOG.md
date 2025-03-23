@@ -1,3 +1,10 @@
+# [1.4.0-beta.6](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.5...v1.4.0-beta.6) (2025-03-23)
+
+### Features
+
+- **auth:** write auth test conditions ([54563bd](https://github.com/tomorrowrich/buddyrental-backend/commit/54563bd0067d1a86f4f44ad8afefb0bb0cf6fc02))
+- **auth:** write auth test conditions ([#111](https://github.com/tomorrowrich/buddyrental-backend/issues/111)) ([3a1db8e](https://github.com/tomorrowrich/buddyrental-backend/commit/3a1db8ea14e3575f69cb07d3f36022dbcac79d26))
+
 # [1.4.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.4...v1.4.0-beta.5) (2025-03-23)
 
 ### Bug Fixes
