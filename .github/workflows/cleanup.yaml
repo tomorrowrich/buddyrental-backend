@@ -1,4 +1,8 @@
-name: Cleanup on preview deployment on Merged PR
+name: Cleanup Merged PR
+
+permissions:
+  contents: write
+  pull-requests: write
 
 on:
   pull_request:
@@ -36,7 +40,7 @@ jobs:
 
       - name: Cleanup Database Schema
         run: |
-          psql ${{ secrets.DIRECT_URL }} -c "DROP SCHEMA IF EXISTS preview-${{ github.event.number }} CASCADE;"
+          psql ${{ secrets.DIRECT_URL }} -c "DROP SCHEMA IF EXISTS "preview-${{ github.event.number }}" CASCADE;"
 
       - name: Cleanup PR Comment
         uses: mshick/add-pr-comment@v2
