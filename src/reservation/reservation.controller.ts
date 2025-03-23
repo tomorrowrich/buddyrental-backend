@@ -7,6 +7,7 @@ import {
   Req,
   Param,
   UnauthorizedException,
+  Query,
 } from '@nestjs/common';
 import { ReservationService } from './reservation.service';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
@@ -15,7 +16,12 @@ import {
   CreateReservationDto,
   CreateReservationResponseDto,
 } from './dtos/create-reservation.dto';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthUserRole } from '@app/auth/role.enum';
 
 @ApiTags('Reservation')
@@ -29,16 +35,28 @@ export class ReservationController {
   @ApiOperation({
     summary: 'Get reservation history as a buddy',
   })
-  async getBookingHistory(@Req() req: AuthenticatedRequest) {
+  @ApiQuery({ name: 'take', type: () => Number, required: false })
+  @ApiQuery({ name: 'skip', type: () => Number, required: false })
+  async getBookingHistory(
+    @Req() req: AuthenticatedRequest,
+    @Query('take') take: string,
+    @Query('skip') skip: string,
+  ) {
     if (!req.user.buddyId) {
       throw new UnauthorizedException('User is not a buddy');
     }
-    const bookingHistory = await this.reservationService.getReservationHistory(
-      req.user.buddyId,
-    );
+    const { data, totalCount } =
+      await this.reservationService.getReservationHistory(
+        req.user.buddyId,
+        +take || 10,
+        +skip || 0,
+      );
     return {
       success: true,
-      data: bookingHistory,
+      data,
+      take: +take || 10,
+      skip: +skip || 0,
+      totalCount,
     };
   }
 
@@ -48,13 +66,25 @@ export class ReservationController {
   @ApiOperation({
     summary: 'Get reservation history as a user',
   })
-  async getUserBookingHistory(@Req() req: AuthenticatedRequest) {
-    const bookingHistory = await this.reservationService.getReservationHistory(
-      req.user.userId,
-    );
+  @ApiQuery({ name: 'take', type: () => Number, required: false })
+  @ApiQuery({ name: 'skip', type: () => Number, required: false })
+  async getUserBookingHistory(
+    @Req() req: AuthenticatedRequest,
+    @Query('take') take: string,
+    @Query('skip') skip: string,
+  ) {
+    const { data, totalCount } =
+      await this.reservationService.getReservationHistory(
+        req.user.userId,
+        +take || 10,
+        +skip || 0,
+      );
     return {
       success: true,
-      data: bookingHistory,
+      data,
+      take: +take || 10,
+      skip: +skip || 0,
+      totalCount,
     };
   }
 
@@ -86,9 +116,6 @@ export class ReservationController {
   @ApiOperation({
     summary: 'Mark reservation as confirmed',
   })
-  @ApiOkResponse({
-    type: CreateReservationResponseDto,
-  })
   async updateReservation(
     @Req() req: AuthenticatedRequest,
     @Param('reservationId') id: string,
@@ -109,9 +136,6 @@ export class ReservationController {
   @ApiOperation({
     summary: 'Mark reservation as rejected',
   })
-  @ApiOkResponse({
-    type: CreateReservationResponseDto,
-  })
   async rejectReservation(
     @Req() req: AuthenticatedRequest,
     @Param('reservationId') id: string,
@@ -131,9 +155,6 @@ export class ReservationController {
   @ApiOperation({
     summary: 'Cancel Reservation',
   })
-  @ApiOkResponse({
-    type: CreateReservationResponseDto,
-  })
   async cancelReservation(
     @Req() req: AuthenticatedRequest,
     @Param('reservationId') id: string,
@@ -152,9 +173,6 @@ export class ReservationController {
   @LoggedIn()
   @ApiOperation({
     summary: 'Mark Reservation as Completed',
-  })
-  @ApiOkResponse({
-    type: CreateReservationResponseDto,
   })
   async completeReservation(
     @Req() req: AuthenticatedRequest,
