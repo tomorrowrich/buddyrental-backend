@@ -120,6 +120,21 @@ export class UsersService {
     return user;
   }
 
+  async findExistingUser(
+    email: string,
+    citizenId: string,
+    phoneNumber: string,
+  ) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        OR: [{ citizenId }, { email }, { phoneNumber }],
+        deletedAt: null,
+      },
+      omit: { password: true },
+    });
+    return user;
+  }
+
   async findUnverifiedUsers(
     page: number = 1,
     perPage: number = 10,
