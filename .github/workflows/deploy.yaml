@@ -57,12 +57,44 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  migrate:
+    concurrency:
+      group: preview-migrate-${{ github.ref }}
+      cancel-in-progress: true
+    name: Migrate database for preview
+    needs: build
+    runs-on: ubuntu-latest
+    environment: Staging
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}\&schema=preview-${{ github.event.number }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}\&schema=preview-${{ github.event.number }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v3
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Migrate Prisma
+        run: pnpm prisma migrate deploy
+
   deploy:
     concurrency:
       group: preview-deploy-${{ github.ref }}
       cancel-in-progress: true
     name: Deploy preview to deploys.app
-    needs: build
+    needs: migrate
     runs-on: ubuntu-latest
     environment: Staging
     env:
