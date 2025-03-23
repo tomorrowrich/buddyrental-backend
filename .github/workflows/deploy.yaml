@@ -80,14 +80,51 @@ jobs:
       #     contentType: 'application/json'
       #     data: '{"imagePath": "ghcr.io/${{ github.repository }}@${{ needs.build.outputs.build-image-digest }}","plan": "free","name": "buddyrental-backend-${{ github.sha }}"}'
 
+      - name: Add Deploy Status to PR
+        id: deploy-status
+        uses: mshick/add-pr-comment@v2
+        with:
+          repo-token: ${{ secrets.DEPLOY_TOKEN }}
+          message: |
+            ### <span aria-hidden="true">🚀</span> Preview deployment is in progress...
+
+            The preview deployment is being prepared. This may take a few minutes. Please wait for the deployment to complete before checking the preview URL.
+            | Name | Resource |
+            |:-:|------------------------|
+            |<span aria-hidden="true">🔨</span> Latest Commit | ${{ github.sha }} |
+            |<span aria-hidden="true">📦</span> Image Digest | ${{ needs.build.outputs.build-image-digest }} |
+
+      # I know there is a proper action for this, but it doesn't provide a way to configure ENV
+      - name: Call Deploys.app Deploy API
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://api.deploys.app/deployment.deploy'
+          method: 'POST'
+          username: ${{ secrets.DEPLOYS_AUTH_USER }}
+          password: ${{ secrets.DEPLOYS_AUTH_PASS }}
+          contentType: 'application/json'
+          data: |
+            {
+              "location": "gke.cluster-rcf2",
+              "project": "buddyrental-api",
+              "name": "preview-${{ github.event.number }}",
+              "image": "ghcr.io/${{ github.repository }}@${{ needs.build.outputs.build-image-digest }}",
+              "env": {
+                "DATABASE_URL": "${{ secrets.DATABASE_URL }}&schema=preview-${{ github.event.number }}",
+                "DIRECT_URL": "${{ secrets.DIRECT_URL }}&schema=preview-${{ github.event.number }}",
+                "NODE_ENV": "preview",
+              }
+            }
+
       - name: Install Deploys CLI
         run: scripts/install-deploys-cli.sh
-
-      - name: Deploy to deploys.app
-        run: deploys me get
         env:
           DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
           DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}
+
+      - name: Deploy to deploys.app
+        run: |
+          deploys get me
 
       # - name: Output Render service URL
       #   uses: mshick/add-pr-comment@v2
