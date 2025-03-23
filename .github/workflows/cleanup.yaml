@@ -13,7 +13,9 @@ on:
 
 jobs:
   cleanup:
+    name: Cleanup Preview Deployment
     runs-on: ubuntu-latest
+    environment: Staging
     env:
       DEPLOYS_AUTH_USER: ${{ secrets.DEPLOYS_AUTH_USER }}
       DEPLOYS_AUTH_PASS: ${{ secrets.DEPLOYS_AUTH_PASS }}
