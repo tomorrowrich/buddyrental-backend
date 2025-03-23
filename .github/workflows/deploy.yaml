@@ -138,6 +138,10 @@ jobs:
                 "DATABASE_URL": "${{ secrets.DATABASE_URL }}&schema=preview-${{ github.event.number }}",
                 "DIRECT_URL": "${{ secrets.DIRECT_URL }}&schema=preview-${{ github.event.number }}",
                 "NODE_ENV": "preview"
+              },
+              "resources": {
+                "limits": { "cpu": "1" },
+                "requests": { "memory": "0" }
               }
             }
 
