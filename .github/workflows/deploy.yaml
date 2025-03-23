@@ -109,9 +109,6 @@ jobs:
               }
             }
 
-      - name: Response from Deploys.app
-        run: echo ${{ steps.deploy.outputs.body }}
-
       - name: Install Deploys CLI
         run: scripts/install-deploys-cli.sh
 
