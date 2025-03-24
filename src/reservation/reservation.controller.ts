@@ -74,7 +74,7 @@ export class ReservationController {
     @Query('skip') skip: string,
   ) {
     const { data, totalCount } =
-      await this.reservationService.getReservationHistory(
+      await this.reservationService.getBookingHistory(
         req.user.userId,
         +take || 10,
         +skip || 0,
@@ -110,6 +110,21 @@ export class ReservationController {
     };
   }
 
+  @Get('status/:reservationId')
+  @LoggedIn()
+  @ApiOperation({
+    summary: 'Get reservation status',
+  })
+  async getReservationStatus(@Param('reservationId') id: string) {
+    const status = await this.reservationService.getReservationStatus(id);
+    return {
+      success: true,
+      data: {
+        status: status,
+      },
+    };
+  }
+
   @Patch('confirm/:reservationId')
   @LoggedIn()
   @Roles(AuthUserRole.BUDDY)
@@ -121,7 +136,7 @@ export class ReservationController {
     @Param('reservationId') id: string,
   ) {
     const reservation = await this.reservationService.confirmReservation(
-      req.user.userId,
+      req.user.buddyId!,
       id,
     );
     return {
@@ -141,7 +156,7 @@ export class ReservationController {
     @Param('reservationId') id: string,
   ) {
     const reservation = await this.reservationService.rejectReservation(
-      req.user.userId,
+      req.user.buddyId!,
       id,
     );
     return {
@@ -182,6 +197,7 @@ export class ReservationController {
       req.user.userId,
       id,
     );
+
     return {
       success: true,
       data: reservation,
