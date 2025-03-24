@@ -64,10 +64,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    if (!user.verified) {
-      throw new UnauthorizedException('User is not verified');
-    }
-
     const passwordMatch = await this.usersService.verifyPassword(
       user.userId,
       data.password,
