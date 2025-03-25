@@ -139,14 +139,14 @@ export class UsersService {
     page: number = 1,
     perPage: number = 10,
   ): Promise<PaginatedOutputDto<UserResponseDto>> {
-    const paginate = createPaginator({ perPage, page});
+    const paginate = createPaginator({ perPage, page });
 
     // equivalent to paginating `this.prisma.user.findMany(...);`
     const unverified = await paginate<UserResponseDto, Prisma.UserFindManyArgs>(
       this.prisma.user,
       {
         where: { verified: false, deletedAt: null },
-        omit: { password: true, accessToken: true, resetPasswordToken: true },
+        omit: { password: true },
       },
     );
     return unverified;
