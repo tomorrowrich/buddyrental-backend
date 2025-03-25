@@ -1,3 +1,19 @@
+# [1.4.0-beta.10](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.9...v1.4.0-beta.10) (2025-03-25)
+
+### Bug Fixes
+
+- **mail:** make test use env variables ([822133c](https://github.com/tomorrowrich/buddyrental-backend/commit/822133c4861b52257ea8b96fb79b4d57cc393600))
+- **mail:** module name typo ([0531253](https://github.com/tomorrowrich/buddyrental-backend/commit/05312530f79a65e0e14b6748b7927b845565b6bf))
+
+### Features
+
+- **mail:** implement mail service using nestjs mailer ([7a648c2](https://github.com/tomorrowrich/buddyrental-backend/commit/7a648c24548e3f1200f653bd1310b9758890511a))
+- **mail:** implement mail services via mailgun ([c8753a3](https://github.com/tomorrowrich/buddyrental-backend/commit/c8753a3f852dff1b0a9a9328307b472053260c37))
+
+### Reverts
+
+- Revert "fix(mail): make test use env variables" ([48430c1](https://github.com/tomorrowrich/buddyrental-backend/commit/48430c194d6becdc7e4864a45899c4beffd2343d))
+
 # [1.4.0-beta.9](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.8...v1.4.0-beta.9) (2025-03-23)
 
 ### Bug Fixes
