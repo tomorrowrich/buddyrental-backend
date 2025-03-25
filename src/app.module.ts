@@ -14,6 +14,7 @@ import { ScheduleModule } from './schedule/schedule.module';
 import configLoader from './config';
 import { StorageModule } from './storage/storage.module';
 import { MailModule } from './mail/mail.module';
+import { MailgunModule } from './mailgun/mailgun.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { MailModule } from './mail/mail.module';
     ChatModule,
     ScheduleModule,
     MailModule,
+    MailgunModule,
   ],
   controllers: [AppController],
   providers: [AppService],
