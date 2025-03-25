@@ -27,8 +27,8 @@ export class MailService {
     return this.sendMail(
       to,
       'Password Reset',
-      `Reset your password using this link: ${resetLink}`,
-      `<p>Reset your password using this link: ${resetLink}</p>`,
+      `Reset your BuddyRental password using this link: ${resetLink}.\nIf you did not request this link, do not perform any action.`,
+      `<p>Reset your BuddyRental password using this link: ${resetLink}</p><p>If you did not request this link, do not perform any action.</p>`,
     );
   }
 }
