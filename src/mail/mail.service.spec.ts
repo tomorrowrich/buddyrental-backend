@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MailService } from './mail.service';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 
 describe('MailService', () => {
   let service: MailService;
@@ -9,16 +8,11 @@ describe('MailService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        ConfigModule.forRoot(),
-        MailerModule.forRootAsync({
-          imports: [ConfigModule],
-          inject: [ConfigService],
-          useFactory: (configService: ConfigService) => ({
-            transport: configService.get<string>('MAIL_TRANSPORT'),
-            defaults: {
-              from: configService.get<string>('MAIL_FROM'),
-            },
-          }),
+        MailerModule.forRoot({
+          transport: 'smtps://user@domain.com:pass@smtp.domain.com',
+          defaults: {
+            from: `"No Reply" <noreply@example.com>`,
+          },
         }),
       ],
       providers: [MailService],
