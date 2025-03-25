@@ -1,5 +1,5 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { SentMessageInfo } from 'nodemailer';
 
 @Injectable()
@@ -15,9 +15,20 @@ export class MailService {
     try {
       return await this.mailerService.sendMail({ to, subject, text, html });
     } catch (error) {
-      throw new Error(
-        `Failed to send email: ${error instanceof Error ? error.message : String(error)}`,
-      );
+      throw new InternalServerErrorException({
+        success: false,
+        message: 'Failed to send email',
+        error: error instanceof Error ? error.message : String(error),
+      });
     }
+  }
+
+  resetPassword(to: string, resetLink: string) {
+    return this.sendMail(
+      to,
+      'Password Reset',
+      `Reset your password using this link: ${resetLink}`,
+      `<p>Reset your password using this link: ${resetLink}</p>`,
+    );
   }
 }
