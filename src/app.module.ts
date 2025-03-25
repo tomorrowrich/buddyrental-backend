@@ -13,6 +13,8 @@ import { ChatModule } from './chat/chat.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import configLoader from './config';
 import { StorageModule } from './storage/storage.module';
+import { BuddiesModule } from './buddies/buddies.module';
+import { TagsModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -32,6 +34,8 @@ import { StorageModule } from './storage/storage.module';
     BuddyModule,
     ChatModule,
     ScheduleModule,
+    BuddiesModule,
+    TagsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
