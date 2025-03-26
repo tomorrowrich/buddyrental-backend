@@ -88,13 +88,28 @@ export class UsersService {
     });
   }
 
+  async getUserWithProfile(userId: string) {
+    return await this.prisma.user.findUniqueOrThrow({
+      where: { userId: userId, deletedAt: null },
+      omit: { password: true },
+      include: {
+        buddy: true,
+        admin: true,
+      },
+    });
+  }
+
   async getAllIdentities(userId: string) {
     return await this.prisma.user
       .findFirst({
         where: { userId: userId, deletedAt: null },
         select: {
           userId: true,
-          adminId: true,
+          admin: {
+            select: {
+              adminId: true,
+            },
+          },
           buddy: {
             select: {
               buddyId: true,
@@ -106,7 +121,7 @@ export class UsersService {
         if (!user) return null;
         return {
           userId: user.userId,
-          adminId: user.adminId || undefined,
+          adminId: user.admin?.adminId,
           buddyId: user?.buddy?.buddyId,
         };
       });
@@ -139,14 +154,14 @@ export class UsersService {
     page: number = 1,
     perPage: number = 10,
   ): Promise<PaginatedOutputDto<UserResponseDto>> {
-    const paginate = createPaginator({ perPage, page});
+    const paginate = createPaginator({ perPage, page });
 
     // equivalent to paginating `this.prisma.user.findMany(...);`
     const unverified = await paginate<UserResponseDto, Prisma.UserFindManyArgs>(
       this.prisma.user,
       {
         where: { verified: false, deletedAt: null },
-        omit: { password: true, accessToken: true, resetPasswordToken: true },
+        omit: { password: true },
       },
     );
     return unverified;

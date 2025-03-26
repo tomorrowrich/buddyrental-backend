@@ -1,3 +1,99 @@
+# [1.5.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.3...v1.5.0-beta.4) (2025-03-26)
+
+### Bug Fixes
+
+- **mail:** templating and type ([6b4b1b6](https://github.com/tomorrowrich/buddyrental-backend/commit/6b4b1b618e4fd50707b51f76c37b669698873f4e))
+
+# [1.5.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.2...v1.5.0-beta.3) (2025-03-26)
+
+### Bug Fixes
+
+- **prisma:** seeding ([835fc8e](https://github.com/tomorrowrich/buddyrental-backend/commit/835fc8e493ff3084cc9a7bf3d959307886b016eb))
+
+### Features
+
+- **reports:** add get reports admin api ([395377d](https://github.com/tomorrowrich/buddyrental-backend/commit/395377dde04f8be4b5190c6fc13b3d5fc92a9167))
+- **reports:** add get reports admin api ([#126](https://github.com/tomorrowrich/buddyrental-backend/issues/126)) ([af82425](https://github.com/tomorrowrich/buddyrental-backend/commit/af82425f8ec5abd17786f577d151097bf88302fb))
+- **reports:** create reports ([cc0a144](https://github.com/tomorrowrich/buddyrental-backend/commit/cc0a1440d4892086cdb4906736dc8971155774d9))
+
+# [1.5.0-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.1...v1.5.0-beta.2) (2025-03-26)
+
+### Bug Fixes
+
+- **buddy:** api conditions ([f9e8d4b](https://github.com/tomorrowrich/buddyrental-backend/commit/f9e8d4b6cacc4dc307a7be44e9b6531b0147f785))
+- **buddy:** api conditions ([#117](https://github.com/tomorrowrich/buddyrental-backend/issues/117)) ([8ba1a75](https://github.com/tomorrowrich/buddyrental-backend/commit/8ba1a753f36bb6173242273fde6f37775d69c882))
+
+# [1.5.0-beta.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0...v1.5.0-beta.1) (2025-03-26)
+
+### Bug Fixes
+
+- **verification-api:** fix response ([de9e6d3](https://github.com/tomorrowrich/buddyrental-backend/commit/de9e6d371e57cb0e0f6c51357926fb593de589af))
+- **verify-api:** fix verfication-api ([5985e7c](https://github.com/tomorrowrich/buddyrental-backend/commit/5985e7c5e78a6715022c1b31a39cd388dab69c5f))
+- **verify-api:** fix verfication-api ([7e1ffae](https://github.com/tomorrowrich/buddyrental-backend/commit/7e1ffae9838d4babdc5aaa2f29b9f278f7b86725))
+- **verify-api:** fix verfication-api ([#114](https://github.com/tomorrowrich/buddyrental-backend/issues/114)) ([581c7e8](https://github.com/tomorrowrich/buddyrental-backend/commit/581c7e83a9f10ee06f04bacc6de8143d30c23ac6))
+
+### Features
+
+- **verify-api:** fix verfication-api ([697d351](https://github.com/tomorrowrich/buddyrental-backend/commit/697d351d54428d87d303b57c0acacbf9b91e649c))
+
+# [1.4.0](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0...v1.4.0) (2025-03-26)
+
+### Bug Fixes
+
+- **buddy:** refined api ([2d0dc9e](https://github.com/tomorrowrich/buddyrental-backend/commit/2d0dc9e972fd32ebc2e8af2d2976ac11165a9d5f))
+- **chat:** realtime and docs ([e64408f](https://github.com/tomorrowrich/buddyrental-backend/commit/e64408ff7d3e88e424ef57a24d19f36959fcb748))
+- **chat:** variable naming ([475a5cc](https://github.com/tomorrowrich/buddyrental-backend/commit/475a5cc633d4204d3872711f721450c3761f990f))
+- **ci:** cleanup ([f70c712](https://github.com/tomorrowrich/buddyrental-backend/commit/f70c7122d8636f8edd84e06e96fc8f9e2e2fab9a))
+- **ci:** fix auth ([cada371](https://github.com/tomorrowrich/buddyrental-backend/commit/cada371ecb4454cbae1d99e9fe2a49680e03af6d))
+- **ci:** fix cleanup workflow ([c62033b](https://github.com/tomorrowrich/buddyrental-backend/commit/c62033ba35c4d6b255663d63b32d268ef617cc07))
+- **ci:** fix cleanup workflow ([b68de17](https://github.com/tomorrowrich/buddyrental-backend/commit/b68de17729342319374e09a2f3398ca7476efe90))
+- **ci:** fix cleanup workflow ([1019381](https://github.com/tomorrowrich/buddyrental-backend/commit/1019381a55c45e305fd949531c564496214cb94a))
+- **ci:** fix cleanup workflow ([f7b2bc6](https://github.com/tomorrowrich/buddyrental-backend/commit/f7b2bc682f1412e72f8060ffb50d69fe8ad5d3f7))
+- **ci:** fix cleanup workflow ([970fe07](https://github.com/tomorrowrich/buddyrental-backend/commit/970fe07dc4f5e617ed65e3f8d665ea8f0b7260a1))
+- **ci:** fix workflow ([7a70f89](https://github.com/tomorrowrich/buddyrental-backend/commit/7a70f89b983b762bfeb40ef054f98c1a57391a94))
+- **ci:** forbidden request ([a067a3c](https://github.com/tomorrowrich/buddyrental-backend/commit/a067a3c395957403144e0089c467bd4eee75355e))
+- **ci:** forbidden request ([#115](https://github.com/tomorrowrich/buddyrental-backend/issues/115)) ([4d73365](https://github.com/tomorrowrich/buddyrental-backend/commit/4d73365cb849dea1fa4c708371d57e4e9e791738))
+- **ci:** script executable ([38ffd7d](https://github.com/tomorrowrich/buddyrental-backend/commit/38ffd7deb14a9976b69ef7bf6fd3466c63b4df09))
+- **ci:** script executable ([4117223](https://github.com/tomorrowrich/buddyrental-backend/commit/41172235ea96c844affd61d8b552c06a80be75a2))
+- **ci:** typo ([6fa8be3](https://github.com/tomorrowrich/buddyrental-backend/commit/6fa8be383af18048afa2a19664b13c994f15da7e))
+- dependencies ([537ca9a](https://github.com/tomorrowrich/buddyrental-backend/commit/537ca9aca506368ebbec1a900d33a5bf5783e725))
+- **mail:** make test use env variables ([822133c](https://github.com/tomorrowrich/buddyrental-backend/commit/822133c4861b52257ea8b96fb79b4d57cc393600))
+- **mail:** module name typo ([0531253](https://github.com/tomorrowrich/buddyrental-backend/commit/05312530f79a65e0e14b6748b7927b845565b6bf))
+- **reservation:** pagination ([c3d78d5](https://github.com/tomorrowrich/buddyrental-backend/commit/c3d78d5ca9ea6c6949db132894b513342e395b65))
+- typo ([1cd59c8](https://github.com/tomorrowrich/buddyrental-backend/commit/1cd59c858bb367d098732de82d32dd1b2b62361d))
+- typo ([6d36f24](https://github.com/tomorrowrich/buddyrental-backend/commit/6d36f249a75c47ea367f595eabbd63a88b993823))
+
+### Features
+
+- **auth:** fix missing jwtservice ([6f6d58a](https://github.com/tomorrowrich/buddyrental-backend/commit/6f6d58ab96963362c8bfe81528f5ed2f70588d39))
+- **auth:** write auth test conditions ([54563bd](https://github.com/tomorrowrich/buddyrental-backend/commit/54563bd0067d1a86f4f44ad8afefb0bb0cf6fc02))
+- **auth:** write auth test conditions ([#111](https://github.com/tomorrowrich/buddyrental-backend/issues/111)) ([3a1db8e](https://github.com/tomorrowrich/buddyrental-backend/commit/3a1db8ea14e3575f69cb07d3f36022dbcac79d26))
+- **mail:** implement mail service using nestjs mailer ([7a648c2](https://github.com/tomorrowrich/buddyrental-backend/commit/7a648c24548e3f1200f653bd1310b9758890511a))
+- **mail:** implement mail services via mailgun ([c8753a3](https://github.com/tomorrowrich/buddyrental-backend/commit/c8753a3f852dff1b0a9a9328307b472053260c37))
+- **reservation:** common api ([b7208c9](https://github.com/tomorrowrich/buddyrental-backend/commit/b7208c9763b8d10a9dd150fe8ba26337730ead2e))
+- **users:** reset password ([53fbe39](https://github.com/tomorrowrich/buddyrental-backend/commit/53fbe39dd387731d854ae12fbce0440c2c9cc393))
+- **users:** reset password ([#101](https://github.com/tomorrowrich/buddyrental-backend/issues/101)) ([bbb8f6e](https://github.com/tomorrowrich/buddyrental-backend/commit/bbb8f6e063a6d7b4d07e61324c2ba2e96867b647))
+
+### Reverts
+
+- Revert "fix(mail): make test use env variables" ([48430c1](https://github.com/tomorrowrich/buddyrental-backend/commit/48430c194d6becdc7e4864a45899c4beffd2343d))
+
+# [1.4.0-beta.10](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.9...v1.4.0-beta.10) (2025-03-25)
+
+### Bug Fixes
+
+- **mail:** make test use env variables ([822133c](https://github.com/tomorrowrich/buddyrental-backend/commit/822133c4861b52257ea8b96fb79b4d57cc393600))
+- **mail:** module name typo ([0531253](https://github.com/tomorrowrich/buddyrental-backend/commit/05312530f79a65e0e14b6748b7927b845565b6bf))
+
+### Features
+
+- **mail:** implement mail service using nestjs mailer ([7a648c2](https://github.com/tomorrowrich/buddyrental-backend/commit/7a648c24548e3f1200f653bd1310b9758890511a))
+- **mail:** implement mail services via mailgun ([c8753a3](https://github.com/tomorrowrich/buddyrental-backend/commit/c8753a3f852dff1b0a9a9328307b472053260c37))
+
+### Reverts
+
+- Revert "fix(mail): make test use env variables" ([48430c1](https://github.com/tomorrowrich/buddyrental-backend/commit/48430c194d6becdc7e4864a45899c4beffd2343d))
+
 # [1.4.0-beta.9](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0-beta.8...v1.4.0-beta.9) (2025-03-23)
 
 ### Bug Fixes

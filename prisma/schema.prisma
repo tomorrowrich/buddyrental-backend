@@ -21,32 +21,33 @@ model Admin {
 }
 
 model User {
-  userId             String              @id @unique @default(uuid()) @map("user_id") @db.Uuid
-  adminId            String?             @map("admin_id") @db.Uuid
-  firstName          String              @map("first_name") @db.VarChar(64)
-  lastName           String              @map("last_name") @db.VarChar(64)
-  email              String              @unique @map("email") @db.VarChar(255)
-  password           String              @map("password") @db.Text
-  citizenId          String              @unique @map("citizen_id")
-  phoneNumber        String              @map("phone_number")
-  verified           Boolean             @default(false)
-  displayName        String?             @map("display_name") @db.VarChar(255)
-  gender             UserGender          @map("gender")
-  dateOfBirth        DateTime            @map("date_of_birth") @db.Date
-  address            String              @db.VarChar(255)
-  city               String              @db.VarChar(64)
-  postalCode         String              @db.VarChar(16)
-  profilePicture     String?             @map("profile_picture") @db.Text
-  description        String?             @db.Text
-  accessToken        String?             @map("access_token")
-  resetPasswordToken String?             @map("reset_password_token") @db.VarChar(255)
-  interests          Tag[]
-  reviewsMade        Review[]            @relation("ReviewToCommenter")
-  Chat               Chat[]
-  ChatMessage        ChatMessage[]
-  buddy              Buddy?
-  reservations       ReservationRecord[]
-  Admin              Admin?
+  userId             String     @id @unique @default(uuid()) @map("user_id") @db.Uuid
+  firstName          String     @map("first_name") @db.VarChar(64)
+  lastName           String     @map("last_name") @db.VarChar(64)
+  email              String     @unique @map("email") @db.VarChar(255)
+  password           String     @map("password") @db.Text
+  citizenId          String     @unique @map("citizen_id")
+  phoneNumber        String     @map("phone_number")
+  verified           Boolean    @default(false)
+  displayName        String?    @map("display_name") @db.VarChar(255)
+  gender             UserGender @map("gender")
+  dateOfBirth        DateTime   @map("date_of_birth") @db.Date
+  address            String     @db.VarChar(255)
+  city               String     @db.VarChar(64)
+  postalCode         String     @db.VarChar(16)
+  profilePicture     String?    @map("profile_picture") @db.Text
+  description        String?    @db.Text
+  accessToken        String?    @map("access_token")
+  resetPasswordToken String?    @map("reset_password_token") @db.VarChar(255)
+
+  interests    Tag[]
+  reviewsMade  Review[]            @relation("ReviewToCommenter")
+  Chat         Chat[]
+  ChatMessage  ChatMessage[]
+  buddy        Buddy?
+  reservations ReservationRecord[]
+  Reports      Reports[]
+  admin        Admin?
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
@@ -102,7 +103,7 @@ model Schedule {
 
 model Tag {
   tagId   String  @id @unique @default(uuid()) @map("tag_id") @db.Uuid
-  name    String  @map("name") @db.Text
+  name    String  @map("name") @db.VarChar(24)
   buddies Buddy[]
   users   User[]
 
@@ -133,6 +134,7 @@ model ReservationRecord {
   price            Float             @map("price") @db.DoublePrecision
   reservationStart DateTime          @map("reservation_start") @db.Timestamp
   reservationEnd   DateTime          @map("reservation_end") @db.Timestamp
+  detail           String            @default("") @map("detail") @db.Text
   status           ReservationStatus @map("status")
   userId           String            @map("user_id") @db.Uuid
   buddyId          String            @map("buddy_id") @db.Uuid
@@ -192,6 +194,36 @@ model ChatMessage {
   @@index([chatId])
   @@index([senderId])
   @@index([deletedAt])
+}
+
+model ReportsCategory {
+  id      String    @id @default(uuid()) @map("id") @db.Uuid
+  name    String    @map("name") @db.VarChar(60)
+  Reports Reports[]
+}
+
+model Reports {
+  id         String @id @default(uuid()) @map("id") @db.Uuid
+  userId     String @map("user_id") @db.Uuid
+  buddyId    String @map("buddy_id") @db.Uuid
+  reporterId String @map("reporter_id") @db.Uuid
+  categoryId String @map("category_id") @db.Uuid
+  details    String @map("details") @db.Text
+
+  status   ReportStatus    @map("status")
+  category ReportsCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  reporter User            @relation(fields: [reporterId], references: [userId], onDelete: Cascade)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([deletedAt])
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
 }
 
 enum ChatMessageStatus {

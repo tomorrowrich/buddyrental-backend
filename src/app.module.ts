@@ -15,6 +15,9 @@ import configLoader from './config';
 import { StorageModule } from './storage/storage.module';
 import { BuddiesModule } from './buddies/buddies.module';
 import { TagsModule } from './tags/tags.module';
+import { MailModule } from './mail/mail.module';
+import { MailgunModule } from './mailgun/mailgun.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -36,6 +39,9 @@ import { TagsModule } from './tags/tags.module';
     ScheduleModule,
     BuddiesModule,
     TagsModule,
+    MailModule,
+    MailgunModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
