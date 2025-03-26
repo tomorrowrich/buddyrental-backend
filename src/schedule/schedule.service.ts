@@ -1,8 +1,8 @@
 import { PrismaService } from '@app/prisma/prisma.service';
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ScheduleQueryDto } from './dtos/schedule_query.dto';
-import { Prisma, ReservationRecord } from '@prisma/client';
+import { Prisma, ReservationRecord, ScheduleStatus } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
+import { ScheduleQueryDto } from './dtos/schedule_query.dto';
 
 @Injectable()
 export class ScheduleService {
@@ -74,5 +74,57 @@ export class ScheduleService {
       returnMessage['message'] = 'No reservations found.';
     }
     return returnMessage;
+  }
+
+  async createSchedule(
+    buddyId: string,
+    startDate: Date,
+    endDate: Date,
+    status: ScheduleStatus,
+    description: string,
+  ) {
+    const schedule = await this.prisma.schedule
+      .create({
+        data: {
+          buddyId,
+          start: startDate,
+          end: endDate,
+          status: status,
+          description: description,
+        },
+      })
+      .then((schedule) => schedule);
+
+    return schedule;
+  }
+
+  async updateSchedule(
+    scheduleId: string,
+    data: {
+      status?: ScheduleStatus;
+      start?: Date;
+      end?: Date;
+      description?: string;
+    },
+  ) {
+    const schedule = await this.prisma.schedule.update({
+      where: { scheduleId },
+      data: {
+        start: data.start,
+        end: data.end,
+        status: data.status,
+        description: data.description,
+      },
+    });
+
+    return schedule;
+  }
+
+  async deleteSchedule(scheduleId: string) {
+    const schedule = await this.prisma.schedule.delete({
+      where: { scheduleId },
+    });
+
+    return schedule;
   }
 }

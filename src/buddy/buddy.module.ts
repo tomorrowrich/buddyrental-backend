@@ -1,14 +1,19 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { BuddyController } from './buddy.controller';
 import { BuddyService } from './buddy.service';
 import { PrismaService } from '@app/prisma/prisma.service';
-import { RoleGuard } from '@app/auth/role.guard';
 import { JwtModule } from '@nestjs/jwt';
+import { LoggerMiddleware } from '@app/middleware/logger.middleware';
+import { AuthModule } from '@app/auth/auth.module';
 
 @Module({
-  imports: [JwtModule],
+  imports: [JwtModule, AuthModule],
   controllers: [BuddyController],
-  providers: [BuddyService, PrismaService, RoleGuard],
+  providers: [BuddyService, PrismaService],
   exports: [BuddyService],
 })
-export class BuddyModule {}
+export class BuddyModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes(BuddyController);
+  }
+}

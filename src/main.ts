@@ -16,6 +16,7 @@ async function bootstrap() {
     /^http:\/\/localhost:3000$/,
     /^https:\/\/mybuddyrental\.netlify\.app$/,
     /^https:\/\/*mybuddyrental\.netlify\.app$/,
+    /^https:\/\/mybuddyrental-[\w-]+\.tonklaw\.com$/,
   ];
 
   const corsOptions = {
