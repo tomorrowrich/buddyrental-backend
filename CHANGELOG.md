@@ -1,3 +1,16 @@
+# [1.5.0-beta.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0...v1.5.0-beta.1) (2025-03-26)
+
+### Bug Fixes
+
+- **verification-api:** fix response ([de9e6d3](https://github.com/tomorrowrich/buddyrental-backend/commit/de9e6d371e57cb0e0f6c51357926fb593de589af))
+- **verify-api:** fix verfication-api ([5985e7c](https://github.com/tomorrowrich/buddyrental-backend/commit/5985e7c5e78a6715022c1b31a39cd388dab69c5f))
+- **verify-api:** fix verfication-api ([7e1ffae](https://github.com/tomorrowrich/buddyrental-backend/commit/7e1ffae9838d4babdc5aaa2f29b9f278f7b86725))
+- **verify-api:** fix verfication-api ([#114](https://github.com/tomorrowrich/buddyrental-backend/issues/114)) ([581c7e8](https://github.com/tomorrowrich/buddyrental-backend/commit/581c7e83a9f10ee06f04bacc6de8143d30c23ac6))
+
+### Features
+
+- **verify-api:** fix verfication-api ([697d351](https://github.com/tomorrowrich/buddyrental-backend/commit/697d351d54428d87d303b57c0acacbf9b91e649c))
+
 # [1.4.0](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0...v1.4.0) (2025-03-26)
 
 ### Bug Fixes
