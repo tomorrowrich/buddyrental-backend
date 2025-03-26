@@ -56,10 +56,8 @@ export class ChatService {
 
     const existedChat = await this.prisma.chat.findFirst({
       where: {
-        OR: [
-          { buddyId, customerId: userId },
-          { buddyId: userId, customerId: buddyId },
-        ],
+        buddyId: buddyId,
+        customerId: userId,
       },
     });
 
@@ -77,15 +75,29 @@ export class ChatService {
   }
 
   async getChats(userId: string, take = 10, skip = 0) {
-    const data = await this.prisma.chat.findMany({
+    const query = await this.prisma.chat.findMany({
       where: {
-        OR: [{ buddyId: userId }, { customerId: userId }],
+        OR: [{ customerId: userId }, { buddy: { userId: userId } }],
       },
       include: {
         ChatMessage: {
           take: 1,
           orderBy: {
             createdAt: 'desc',
+          },
+        },
+        buddy: {
+          select: {
+            user: {
+              select: {
+                profilePicture: true,
+              },
+            },
+          },
+        },
+        customer: {
+          select: {
+            profilePicture: true,
           },
         },
       },
@@ -96,9 +108,15 @@ export class ChatService {
       },
     });
 
+    const data = query.map(({ buddy, customer, ...chat }) => ({
+      ...chat,
+      buddyAvatar: buddy.user?.profilePicture || null,
+      customerAvatar: customer.profilePicture || null,
+    }));
+
     const totalCount = await this.prisma.chat.count({
       where: {
-        OR: [{ buddyId: userId }, { customerId: userId }],
+        OR: [{ customerId: userId }, { buddy: { userId: userId } }],
       },
     });
 
@@ -109,7 +127,7 @@ export class ChatService {
     const chat = await this.prisma.chat.findUnique({
       where: {
         id: chatId,
-        OR: [{ buddyId: userId }, { customerId: userId }],
+        OR: [{ customerId: userId }, { buddy: { userId: userId } }],
       },
     });
 
