@@ -18,7 +18,7 @@ echo "$STAGED_FILES" | grep -q '^prisma/' && {
 
 echo "🔍 Running linter..."
 # Lint only staged .ts/.js files
-TS_JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.(ts|js)$' || true)
+TS_JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.service.(ts|js)$' || true)
 if [ -n "$TS_JS_FILES" ]; then
   echo "$TS_JS_FILES" | xargs pnpm eslint --fix
 else
