@@ -1,3 +1,9 @@
+# [1.5.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.3...v1.5.0-beta.4) (2025-03-26)
+
+### Bug Fixes
+
+- **mail:** templating and type ([6b4b1b6](https://github.com/tomorrowrich/buddyrental-backend/commit/6b4b1b618e4fd50707b51f76c37b669698873f4e))
+
 # [1.5.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.2...v1.5.0-beta.3) (2025-03-26)
 
 ### Bug Fixes
