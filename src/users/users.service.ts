@@ -143,7 +143,7 @@ export class UsersService {
 
     // equivalent to paginating `this.prisma.user.findMany(...);`
     const unverified = await paginate<UserResponseDto, Prisma.UserFindManyArgs>(
-      this.prisma,
+      this.prisma.user,
       {
         where: { verified: false, deletedAt: null },
         omit: { password: true },
