@@ -88,6 +88,17 @@ export class UsersService {
     });
   }
 
+  async getUserWithProfile(userId: string) {
+    return await this.prisma.user.findUniqueOrThrow({
+      where: { userId: userId, deletedAt: null },
+      omit: { password: true },
+      include: {
+        buddy: true,
+        Admin: true,
+      },
+    });
+  }
+
   async getAllIdentities(userId: string) {
     return await this.prisma.user
       .findFirst({
@@ -143,7 +154,7 @@ export class UsersService {
 
     // equivalent to paginating `this.prisma.user.findMany(...);`
     const unverified = await paginate<UserResponseDto, Prisma.UserFindManyArgs>(
-      this.prisma,
+      this.prisma.user,
       {
         where: { verified: false, deletedAt: null },
         omit: { password: true },

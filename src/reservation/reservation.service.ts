@@ -26,6 +26,11 @@ export class ReservationService {
             firstName: true,
             lastName: true,
             profilePicture: true,
+            email: true,
+            phoneNumber: true,
+            citizenId: true,
+            address: true,
+            interests: true,
           },
         },
       },
@@ -56,6 +61,16 @@ export class ReservationService {
                 firstName: true,
                 lastName: true,
                 profilePicture: true,
+                email: true,
+                phoneNumber: true,
+                citizenId: true,
+                address: true,
+              },
+            },
+            tags: {
+              select: {
+                tagId: true,
+                name: true,
               },
             },
           },
@@ -74,6 +89,57 @@ export class ReservationService {
       data,
       totalCount,
     };
+  }
+
+  async getReservationStatus(reservationId: string) {
+    const reservation = await this.prisma.reservationRecord.findUnique({
+      where: { reservationId },
+      select: {
+        status: true,
+      },
+    });
+    if (!reservation) {
+      throw new NotFoundException('Reservation not found');
+    }
+    return reservation.status;
+  }
+
+  async getReservationDetail(reservationId: string) {
+    const reservation = await this.prisma.reservationRecord.findUnique({
+      where: { reservationId },
+      include: {
+        user: {
+          select: {
+            userId: true,
+            firstName: true,
+            lastName: true,
+            profilePicture: true,
+            email: true,
+            phoneNumber: true,
+            citizenId: true,
+            address: true,
+          },
+        },
+        buddy: {
+          include: {
+            user: {
+              select: {
+                userId: true,
+                firstName: true,
+                lastName: true,
+                profilePicture: true,
+                email: true,
+                phoneNumber: true,
+                citizenId: true,
+                address: true,
+              },
+            },
+            tags: true,
+          },
+        },
+      },
+    });
+    return reservation;
   }
 
   async createReservation(userId: string, payload: CreateReservationDto) {
@@ -120,6 +186,7 @@ export class ReservationService {
             userId,
             buddyId: payload.buddyId,
             price: payload.price,
+            detail: payload.detail,
             status: 'PENDING',
             reservationStart: new Date(payload.reservationStart),
             reservationEnd: new Date(payload.reservationEnd),
@@ -199,7 +266,9 @@ export class ReservationService {
         data: { status: 'REJECTED' },
       });
 
-      await this.scheduleService.deleteSchedule(reservation.scheduleId);
+      await this.scheduleService.updateSchedule(reservation.scheduleId, {
+        status: 'AVAILABLE',
+      });
 
       return { reservation };
     });
@@ -213,18 +282,24 @@ export class ReservationService {
   async cancelReservation(userId: string, reservationId: string) {
     const existingReservation = await this.prisma.reservationRecord.findUnique({
       where: { reservationId },
+      include: {
+        buddy: true,
+      },
     });
 
     if (!existingReservation) {
       throw new NotFoundException('Reservation not found');
     }
 
-    if (existingReservation.status !== 'PENDING') {
-      throw new BadRequestException('Reservation is not pending');
+    if (
+      existingReservation.status !== 'PENDING' &&
+      existingReservation.status !== 'ACCEPTED'
+    ) {
+      throw new BadRequestException('Reservation is not pending or accepted');
     }
 
     if (
-      existingReservation.buddyId !== userId &&
+      existingReservation.buddy.userId !== userId &&
       existingReservation.userId !== userId
     ) {
       throw new ForbiddenException('You are not the in this reservation');
@@ -236,7 +311,9 @@ export class ReservationService {
         data: { status: 'CANCELLED' },
       });
 
-      await this.scheduleService.deleteSchedule(reservation.scheduleId);
+      await this.scheduleService.updateSchedule(reservation.scheduleId, {
+        status: 'AVAILABLE',
+      });
 
       return { reservation };
     });
@@ -256,8 +333,8 @@ export class ReservationService {
       throw new NotFoundException('Reservation not found');
     }
 
-    if (existingReservation.status !== 'PENDING') {
-      throw new BadRequestException('Reservation is not pending');
+    if (existingReservation.status !== 'ACCEPTED') {
+      throw new BadRequestException('Reservation is not accepted');
     }
 
     if (existingReservation.buddyId !== userId) {
@@ -270,7 +347,9 @@ export class ReservationService {
         data: { status: 'COMPLETED' },
       });
 
-      await this.scheduleService.deleteSchedule(reservation.scheduleId);
+      await this.scheduleService.updateSchedule(reservation.scheduleId, {
+        status: 'AVAILABLE',
+      });
 
       return { reservation };
     });
