@@ -1,3 +1,10 @@
+# [1.5.0-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.1...v1.5.0-beta.2) (2025-03-26)
+
+### Bug Fixes
+
+- **buddy:** api conditions ([f9e8d4b](https://github.com/tomorrowrich/buddyrental-backend/commit/f9e8d4b6cacc4dc307a7be44e9b6531b0147f785))
+- **buddy:** api conditions ([#117](https://github.com/tomorrowrich/buddyrental-backend/issues/117)) ([8ba1a75](https://github.com/tomorrowrich/buddyrental-backend/commit/8ba1a753f36bb6173242273fde6f37775d69c882))
+
 # [1.5.0-beta.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0...v1.5.0-beta.1) (2025-03-26)
 
 ### Bug Fixes
