@@ -1,11 +1,26 @@
 import { PrismaService } from '@app/prisma/prisma.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
-import { Reports } from '@prisma/client';
+import { Reports, ReportStatus } from '@prisma/client';
+import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class ReportsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async getReportCategories(take = 10, skip = 0) {
+    const categories = this.prisma.reportsCategory.findMany({
+      take,
+      skip,
+    });
+    const totalCount = this.prisma.reportsCategory.count();
+    return {
+      data: await categories,
+      take,
+      skip,
+      totalCount: await totalCount,
+    };
+  }
 
   async createReport(
     reporterId: string,
@@ -84,5 +99,35 @@ export class ReportsService {
       skip,
       totalCount: await totalCount,
     };
+  }
+
+  validateReportStatus(status?: string) {
+    if (!status) {
+      return undefined;
+    }
+    if (status !== 'PENDING' && status !== 'RESOLVED') {
+      throw new BadRequestException('Invalid status');
+    }
+    return status as ReportStatus;
+  }
+
+  async updateReportStatus(reportId: string, status: ReportStatus) {
+    const report = await this.prisma.reports.findUnique({
+      where: { id: reportId },
+    });
+    if (!report) {
+      throw new NotFoundException('Report not found');
+    }
+
+    const validStatus = this.validateReportStatus(status);
+
+    const updatedReport = this.prisma.reports.update({
+      where: { id: reportId },
+      data: {
+        status: validStatus,
+      },
+    });
+
+    return updatedReport;
   }
 }
