@@ -61,8 +61,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: Staging
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}\&schema=preview-${{ github.event.number }}
-      DIRECT_URL: ${{ secrets.DIRECT_URL }}\&schema=preview-${{ github.event.number }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}&schema=preview-${{ github.event.number }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}&schema=preview-${{ github.event.number }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
