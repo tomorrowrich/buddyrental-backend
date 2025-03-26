@@ -50,7 +50,7 @@ export class StorageController {
 
   @LoggedIn()
   @Get('profiles')
-  async getProfile(@Req() req: AuthenticatedRequest) {
+  getProfile(@Req() req: AuthenticatedRequest) {
     const url = this.storageService.getObject('profiles', req.user.userId);
     return { url };
   }

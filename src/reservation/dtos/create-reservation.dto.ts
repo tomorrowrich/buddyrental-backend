@@ -11,6 +11,10 @@ export class CreateReservationDto {
   readonly price: number;
 
   @ApiProperty()
+  @IsUUID()
+  readonly detail: string;
+
+  @ApiProperty()
   @IsDateString()
   readonly reservationStart: string;
 

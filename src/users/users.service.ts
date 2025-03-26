@@ -88,6 +88,17 @@ export class UsersService {
     });
   }
 
+  async getUserWithProfile(userId: string) {
+    return await this.prisma.user.findUniqueOrThrow({
+      where: { userId: userId, deletedAt: null },
+      omit: { password: true },
+      include: {
+        buddy: true,
+        Admin: true,
+      },
+    });
+  }
+
   async getAllIdentities(userId: string) {
     return await this.prisma.user
       .findFirst({

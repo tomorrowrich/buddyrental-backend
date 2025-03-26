@@ -133,6 +133,7 @@ model ReservationRecord {
   price            Float             @map("price") @db.DoublePrecision
   reservationStart DateTime          @map("reservation_start") @db.Timestamp
   reservationEnd   DateTime          @map("reservation_end") @db.Timestamp
+  detail           String            @default("") @map("detail") @db.Text
   status           ReservationStatus @map("status")
   userId           String            @map("user_id") @db.Uuid
   buddyId          String            @map("buddy_id") @db.Uuid
