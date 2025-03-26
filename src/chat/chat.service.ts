@@ -90,6 +90,8 @@ export class ChatService {
           select: {
             user: {
               select: {
+                userId: true,
+                displayName: true,
                 profilePicture: true,
               },
             },
@@ -97,6 +99,8 @@ export class ChatService {
         },
         customer: {
           select: {
+            userId: true,
+            displayName: true,
             profilePicture: true,
           },
         },
@@ -110,8 +114,8 @@ export class ChatService {
 
     const data = query.map(({ buddy, customer, ...chat }) => ({
       ...chat,
-      buddyAvatar: buddy.user?.profilePicture || null,
-      customerAvatar: customer.profilePicture || null,
+      buddy: buddy.user || null,
+      customer: customer || null,
     }));
 
     const totalCount = await this.prisma.chat.count({
