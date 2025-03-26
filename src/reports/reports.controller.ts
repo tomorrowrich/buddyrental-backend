@@ -64,7 +64,9 @@ export class ReportsController {
         status: status as ReportStatus,
       })
       .catch(() => {
-        throw new InternalServerErrorException("Can't get all reports");
+        throw new InternalServerErrorException(
+          'Failed to retrieve report history',
+        );
       });
 
     return { success: true, ...response };
