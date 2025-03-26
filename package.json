@@ -87,7 +87,7 @@
     "typescript-eslint": "^8.26.1"
   },
   "prisma": {
-    "seed": "ts-node --esm prisma/seed.ts"
+    "seed": "node -r ts-node/register prisma/seed.ts"
   },
   "_moduleAliases": {
     "@app": "dist"
