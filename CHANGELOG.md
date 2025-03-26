@@ -1,3 +1,15 @@
+# [1.5.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.2...v1.5.0-beta.3) (2025-03-26)
+
+### Bug Fixes
+
+- **prisma:** seeding ([835fc8e](https://github.com/tomorrowrich/buddyrental-backend/commit/835fc8e493ff3084cc9a7bf3d959307886b016eb))
+
+### Features
+
+- **reports:** add get reports admin api ([395377d](https://github.com/tomorrowrich/buddyrental-backend/commit/395377dde04f8be4b5190c6fc13b3d5fc92a9167))
+- **reports:** add get reports admin api ([#126](https://github.com/tomorrowrich/buddyrental-backend/issues/126)) ([af82425](https://github.com/tomorrowrich/buddyrental-backend/commit/af82425f8ec5abd17786f577d151097bf88302fb))
+- **reports:** create reports ([cc0a144](https://github.com/tomorrowrich/buddyrental-backend/commit/cc0a1440d4892086cdb4906736dc8971155774d9))
+
 # [1.5.0-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.1...v1.5.0-beta.2) (2025-03-26)
 
 ### Bug Fixes

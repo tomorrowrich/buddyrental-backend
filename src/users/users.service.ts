@@ -94,7 +94,7 @@ export class UsersService {
       omit: { password: true },
       include: {
         buddy: true,
-        Admin: true,
+        admin: true,
       },
     });
   }
@@ -105,7 +105,11 @@ export class UsersService {
         where: { userId: userId, deletedAt: null },
         select: {
           userId: true,
-          adminId: true,
+          admin: {
+            select: {
+              adminId: true,
+            },
+          },
           buddy: {
             select: {
               buddyId: true,
@@ -117,7 +121,7 @@ export class UsersService {
         if (!user) return null;
         return {
           userId: user.userId,
-          adminId: user.adminId || undefined,
+          adminId: user.admin?.adminId,
           buddyId: user?.buddy?.buddyId,
         };
       });
