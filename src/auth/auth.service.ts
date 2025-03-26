@@ -82,7 +82,9 @@ export class AuthService {
   }
 
   async me(userId: string) {
-    const user = await this.usersService.findOne(userId).catch(() => null);
+    const user = await this.usersService
+      .getUserWithProfile(userId)
+      .catch(() => null);
     if (!user) {
       throw new UnauthorizedException();
     }

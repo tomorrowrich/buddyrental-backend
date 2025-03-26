@@ -109,6 +109,11 @@ describe('ReservationService', () => {
               firstName: true,
               lastName: true,
               profilePicture: true,
+              email: true,
+              phoneNumber: true,
+              citizenId: true,
+              address: true,
+              interests: true,
             },
           },
         },
@@ -149,6 +154,11 @@ describe('ReservationService', () => {
               firstName: true,
               lastName: true,
               profilePicture: true,
+              email: true,
+              phoneNumber: true,
+              citizenId: true,
+              address: true,
+              interests: true,
             },
           },
         },
@@ -194,6 +204,16 @@ describe('ReservationService', () => {
                   firstName: true,
                   lastName: true,
                   profilePicture: true,
+                  email: true,
+                  phoneNumber: true,
+                  citizenId: true,
+                  address: true,
+                },
+              },
+              tags: {
+                select: {
+                  tagId: true,
+                  name: true,
                 },
               },
             },
@@ -238,6 +258,16 @@ describe('ReservationService', () => {
                   firstName: true,
                   lastName: true,
                   profilePicture: true,
+                  email: true,
+                  phoneNumber: true,
+                  citizenId: true,
+                  address: true,
+                },
+              },
+              tags: {
+                select: {
+                  tagId: true,
+                  name: true,
                 },
               },
             },
@@ -258,6 +288,7 @@ describe('ReservationService', () => {
     const createReservationDto = {
       buddyId: 'buddy1',
       price: 100,
+      detail: 'test detail',
       reservationStart: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
       reservationEnd: new Date(Date.now() + 7200000).toISOString(), // 2 hours from now
     };
@@ -316,6 +347,7 @@ describe('ReservationService', () => {
         userId: 'user1',
         buddyId: 'buddy1',
         price: 100,
+        detail: 'test detail',
         status: 'PENDING',
         scheduleId: 'schedule1',
         reservationStart: new Date(createReservationDto.reservationStart),
@@ -352,6 +384,7 @@ describe('ReservationService', () => {
           buddyId: 'buddy1',
           price: 100,
           status: 'PENDING',
+          detail: 'test detail',
           reservationStart: new Date(createReservationDto.reservationStart),
           reservationEnd: new Date(createReservationDto.reservationEnd),
           scheduleId: 'schedule1',
@@ -503,8 +536,11 @@ describe('ReservationService', () => {
         where: { reservationId: 'res1' },
         data: { status: 'REJECTED' },
       });
-      expect(scheduleServiceMock.deleteSchedule).toHaveBeenCalledWith(
+      expect(scheduleServiceMock.updateSchedule).toHaveBeenCalledWith(
         'schedule1',
+        {
+          status: 'AVAILABLE',
+        },
       );
       expect(result).toEqual({
         success: true,
@@ -520,6 +556,9 @@ describe('ReservationService', () => {
       buddyId: 'buddy1',
       status: 'PENDING',
       scheduleId: 'schedule1',
+      buddy: {
+        userId: 'buddy1',
+      },
     };
 
     it('should throw NotFoundException if reservation is not found', async () => {
@@ -529,10 +568,10 @@ describe('ReservationService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should throw BadRequestException if reservation is not pending', async () => {
+    it('should throw BadRequestException if reservation is not pending or accepted', async () => {
       prismaServiceMock.reservationRecord.findUnique.mockResolvedValue({
         ...mockReservation,
-        status: 'ACCEPTED',
+        status: 'COMPLETED',
       });
       await expect(
         reservationService.cancelReservation('user1', 'res1'),
@@ -571,8 +610,9 @@ describe('ReservationService', () => {
         where: { reservationId: 'res1' },
         data: { status: 'CANCELLED' },
       });
-      expect(scheduleServiceMock.deleteSchedule).toHaveBeenCalledWith(
+      expect(scheduleServiceMock.updateSchedule).toHaveBeenCalledWith(
         'schedule1',
+        { status: 'AVAILABLE' },
       );
       expect(result).toEqual({
         success: true,
@@ -603,8 +643,9 @@ describe('ReservationService', () => {
         where: { reservationId: 'res1' },
         data: { status: 'CANCELLED' },
       });
-      expect(scheduleServiceMock.deleteSchedule).toHaveBeenCalledWith(
+      expect(scheduleServiceMock.updateSchedule).toHaveBeenCalledWith(
         'schedule1',
+        { status: 'AVAILABLE' },
       );
       expect(result).toEqual({
         success: true,
@@ -618,7 +659,7 @@ describe('ReservationService', () => {
       reservationId: 'res1',
       userId: 'user1',
       buddyId: 'buddy1',
-      status: 'PENDING',
+      status: 'ACCEPTED',
       scheduleId: 'schedule1',
     };
 
@@ -629,10 +670,10 @@ describe('ReservationService', () => {
       ).rejects.toThrow(NotFoundException);
     });
 
-    it('should throw BadRequestException if reservation is not pending', async () => {
+    it('should throw BadRequestException if reservation is not accepted', async () => {
       prismaServiceMock.reservationRecord.findUnique.mockResolvedValue({
         ...mockReservation,
-        status: 'ACCEPTED',
+        status: 'PENDING',
       });
       await expect(
         reservationService.completeReservation('buddy1', 'res1'),
@@ -671,8 +712,9 @@ describe('ReservationService', () => {
         where: { reservationId: 'res1' },
         data: { status: 'COMPLETED' },
       });
-      expect(scheduleServiceMock.deleteSchedule).toHaveBeenCalledWith(
+      expect(scheduleServiceMock.updateSchedule).toHaveBeenCalledWith(
         'schedule1',
+        { status: 'AVAILABLE' },
       );
       expect(result).toEqual({
         success: true,
