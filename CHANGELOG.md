@@ -1,3 +1,14 @@
+# [1.5.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.4...v1.5.0-beta.5) (2025-03-27)
+
+### Bug Fixes
+
+- enable mail ([8131577](https://github.com/tomorrowrich/buddyrental-backend/commit/81315772b5ce653a114bac52884e8c595b7d36b2))
+
+### Features
+
+- **report:** add from integration ([4f412f1](https://github.com/tomorrowrich/buddyrental-backend/commit/4f412f1a83c42b6b6d92a8ac298b208dbf45bd50))
+- **report:** add from integration ([#129](https://github.com/tomorrowrich/buddyrental-backend/issues/129)) ([d8640f6](https://github.com/tomorrowrich/buddyrental-backend/commit/d8640f64cb89e39e44330d6144c355891c553cbb))
+
 # [1.5.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.3...v1.5.0-beta.4) (2025-03-26)
 
 ### Bug Fixes
