@@ -1,3 +1,9 @@
+# [1.5.0-beta.6](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.5...v1.5.0-beta.6) (2025-03-27)
+
+### Features
+
+- **feed-and-search:** implement feed and search api ([7934beb](https://github.com/tomorrowrich/buddyrental-backend/commit/7934beb869f79a57b1a3a85775c74ee98d566b0e))
+
 # [1.5.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.4...v1.5.0-beta.5) (2025-03-27)
 
 ### Bug Fixes
