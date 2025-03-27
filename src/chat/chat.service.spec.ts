@@ -92,10 +92,8 @@ describe('ChatService', () => {
       expect(result).toEqual(mockChat);
       expect(mockPrismaService.chat.findFirst).toHaveBeenCalledWith({
         where: {
-          OR: [
-            { buddyId: 'buddy1', customerId: 'user1' },
-            { buddyId: 'user1', customerId: 'buddy1' },
-          ],
+          buddyId: 'buddy1',
+          customerId: 'user1',
         },
       });
       expect(mockPrismaService.chat.create).toHaveBeenCalledWith({
@@ -129,7 +127,13 @@ describe('ChatService', () => {
     it('should return chats for a user', async () => {
       const userId = 'user1';
       const mockChats = [
-        { id: 'chat1', buddyId: 'user2', customerId: 'user1' },
+        {
+          id: 'chat1',
+          buddyId: 'user2',
+          customerId: 'user1',
+          customer: {},
+          buddy: { user: {} },
+        },
       ];
       const mockTotalCount = 1;
 
@@ -138,16 +142,39 @@ describe('ChatService', () => {
 
       const result = await service.getChats(userId);
 
-      expect(result).toEqual({ data: mockChats, totalCount: mockTotalCount });
+      const expected = mockChats.map((chat) => ({
+        ...chat,
+        buddy: chat.buddy.user,
+      }));
+
+      expect(result).toEqual({ data: expected, totalCount: mockTotalCount });
       expect(mockPrismaService.chat.findMany).toHaveBeenCalledWith({
         where: {
-          OR: [{ buddyId: userId }, { customerId: userId }],
+          OR: [{ customerId: userId }, { buddy: { userId: userId } }],
         },
         include: {
           ChatMessage: {
             take: 1,
             orderBy: {
               createdAt: 'desc',
+            },
+          },
+          buddy: {
+            select: {
+              user: {
+                select: {
+                  userId: true,
+                  displayName: true,
+                  profilePicture: true,
+                },
+              },
+            },
+          },
+          customer: {
+            select: {
+              userId: true,
+              displayName: true,
+              profilePicture: true,
             },
           },
         },
@@ -159,7 +186,7 @@ describe('ChatService', () => {
       });
       expect(mockPrismaService.chat.count).toHaveBeenCalledWith({
         where: {
-          OR: [{ buddyId: userId }, { customerId: userId }],
+          OR: [{ customerId: userId }, { buddy: { userId: userId } }],
         },
       });
     });
@@ -189,7 +216,7 @@ describe('ChatService', () => {
       expect(mockPrismaService.chat.findUnique).toHaveBeenCalledWith({
         where: {
           id: chatId,
-          OR: [{ buddyId: userId }, { customerId: userId }],
+          OR: [{ customerId: userId }, { buddy: { userId: userId } }],
         },
       });
       expect(mockPrismaService.chatMessage.findMany).toHaveBeenCalledWith({
