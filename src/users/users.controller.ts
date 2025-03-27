@@ -2,6 +2,8 @@ import { LoggedIn } from '@app/auth/auth.decorator';
 import {
   Body,
   Controller,
+  Get,
+  Param,
   Patch,
   Post,
   Put,
@@ -45,6 +47,12 @@ export class UsersController {
       req.user.userId,
       payload.interests,
     );
+  }
+
+  @Get(':userId')
+  @LoggedIn()
+  async getUserId(@Param('userId') userId: string) {
+    return await this.usersService.findOne(userId);
   }
 
   @Post('reset-password')

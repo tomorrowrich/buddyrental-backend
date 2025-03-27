@@ -117,6 +117,7 @@ export class ReportsController {
     @Req() req: AuthenticatedRequest,
     @Body() body: CreateReportDto,
   ) {
+    console.log(body);
     const data = await this.reportsService.createReport(req.user.userId, body);
     return { success: true, data };
   }
