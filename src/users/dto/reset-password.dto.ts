@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsHash, IsOptional, IsStrongPassword } from 'class-validator';
+import {
+  IsEmail,
+  IsHash,
+  IsOptional,
+  IsStrongPassword,
+  Matches,
+} from 'class-validator';
 
 export class ResetPasswordDto {
   @ApiProperty({
@@ -27,4 +33,16 @@ export class ResetPasswordDto {
   @IsStrongPassword()
   @IsOptional()
   password?: string;
+
+  @ApiProperty({
+    description: 'Target url host for the password reset link',
+    example: 'http://localhost:3000/reset-password',
+    required: false,
+  })
+  @IsOptional()
+  @Matches(
+    /^(https?:\/\/)?(([\w-]+):([\w-]+)@)?([\da-z.-]+)(:\d+)?(\.([a-z.]{2,6}))?([/\w .-]*)*\/?$/,
+  )
+  @IsOptional()
+  host?: string;
 }

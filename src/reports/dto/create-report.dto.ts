@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateReportDto {
   @ApiProperty({
@@ -14,7 +14,8 @@ export class CreateReportDto {
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @IsUUID()
-  buddyId: string;
+  @IsOptional()
+  buddyId?: string;
 
   @ApiProperty({
     description: 'Category ID of the report',

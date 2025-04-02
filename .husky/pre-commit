@@ -18,7 +18,7 @@ echo "$STAGED_FILES" | grep -q '^prisma/' && {
 
 echo "🔍 Running linter..."
 # Lint only staged .ts/.js files
-TS_JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.service.(ts|js)$' || true)
+TS_JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.(ts|js)$' || true)
 if [ -n "$TS_JS_FILES" ]; then
   echo "$TS_JS_FILES" | xargs pnpm eslint --fix
 else
@@ -50,10 +50,10 @@ if echo "$STAGED_FILES" | grep -q '^prisma/'; then
 fi
 
 if [ -n "$TS_JS_FILES" ]; then
-  echo "🏃 Running tests for changed JS/TS files..."
+  echo "🏃 Running tests for changed service files..."
   echo "$TS_JS_FILES" | xargs pnpm test -- --findRelatedTests
 else
-  echo "No testable JS/TS files changed."
+  echo "No service files changed. Skipping tests."
 fi
 
 echo "✅ Pre-commit checks passed!"

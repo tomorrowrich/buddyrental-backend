@@ -32,7 +32,6 @@ export class ReportsService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    console.log(data);
     const buddy = await this.prisma.buddy.findUnique({
       where: { buddyId: data.buddyId },
     });

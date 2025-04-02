@@ -235,7 +235,7 @@ export class UsersService {
     });
 
     if (!userExists) {
-      throw new NotFoundException('Token not found');
+      return;
     }
 
     const token = randomBytes(32).toString('hex');

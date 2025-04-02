@@ -24,7 +24,7 @@
   "dependencies": {
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/common": "^11.0.12",
-    "@nestjs/config": "^4.0.1",
+    "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.12",
     "@nestjs/jwt": "^11.0.0",
     "@nestjs/platform-express": "^11.0.12",
@@ -32,13 +32,12 @@
     "@nestjs/swagger": "^11.1.0",
     "@nestjs/websockets": "^11.0.12",
     "@prisma/client": "^6.5.0",
-    "@supabase/supabase-js": "^2.49.3",
+    "@supabase/supabase-js": "^2.49.4",
     "argon2": "^0.41.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dayjs": "^1.11.13",
     "form-data": "^4.0.2",
-    "mailgun.js": "^12.0.1",
     "module-alias": "^2.2.3",
     "nestjs-supabase-js": "^1.1.1",
     "nodemailer": "^6.10.0",
@@ -60,11 +59,11 @@
     "@semantic-release/exec": "^7.0.3",
     "@semantic-release/git": "^10.0.1",
     "@swc/cli": "^0.6.0",
-    "@swc/core": "^1.11.13",
+    "@swc/core": "^1.11.16",
     "@types/express": "^5.0.1",
     "@types/jest": "^29.5.14",
     "@types/multer": "^1.4.12",
-    "@types/node": "^22.13.13",
+    "@types/node": "^22.13.17",
     "@types/nodemailer": "^6.4.17",
     "@types/supertest": "^6.0.3",
     "conventional-changelog-atom": "^5.0.0",
@@ -80,12 +79,12 @@
     "semantic-release": "^24.2.3",
     "source-map-support": "^0.5.21",
     "supertest": "^7.1.0",
-    "ts-jest": "^29.3.0",
+    "ts-jest": "^29.3.1",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.28.0"
+    "typescript-eslint": "^8.29.0"
   },
   "prisma": {
     "seed": "ts-node --transpile-only prisma/seed.ts"
@@ -116,5 +115,11 @@
       "<rootDir>/src/"
     ]
   },
-  "packageManager": "pnpm@10.6.2+sha1.7f417eb782bab712a1a9bd0206887dcee502d03e"
+  "packageManager": "pnpm@10.7.1+sha512.2d92c86b7928dc8284f53494fb4201f983da65f0fb4f0d40baafa5cf628fa31dae3e5968f12466f17df7e97310e30f343a648baea1b9b350685dafafffdf5808",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "esbuild"
+    ]
+  }
 }

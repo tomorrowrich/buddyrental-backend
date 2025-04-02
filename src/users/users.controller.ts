@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Req,
+  Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -17,11 +18,16 @@ import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateUserInterestsDto } from './dto/update-interests.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { MailService } from '@app/mail/mail.service';
+import { Response } from 'express';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private mailService: MailService,
+  ) {}
 
   @LoggedIn()
   @Patch('profile')
@@ -61,28 +67,34 @@ export class UsersController {
     description: 'Reset user password using token, email and new password',
   })
   @UsePipes(new ValidationPipe({ transform: true }))
-  async resetPassword(@Body() payload: ResetPasswordDto) {
+  async resetPassword(@Res() res: Response, @Body() payload: ResetPasswordDto) {
     if (payload.token && payload.email && payload.password) {
       await this.usersService.resetPassword(
         payload.token,
         payload.password,
         payload.email,
       );
-      return {
+      return res.send({
         success: true,
         message: 'Password reset successfully',
-      };
+      });
     }
-    if (payload.email) {
-      await this.usersService.requestPasswordReset(payload.email);
-      return {
+    if (payload.email && payload.host) {
+      const token = await this.usersService.requestPasswordReset(payload.email);
+      res.send({
         success: true,
         message: 'Password reset email sent successfully',
-      };
+      });
+      if (token)
+        await this.mailService.sendResetPasswordEmail(
+          payload.email,
+          `${payload.host}?token=${token.token}&email=${payload.email}`,
+        );
+      return;
     }
-    return {
+    return res.send({
       success: false,
       message: 'Invalid request',
-    };
+    });
   }
 }

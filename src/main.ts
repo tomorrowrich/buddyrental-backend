@@ -4,29 +4,38 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 
+export const allowedOrigins = [
+  /^http:\/\/localhost:(3000|55500)$/,
+  /^https:\/\/mybuddyrental\.netlify\.app$/,
+  /^https:\/\/mybuddyrental-[\w-]+\.tonklaw\.com$/,
+];
+
 export const corsOptions = {
-  origin: '*',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,UPDATE',
-  allowedHeaders: 'Content-Type, Authorization',
+  origin: (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: boolean) => void,
+  ) => {
+    if (!origin) return callback(null, true);
+
+    const isAllowed = allowedOrigins.some((regex) => regex.test(origin));
+    if (isAllowed) callback(null, true);
+    else callback(new Error('Not allowed by CORS'));
+  },
+  methods: [
+    'GET',
+    'HEAD',
+    'PUT',
+    'PATCH',
+    'POST',
+    'DELETE',
+    'OPTIONS',
+    'UPDATE',
+  ],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   maxAge: 86400,
 };
 async function bootstrap() {
-  const allowedOrigins = [
-    /^http:\/\/localhost:3000$/,
-    /^https:\/\/mybuddyrental\.netlify\.app$/,
-    /^https:\/\/*mybuddyrental\.netlify\.app$/,
-    /^https:\/\/mybuddyrental-[\w-]+\.tonklaw\.com$/,
-  ];
-
-  const corsOptions = {
-    origin: allowedOrigins,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,UPDATE',
-    allowedHeaders: 'Content-Type, Authorization',
-    credentials: true,
-    maxAge: 86400,
-  };
-
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
     cors: corsOptions,

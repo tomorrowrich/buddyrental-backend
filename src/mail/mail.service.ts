@@ -23,7 +23,7 @@ export class MailService {
     }
   }
 
-  resetPassword(to: string, resetLink: string) {
+  sendResetPasswordEmail(to: string, resetLink: string) {
     const html = `
       <!DOCTYPE html>
       <html>
