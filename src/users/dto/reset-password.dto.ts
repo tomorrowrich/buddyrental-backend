@@ -41,7 +41,7 @@ export class ResetPasswordDto {
   })
   @IsOptional()
   @Matches(
-    /^(https?:\/\/)?(([\w-]+):([\w-]+)@)?([\da-z.-]+)(:\d+)?(\.([a-z.]{2,6}))?([/\w .-]*)*\/?$/,
+    /^(https?:\/\/)?(([\w-]+):([\w-]+)@)?([\da-z.-]+)(:\d+)?([/\w .-]*)*\/?$/,
   )
   @IsOptional()
   host?: string;
