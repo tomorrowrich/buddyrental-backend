@@ -1,3 +1,12 @@
+# [1.5.0-beta.7](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.6...v1.5.0-beta.7) (2025-04-03)
+
+### Bug Fixes
+
+- **deps:** remove exports ([a914ffc](https://github.com/tomorrowrich/buddyrental-backend/commit/a914ffc4b1cf94b05d5cb88857ed94bb7882c71f))
+- **users:** url regex ([d201cc3](https://github.com/tomorrowrich/buddyrental-backend/commit/d201cc32697e975dfa6f57763ef067d43d4964f2))
+- **users:** url regex ([0f515aa](https://github.com/tomorrowrich/buddyrental-backend/commit/0f515aa42e44c24eb1fcb9952d3a4aaa24bdbef8))
+- **users:** url regex ([4ea604b](https://github.com/tomorrowrich/buddyrental-backend/commit/4ea604b885ef6af133871baf7b883fdc1b2749bc))
+
 # [1.5.0-beta.6](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.5...v1.5.0-beta.6) (2025-03-27)
 
 ### Features
