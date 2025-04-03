@@ -10,6 +10,7 @@ export class BuddiesController {
   @Get()
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'sort', required: false, enum: ['ratingAvg', 'newest'] })
   async getBuddies(
     @Query('page') page?: string,
     @Query('limit') limit?: string,

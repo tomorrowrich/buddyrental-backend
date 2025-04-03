@@ -18,7 +18,19 @@ export class BuddiesService {
       skip,
       take: limit,
       orderBy,
-      include: { tags: true, user: true, reviews: true },
+      include: {
+        tags: true,
+        user: {
+          select: {
+            displayName: true,
+            email: true,
+            profilePicture: true,
+            phoneNumber: true,
+            citizenId: true,
+          },
+        },
+        reviews: true,
+      },
     });
 
     const totalBuddies = await this.prisma.buddy.count();

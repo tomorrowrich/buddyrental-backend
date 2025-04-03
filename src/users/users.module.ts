@@ -5,11 +5,12 @@ import { UsersController } from './users.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LoggerMiddleware } from '@app/middleware/logger.middleware';
+import { MailService } from '@app/mail/mail.service';
 
 @Module({
   imports: [PrismaModule, JwtModule],
-  providers: [UsersService, ConfigService],
-  exports: [UsersService],
+  providers: [UsersService, ConfigService, MailService],
+  exports: [UsersService, MailService],
   controllers: [UsersController],
 })
 export class UsersModule {
