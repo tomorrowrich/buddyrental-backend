@@ -7,7 +7,7 @@ import { ConfigService } from '@nestjs/config';
 export const allowedOrigins = [
   /^http:\/\/localhost:(3000|55500)$/,
   /^https:\/\/mybuddyrental\.netlify\.app$/,
-  /^https:\/\/mybuddyrental-[\w-]+\.tonklaw\.com$/,
+  /^https:\/\/buddyrental-[\w-]+\.tonklaw\.com$/,
 ];
 
 export const corsOptions = {
