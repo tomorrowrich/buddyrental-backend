@@ -17,6 +17,7 @@ import { BuddiesModule } from './buddies/buddies.module';
 import { TagsModule } from './tags/tags.module';
 import { MailModule } from './mail/mail.module';
 import { ReportsModule } from './reports/reports.module';
+import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ReportsModule } from './reports/reports.module';
     TagsModule,
     MailModule,
     ReportsModule,
+    ReviewsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
