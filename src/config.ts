@@ -15,4 +15,8 @@ export default () => ({
     key: process.env.S3_KEY || 'DEFAULT_ACCESS_KEY',
     bucket: process.env.S3_BUCKET_NAME || 'storage',
   },
+  stripe: {
+    secret_key: process.env.STRIPE_SECRET_KEY || '',
+    webhook_secret: process.env.STRIPE_WEBHOOK_SECRET || '',
+  },
 });
