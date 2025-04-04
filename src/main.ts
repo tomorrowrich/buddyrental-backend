@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { ConsoleLogger } from '@nestjs/common';
 
 export const allowedOrigins = [
   /^http:\/\/localhost:(3000|55500)$/,
@@ -39,6 +40,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
     cors: corsOptions,
+    logger: new ConsoleLogger({
+      colors: process.env.NODE_ENV !== 'development' ? false : true,
+    }),
   });
   app.setGlobalPrefix('/api');
 
