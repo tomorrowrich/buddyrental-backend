@@ -97,6 +97,7 @@ export class PaymentService {
           checkoutUrl: session.url,
         },
       },
+      omit: { meta: true },
     });
 
     return { success: true, data: { url: session.url, transaction } };
@@ -106,8 +107,19 @@ export class PaymentService {
     throw new NotImplementedException({ userId, amount });
   }
 
-  getHistory(userId: string, type?: string, take?: number, skip?: number) {
-    throw new NotImplementedException({ userId, type, take, skip });
+  async getTransactions(userId: string, type?: string, take = 10, skip = 0) {
+    const data = await this.prisma.transaction.findMany({
+      where: {
+        userId,
+        ...(type && { type: type as TransactionType }),
+      },
+      take,
+      skip,
+      orderBy: { createdAt: 'desc' },
+      omit: { meta: true },
+    });
+
+    return { data, totalCount: data.length };
   }
 
   async handleStripeWebhook(req: RawBodyRequest<Request>, res: Response) {

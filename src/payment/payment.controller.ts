@@ -13,7 +13,8 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { TransactionType } from '@prisma/client';
 import { Request, Response } from 'express';
 import { PurchaseDto } from './dto/purchase.dto';
 import { PaymentService } from './payment.service';
@@ -44,28 +45,29 @@ export class PaymentController {
 
   @LoggedIn()
   @Get('history')
-  getHistory(
+  @ApiQuery({ name: 'type', required: false })
+  @ApiQuery({ name: 'take', required: false })
+  @ApiQuery({ name: 'skip', required: false })
+  async getHistory(
     @Req() req: AuthenticatedRequest,
-    @Query('type') type?: string,
-    @Query('take') take?: string,
-    @Query('skip') skip?: string,
+    @Query('type') type: TransactionType,
+    @Query('take') take: string,
+    @Query('skip') skip: string,
   ) {
-    throw new NotImplementedException({ history, type, take, skip });
+    const { data, totalCount } = await this.paymentService.getTransactions(
+      req.user.userId,
+      type,
+      +take || 10,
+      +skip || 0,
+    );
 
-    // const { data, totalCount } = await this.paymentService.getHistory(
-    //   req.user.userId,
-    //   type,
-    //   +take || 10,
-    //   +skip || 0,
-    // );
-
-    // return {
-    //   success: true,
-    //   data,
-    //   totalCount,
-    //   take: +take || 10,
-    //   skip: +skip || 0,
-    // };
+    return {
+      success: true,
+      data,
+      totalCount,
+      take: +take || 10,
+      skip: +skip || 0,
+    };
   }
 
   @Post('webhook')
