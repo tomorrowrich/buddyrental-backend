@@ -1,6 +1,7 @@
 import { LoggedIn } from '@app/auth/auth.decorator';
 import { AuthenticatedRequest } from '@app/interfaces/authenticated_request.auth.interface';
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -8,9 +9,12 @@ import {
   Param,
   Post,
   Query,
+  RawBodyRequest,
   Req,
+  Res,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { Request, Response } from 'express';
 import { PurchaseDto } from './dto/purchase.dto';
 import { PaymentService } from './payment.service';
 
@@ -64,16 +68,16 @@ export class PaymentController {
     // };
   }
 
-  @LoggedIn()
   @Post('webhook')
-  webhook(@Query('source') source: string, @Body() payload: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    throw new NotImplementedException({ source, payload });
+  webhook(
+    @Query('source') source: string,
+    @Req() req: RawBodyRequest<Request>,
+    @Res() res: Response,
+  ) {
+    if (source === 'stripe') {
+      return this.paymentService.handleStripeWebhook(req, res);
+    }
 
-    // if (source === 'stripe') {
-    //   return this.paymentService.handleStripeWebhook(payload);
-    // }
-
-    // throw new BadRequestException('Invalid source.');
+    throw new BadRequestException('Invalid source.');
   }
 }

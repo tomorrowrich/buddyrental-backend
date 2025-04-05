@@ -40,6 +40,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
     cors: corsOptions,
+    rawBody: true,
     logger: new ConsoleLogger({
       colors: process.env.NODE_ENV !== 'development' ? false : true,
     }),

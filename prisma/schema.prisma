@@ -206,7 +206,7 @@ model Transaction {
   userId    String?          @map("user_id") @db.Uuid
   type      TransactionType  @map("type")
   amount    Float            @map("amount") @db.DoublePrecision
-  paymentId String?          @map("payment_id") @db.Uuid
+  paymentId String?          @unique @map("payment_id") @db.VarChar(255)
   status    TrasactionStatus @map("status")
   timestamp DateTime         @default(now()) @map("timestamp")
   meta      Json             @map("meta") @db.Json
@@ -218,6 +218,7 @@ model Transaction {
   deletedAt DateTime? @map("deleted_at")
 
   @@index([createdAt])
+  @@index([paymentId])
 }
 
 model Coupon {
@@ -288,7 +289,7 @@ enum TransactionType {
 
 enum TrasactionStatus {
   PENDING
-  SUCCESS
+  COMPLETED
   FAILED
   VOIDED
 }
