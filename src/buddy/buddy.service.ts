@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateBuddyDto } from './dto/create-buddy.dto';
 
 @Injectable()
 export class BuddyService {
@@ -44,5 +45,17 @@ export class BuddyService {
         })
         .then((buddy) => buddy.tags),
     };
+  }
+
+  async createBuddy(userId: string, data: CreateBuddyDto) {
+    return this.prisma.buddy.create({
+      data: {
+        userId,
+        priceMin: data.minPrice,
+        priceMax: data.maxPrice,
+        description: data.description,
+        balanceWithdrawable: 0,
+      },
+    });
   }
 }
