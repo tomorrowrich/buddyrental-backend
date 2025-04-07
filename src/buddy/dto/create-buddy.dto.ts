@@ -13,6 +13,6 @@ export class CreateBuddyDto {
   maxPrice: number;
 
   @ApiProperty({ description: 'buddy description' })
-  @IsUUID()
+  @IsString()
   description: string;
 }
