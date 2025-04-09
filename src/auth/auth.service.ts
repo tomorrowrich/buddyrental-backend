@@ -92,7 +92,7 @@ export class AuthService {
     return { user };
   }
 
-  async verfyToken(token: string) {
+  async verifyToken(token: string) {
     if (!token) {
       throw new BadRequestException('No token provided');
     }

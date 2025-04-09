@@ -47,7 +47,7 @@ export class NotificationsController {
     if (!token) {
       throw new UnauthorizedException('Token is required');
     }
-    const { userId } = await this.auth.verfyToken(token).catch(() => {
+    const { userId } = await this.auth.verifyToken(token).catch(() => {
       throw new UnauthorizedException('Invalid token');
     });
     return this.notificationsService.subscribe(userId);
