@@ -12,6 +12,7 @@ describe('StripeService', () => {
         ConfigModule.forRoot({
           isGlobal: true,
           load: [config],
+          envFilePath: '.env.test'
         }),
       ],
       providers: [StripeService],
