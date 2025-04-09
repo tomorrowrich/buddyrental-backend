@@ -1,3 +1,10 @@
+# [1.5.0-beta.8](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.7...v1.5.0-beta.8) (2025-04-04)
+
+### Bug Fixes
+
+- **cors:** fix cors for backend deployment ([b1a5953](https://github.com/tomorrowrich/buddyrental-backend/commit/b1a595314a5933ec780fd15bc3bf757f896fd547))
+- **cors:** fix cors for backend deployment ([#132](https://github.com/tomorrowrich/buddyrental-backend/issues/132)) ([b3bf0a2](https://github.com/tomorrowrich/buddyrental-backend/commit/b3bf0a21a2f170ad696e786ec52b5bc6f9ae9345))
+
 # [1.5.0-beta.7](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.6...v1.5.0-beta.7) (2025-04-03)
 
 ### Bug Fixes
