@@ -1,3 +1,13 @@
+# [1.5.0-beta.9](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.8...v1.5.0-beta.9) (2025-04-09)
+
+### Bug Fixes
+
+- **buddy:** add missing import ([5ccb328](https://github.com/tomorrowrich/buddyrental-backend/commit/5ccb328032aade052ee93f25b14e9f99e725037c))
+
+### Features
+
+- **buddy:** createBuddy api on backend ([c9419af](https://github.com/tomorrowrich/buddyrental-backend/commit/c9419afe40992e3fa8af2d696311c3dc78b3b00d))
+
 # [1.5.0-beta.8](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.7...v1.5.0-beta.8) (2025-04-04)
 
 ### Bug Fixes
