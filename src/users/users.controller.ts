@@ -97,4 +97,27 @@ export class UsersController {
       message: 'Invalid request',
     });
   }
+
+  @Patch(':id/suspend')
+  @LoggedIn()
+  async setSuspend(
+    @Param('id') id: string, // userId ที่จะ suspend
+    @Body() body: { suspendTime: number }, // รับค่า suspendTime เป็น object
+  ) {
+    console.log('suspendTime: ', body.suspendTime); // ใช้ body.suspendTime แทน
+    await this.usersService.setSuspendTime(id, body.suspendTime);
+    return { message: `User ${id} suspended successfully!` };
+  }
+
+  @Patch(':id/ban')
+  @LoggedIn()
+  async setBan(
+    @Param('id') id: string, // userId ที่จะ ban
+    @Body() body: { isBan: boolean }, // DTO สำหรับข้อมูลการแบน
+  ) {
+    await this.usersService.setBan(id, body.isBan);
+    return {
+      message: `User ${id} ${body.isBan ? 'banned' : 'unbanned'} successfully!`,
+    };
+  }
 }
