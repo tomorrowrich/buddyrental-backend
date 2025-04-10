@@ -1,3 +1,15 @@
+# [1.5.0-beta.10](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.9...v1.5.0-beta.10) (2025-04-10)
+
+### Bug Fixes
+
+- testing mod ([5825c73](https://github.com/tomorrowrich/buddyrental-backend/commit/5825c7333ddcb75baaace40d35484d1d9eccef68))
+- typo ([b9754d6](https://github.com/tomorrowrich/buddyrental-backend/commit/b9754d627cd9037ad45ff68e2884ed164057fa92))
+
+### Features
+
+- notification service ([f7cc071](https://github.com/tomorrowrich/buddyrental-backend/commit/f7cc0714b33299e6a90f2295ed672aa1fdcce2df))
+- notification service ([#138](https://github.com/tomorrowrich/buddyrental-backend/issues/138)) ([9dec27f](https://github.com/tomorrowrich/buddyrental-backend/commit/9dec27f1812dbe95554058819dcc09c91d6dd8a3))
+
 # [1.5.0-beta.9](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.8...v1.5.0-beta.9) (2025-04-09)
 
 ### Bug Fixes
