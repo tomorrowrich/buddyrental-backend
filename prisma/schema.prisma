@@ -49,9 +49,10 @@ model User {
   Reports      Reports[]
   admin        Admin?
 
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  deletedAt     DateTime?       @map("deleted_at")
+  Notifications Notifications[]
 
   @@unique([email, phoneNumber])
 }
@@ -203,6 +204,25 @@ model ReportsCategory {
   Reports Reports[]
 }
 
+model Notifications {
+  id        String           @id @default(uuid()) @map("id") @db.Uuid
+  userId    String           @map("user_id") @db.Uuid
+  type      NotificationType @map("type")
+  title     String           @map("title") @db.VarChar(120)
+  body      String           @map("body") @db.Text
+  url       String?          @map("url") @db.VarChar(255)
+  read      Boolean          @default(false) @map("read")
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+  deletedAt DateTime?        @map("deleted_at")
+
+  user User? @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([deletedAt])
+  @@index([userId])
+  @@index([userId, read])
+}
+
 model Reports {
   id         String  @id @default(uuid()) @map("id") @db.Uuid
   userId     String  @map("user_id") @db.Uuid
@@ -253,4 +273,10 @@ enum UserGender {
   FEMALE
   OTHER
   UNKNOWN
+}
+
+enum NotificationType {
+  Booking
+  Chat
+  Others
 }

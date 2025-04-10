@@ -18,6 +18,7 @@ import { TagsModule } from './tags/tags.module';
 import { MailModule } from './mail/mail.module';
 import { ReportsModule } from './reports/reports.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ReviewsModule } from './reviews/reviews.module';
     MailModule,
     ReportsModule,
     ReviewsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
