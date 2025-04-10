@@ -91,4 +91,18 @@ export class AuthService {
 
     return { user };
   }
+
+  async verifyToken(token: string) {
+    if (!token) {
+      throw new BadRequestException('No token provided');
+    }
+
+    const payload = await this.jwtService.verifyAsync<{
+      sub: string;
+      email: string;
+    }>(token, {
+      secret: this.config.get<string>('auth.secret_key'),
+    });
+    return { userId: payload.sub, email: payload.email };
+  }
 }

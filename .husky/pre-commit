@@ -49,11 +49,8 @@ if echo "$STAGED_FILES" | grep -q '^prisma/'; then
   fi
 fi
 
-if [ -n "$TS_JS_FILES" ]; then
-  echo "🏃 Running tests for changed service files..."
-  echo "$TS_JS_FILES" | xargs pnpm test -- --findRelatedTests
-else
-  echo "No service files changed. Skipping tests."
-fi
+# Run all unit tests first
+echo "🧪 Running all unit tests..."
+pnpm test
 
 echo "✅ Pre-commit checks passed!"
