@@ -26,6 +26,7 @@ export class PaymentController {
 
   @LoggedIn()
   @Post('purchase')
+  @ApiQuery({ name: 'type', required: true, enum: ['coin'] })
   purchase(@Req() req: AuthenticatedRequest, @Body() payload: PurchaseDto) {
     if (payload.type !== 'coin')
       throw new NotImplementedException(
@@ -38,14 +39,13 @@ export class PaymentController {
   @LoggedIn()
   @Post('withdraw')
   withdraw(@Req() req: AuthenticatedRequest, @Param('amount') amount: number) {
-    throw new NotImplementedException({ amount });
-    // const data = this.paymentService.makeWithdraw(req.user.userId, amount);
-    // return { sucess: true, data };
+    const data = this.paymentService.makeWithdraw(req.user.userId, amount);
+    return { sucess: true, data };
   }
 
   @LoggedIn()
   @Get('history')
-  @ApiQuery({ name: 'type', required: false })
+  @ApiQuery({ name: 'type', required: false, enum: TransactionType })
   @ApiQuery({ name: 'take', required: false })
   @ApiQuery({ name: 'skip', required: false })
   async getHistory(
@@ -71,6 +71,7 @@ export class PaymentController {
   }
 
   @Post('webhook')
+  @ApiQuery({ name: 'source', required: true, enum: ['stripe'] })
   webhook(
     @Query('source') source: string,
     @Req() req: RawBodyRequest<Request>,
@@ -82,4 +83,12 @@ export class PaymentController {
 
     throw new BadRequestException('Invalid source.');
   }
+
+  // Should be implemented with budy onboarding flow not this controller
+  // @Get('onboard-buddy')
+  // @ApiQuery({ name: 'userId', required: true })
+  // async onboardBuddy(@Query('userId') userId: string) {
+  //   const data = await this.paymentService.onboardBuddy(userId);
+  //   return { success: true, data };
+  // }
 }

@@ -1,4 +1,5 @@
 export default () => ({
+  site_url: process.env.SITE_URL || 'https://example.com',
   client_key: process.env.CLIENT_KEY || 'DEFAULT_CLIENT_KEY',
   port: parseInt(process.env.PORT || '55500', 10),
   auth: {

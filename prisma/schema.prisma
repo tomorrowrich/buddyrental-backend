@@ -69,6 +69,7 @@ model Buddy {
   priceMin            Float   @map("price_min") @db.DoublePrecision
   priceMax            Float?  @map("price_max") @db.DoublePrecision
   tagsCount           Int     @default(0) @map("tags_count")
+  stripeAccountId     String? @unique @map("stripe_account_id") @db.VarChar(255)
   userId              String? @unique @map("user_id") @db.Uuid
   user                User?   @relation(fields: [userId], references: [userId], onDelete: SetNull)
 
