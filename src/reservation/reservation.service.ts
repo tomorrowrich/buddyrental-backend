@@ -8,12 +8,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { ScheduleService } from '@app/schedule/schedule.service';
 import { CreateReservationDto } from './dtos/create-reservation.dto';
 import { ScheduleStatus } from '@prisma/client';
+import { NotificationsService } from '@app/notifications/notifications.service';
 
 @Injectable()
 export class ReservationService {
   constructor(
     private prisma: PrismaService,
     private scheduleService: ScheduleService,
+    private readonly notificationService: NotificationsService,
   ) {}
 
   async getReservationHistory(buddyId: string, take = 10, skip = 0) {
