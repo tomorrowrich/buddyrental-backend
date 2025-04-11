@@ -9,6 +9,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ScheduleStatus } from '@prisma/client';
+import { NotificationsService } from '@app/notifications/notifications.service';
 
 describe('ReservationService', () => {
   let reservationService: ReservationService;
@@ -68,6 +69,7 @@ describe('ReservationService', () => {
           provide: PrismaService,
           useValue: prismaServiceMock as unknown as PrismaService,
         },
+        NotificationsService,
       ],
     }).compile();
 
