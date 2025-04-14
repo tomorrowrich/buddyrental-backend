@@ -13,7 +13,13 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { NotificationsService } from './notifications.service';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiQuery,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthService } from '@app/auth/auth.service';
 
 @ApiTags('NOTIFICATIONS')
@@ -29,19 +35,28 @@ export class NotificationsController {
     summary: 'Subscribe to server-sent events (SSE) notifications',
     description:
       'Establishes a persistent connection to receive real-time notifications via SSE',
-    responses: {
-      default: {
-        description: 'SSE',
-        headers: {
-          'Content-Type': {
-            schema: {
-              type: 'string',
-              example: 'text/event-stream',
-            },
-          },
+  })
+  @ApiQuery({
+    name: 'token',
+    required: true,
+    description: 'Authentication token for SSE connection',
+    type: String,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'SSE stream established successfully',
+    headers: {
+      'Content-Type': {
+        schema: {
+          type: 'string',
+          example: 'text/event-stream',
         },
       },
     },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Token is missing or invalid',
   })
   async sse(@Query('token') token: string): Promise<Observable<any>> {
     if (!token) {
@@ -55,6 +70,27 @@ export class NotificationsController {
 
   @Get()
   @LoggedIn()
+  @ApiOperation({
+    summary: 'Get all notifications',
+    description:
+      'Retrieves all notifications for the authenticated user with pagination',
+  })
+  @ApiQuery({
+    name: 'take',
+    required: false,
+    description: 'Number of notifications to retrieve (default: 10)',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+    description: 'Number of notifications to skip (default: 0)',
+    type: Number,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Notifications retrieved successfully',
+  })
   async getNotifications(
     @Req() req: AuthenticatedRequest,
     @Query('take') take?: string,
@@ -70,6 +106,27 @@ export class NotificationsController {
 
   @Get('unread')
   @LoggedIn()
+  @ApiOperation({
+    summary: 'Get unread notifications',
+    description:
+      'Retrieves all unread notifications for the authenticated user with pagination',
+  })
+  @ApiQuery({
+    name: 'take',
+    required: false,
+    description: 'Number of notifications to retrieve (default: 10)',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'skip',
+    required: false,
+    description: 'Number of notifications to skip (default: 0)',
+    type: Number,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Unread notifications retrieved successfully',
+  })
   async getUnreadNotifications(
     @Req() req: AuthenticatedRequest,
     @Query('take') take?: string,
@@ -84,6 +141,21 @@ export class NotificationsController {
 
   @Put(':id/read')
   @LoggedIn()
+  @ApiOperation({
+    summary: 'Mark notification as read',
+    description:
+      'Marks a specific notification as read for the authenticated user',
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'Notification ID to mark as read',
+    type: String,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Notification marked as read successfully',
+  })
   async readNotification(
     @Req() req: AuthenticatedRequest,
     @Param('id') notificationId: string,
@@ -96,6 +168,14 @@ export class NotificationsController {
 
   @Post('read-all')
   @LoggedIn()
+  @ApiOperation({
+    summary: 'Mark all notifications as read',
+    description: 'Marks all notifications as read for the authenticated user',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'All notifications marked as read successfully',
+  })
   async markAllAsRead(@Req() req: AuthenticatedRequest) {
     return this.notificationsService.markAllAsRead(req.user.userId);
   }
