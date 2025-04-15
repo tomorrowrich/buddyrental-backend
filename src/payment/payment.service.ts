@@ -118,7 +118,7 @@ export class PaymentService {
     if (!buddy.stripeAccountId)
       throw new BadRequestException('Buddy not onboarded.');
 
-    if (buddy.balanceWithdrawable > amount) {
+    if (buddy.balanceWithdrawable < amount) {
       throw new BadRequestException(
         'Insufficient balance. Please check your balance.',
       );
