@@ -36,9 +36,15 @@ export class PaymentController {
   }
 
   @LoggedIn()
-  @Post('withdraw')
-  withdraw(@Req() req: AuthenticatedRequest, @Param('amount') amount: number) {
-    const data = this.paymentService.makeWithdraw(req.user.userId, amount);
+  @Post('withdraw/:amount')
+  async withdraw(
+    @Req() req: AuthenticatedRequest,
+    @Param('amount') amount: number,
+  ) {
+    const data = await this.paymentService.makeWithdraw(
+      req.user.userId,
+      amount,
+    );
     return { sucess: true, data };
   }
 

@@ -136,7 +136,7 @@ export class PaymentService {
         data: {
           userId,
           type: TransactionType.WITHDRAWAL,
-          amount,
+          amount: +amount,
           paymentId: transfer.id,
           status: TrasactionStatus.PENDING,
           meta: {
@@ -146,13 +146,14 @@ export class PaymentService {
         },
         omit: { meta: true },
       })
-      .then(() => {
-        return this.prisma.buddy.update({
+      .then(async (transaction) => {
+        await this.prisma.buddy.update({
           where: { buddyId: buddy.buddyId },
           data: {
-            balanceWithdrawable: { decrement: amount },
+            balanceWithdrawable: { decrement: +amount },
           },
         });
+        return transaction;
       });
 
     if (!transaction) {
