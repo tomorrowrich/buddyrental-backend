@@ -26,7 +26,6 @@ export class PaymentController {
 
   @LoggedIn()
   @Post('purchase')
-  @ApiQuery({ name: 'type', required: true, enum: ['coin'] })
   purchase(@Req() req: AuthenticatedRequest, @Body() payload: PurchaseDto) {
     if (payload.type !== 'coin')
       throw new NotImplementedException(
