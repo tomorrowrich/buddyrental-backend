@@ -15,7 +15,8 @@ export const corsOptions = {
     origin: string | undefined,
     callback: (err: Error | null, allow?: boolean) => void,
   ) => {
-    if (!origin) return callback(null, true);
+    if (!origin || process.env.NODE_ENV !== 'production')
+      return callback(null, true);
 
     const isAllowed = allowedOrigins.some((regex) => regex.test(origin));
     if (isAllowed) callback(null, true);
