@@ -1,3 +1,19 @@
+# [1.5.0-beta.12](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.11...v1.5.0-beta.12) (2025-04-17)
+
+### Bug Fixes
+
+- **doc:** incorrect swagger ([a029107](https://github.com/tomorrowrich/buddyrental-backend/commit/a0291070eb036d6ad5751c5d63771ac19b516c70))
+- **payment:** withdraw logic ([520c2a0](https://github.com/tomorrowrich/buddyrental-backend/commit/520c2a03ff2e2937c256de50da03a6255164636c))
+
+### Features
+
+- **payment:** coin purchase ([15508a1](https://github.com/tomorrowrich/buddyrental-backend/commit/15508a13a8ad739b8f0a523a52d885a428960cdc))
+- **payment:** event hook ([3732cc9](https://github.com/tomorrowrich/buddyrental-backend/commit/3732cc9bdfc5c999260599657c2683d105e21045))
+- **payment:** stripe integration ([adda8da](https://github.com/tomorrowrich/buddyrental-backend/commit/adda8da94c878c684847ad3add12750837000f9b))
+- **payment:** transaction ([#139](https://github.com/tomorrowrich/buddyrental-backend/issues/139)) ([9f9840a](https://github.com/tomorrowrich/buddyrental-backend/commit/9f9840a09382b8bf0f22617ce3901a6b84054bdb))
+- **payment:** transaction history ([2d8adcc](https://github.com/tomorrowrich/buddyrental-backend/commit/2d8adcc0ab3b07a573e3eea63bc5c34097521aee))
+- **payment:** withdrwawal system ([8465cd4](https://github.com/tomorrowrich/buddyrental-backend/commit/8465cd4b26a9db457cbacf20f78acd801301b7f0))
+
 # [1.5.0-beta.11](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.10...v1.5.0-beta.11) (2025-04-17)
 
 ### Features
