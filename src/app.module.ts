@@ -1,23 +1,25 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { ReservationModule } from './reservation/reservation.module';
 import { ConfigModule } from '@nestjs/config';
 import { AdminModule } from './admin/admin.module';
-import { InterestsModule } from './interests/interests.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { BuddiesModule } from './buddies/buddies.module';
 import { BuddyModule } from './buddy/buddy.module';
 import { ChatModule } from './chat/chat.module';
-import { ScheduleModule } from './schedule/schedule.module';
 import configLoader from './config';
-import { StorageModule } from './storage/storage.module';
-import { BuddiesModule } from './buddies/buddies.module';
-import { TagsModule } from './tags/tags.module';
+import { InterestsModule } from './interests/interests.module';
 import { MailModule } from './mail/mail.module';
+import { PaymentModule } from './payment/payment.module';
+import { PrismaModule } from './prisma/prisma.module';
 import { ReportsModule } from './reports/reports.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { ReservationModule } from './reservation/reservation.module';
+import { ScheduleModule } from './schedule/schedule.module';
+import { StorageModule } from './storage/storage.module';
+import { StripeModule } from './stripe/stripe.module';
+import { TagsModule } from './tags/tags.module';
+import { UsersModule } from './users/users.module';
 import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
@@ -43,6 +45,8 @@ import { NotificationsModule } from './notifications/notifications.module';
     MailModule,
     ReportsModule,
     ReviewsModule,
+    StripeModule,
+    PaymentModule,
     NotificationsModule,
   ],
   controllers: [AppController],

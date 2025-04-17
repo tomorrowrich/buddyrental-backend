@@ -35,8 +35,11 @@ model User {
   address            String     @db.VarChar(255)
   city               String     @db.VarChar(64)
   postalCode         String     @db.VarChar(16)
+  country            String     @default("TH") @db.VarChar(2)
   profilePicture     String?    @map("profile_picture") @db.Text
   description        String?    @db.Text
+  balance            Float      @default(0) @map("balance") @db.DoublePrecision
+  stripeCustomerId   String?    @map("stripe_customer_id") @db.VarChar(255)
   accessToken        String?    @map("access_token")
   resetPasswordToken String?    @map("reset_password_token") @db.VarChar(255)
 
@@ -46,6 +49,7 @@ model User {
   ChatMessage  ChatMessage[]
   buddy        Buddy?
   reservations ReservationRecord[]
+  transactions Transaction[]
   Reports      Reports[]
   admin        Admin?
 
@@ -66,6 +70,7 @@ model Buddy {
   priceMin            Float   @map("price_min") @db.DoublePrecision
   priceMax            Float?  @map("price_max") @db.DoublePrecision
   tagsCount           Int     @default(0) @map("tags_count")
+  stripeAccountId     String? @unique @map("stripe_account_id") @db.VarChar(255)
   userId              String? @unique @map("user_id") @db.Uuid
   user                User?   @relation(fields: [userId], references: [userId], onDelete: SetNull)
 
@@ -198,6 +203,40 @@ model ChatMessage {
   @@index([deletedAt])
 }
 
+model Transaction {
+  id        String           @id @default(uuid()) @map("id") @db.Uuid
+  userId    String?          @map("user_id") @db.Uuid
+  type      TransactionType  @map("type")
+  amount    Float            @map("amount") @db.DoublePrecision
+  paymentId String?          @unique @map("payment_id") @db.VarChar(255)
+  status    TrasactionStatus @map("status")
+  timestamp DateTime         @default(now()) @map("timestamp")
+  meta      Json             @map("meta") @db.Json
+
+  user User? @relation(fields: [userId], references: [userId], onDelete: SetNull)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([createdAt])
+  @@index([paymentId])
+}
+
+model Coupon {
+  id        String       @id @default(uuid()) @map("id") @db.Uuid
+  code      String       @unique @map("code") @db.VarChar(64)
+  type      CouponType   @map("type")
+  value     Float        @map("value") @db.DoublePrecision
+  startDate DateTime     @map("start_date") @db.Timestamp
+  endDate   DateTime     @map("end_date") @db.Timestamp
+  status    CouponStatus @map("status")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+}
+
 model ReportsCategory {
   id      String    @id @default(uuid()) @map("id") @db.Uuid
   name    String    @map("name") @db.VarChar(60)
@@ -260,6 +299,31 @@ enum ReservationStatus {
   REJECTED
   CANCELLED
   COMPLETED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+  REFUND
+}
+
+enum TrasactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  VOIDED
+}
+
+enum CouponStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED
 }
 
 enum ScheduleStatus {
