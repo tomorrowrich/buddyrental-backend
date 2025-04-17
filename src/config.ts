@@ -16,6 +16,10 @@ export default () => ({
     key: process.env.S3_KEY || 'DEFAULT_ACCESS_KEY',
     bucket: process.env.S3_BUCKET_NAME || 'storage',
   },
+  mailer: {
+    from: process.env.MAIL_FROM || 'buddyrental@example.com',
+    host: process.env.MAIL_TRANSPORT || 'smtp://smtp.example.com',
+  },
   stripe: {
     secret_key: process.env.STRIPE_SECRET_KEY || '',
     webhook_secret: process.env.STRIPE_WEBHOOK_SECRET,
