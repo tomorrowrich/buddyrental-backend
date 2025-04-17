@@ -10,9 +10,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        transport: configService.get<string>('MAIL_TRANSPORT'),
+        transport: configService.get<string>('mailer.host'),
         defaults: {
-          from: configService.get<string>('MAIL_FROM'),
+          from: configService.get<string>('mailer.from'),
         },
       }),
     }),
