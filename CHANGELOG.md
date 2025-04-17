@@ -1,3 +1,9 @@
+# [1.5.0-beta.11](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.10...v1.5.0-beta.11) (2025-04-17)
+
+### Features
+
+- **review:** integrate create review ([9912cb9](https://github.com/tomorrowrich/buddyrental-backend/commit/9912cb936e2279450a72fbfb6ba43180cac966e6))
+
 # [1.5.0-beta.10](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.9...v1.5.0-beta.10) (2025-04-10)
 
 ### Bug Fixes
