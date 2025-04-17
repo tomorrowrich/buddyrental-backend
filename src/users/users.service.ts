@@ -328,12 +328,9 @@ export class UsersService {
   }
 
   async setSuspendTime(userId: string, suspendTime: number): Promise<void> {
-    // คำนวณวันที่สิ้นสุด suspend
     const suspendUntil = new Date();
-    console.log('suspendTime', suspendTime);
     suspendUntil.setDate(suspendUntil.getDate() + suspendTime);
 
-    // อัปเดตสถานะการ suspend และวันที่ suspend
     await this.prisma.user.update({
       where: { userId },
       data: {
@@ -344,7 +341,6 @@ export class UsersService {
   }
 
   async setBan(userId: string, isBan: boolean): Promise<void> {
-    // อัปเดตสถานะการแบน
     await this.prisma.user.update({
       where: { userId },
       data: {

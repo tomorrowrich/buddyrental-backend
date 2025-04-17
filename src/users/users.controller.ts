@@ -104,7 +104,7 @@ export class UsersController {
     @Param('id') id: string, // userId ที่จะ suspend
     @Body() body: { suspendTime: number }, // รับค่า suspendTime เป็น object
   ) {
-    console.log('suspendTime: ', body.suspendTime); // ใช้ body.suspendTime แทน
+    // console.log('suspendTime: ', body.suspendTime); // ใช้ body.suspendTime แทน
     await this.usersService.setSuspendTime(id, body.suspendTime);
     return { message: `User ${id} suspended successfully!` };
   }
@@ -113,11 +113,12 @@ export class UsersController {
   @LoggedIn()
   async setBan(
     @Param('id') id: string, // userId ที่จะ ban
-    @Body() body: { isBan: boolean }, // DTO สำหรับข้อมูลการแบน
+    @Body() body: { isBanned: boolean }, // DTO สำหรับข้อมูลการแบน
   ) {
-    await this.usersService.setBan(id, body.isBan);
+    // console.log('isBan body controller: ', body.isBan); // ใช้ body.isBan แทน
+    await this.usersService.setBan(id, body.isBanned);
     return {
-      message: `User ${id} ${body.isBan ? 'banned' : 'unbanned'} successfully!`,
+      message: `User ${id} ${body.isBanned ? 'banned' : 'unbanned'} successfully!`,
     };
   }
 }
