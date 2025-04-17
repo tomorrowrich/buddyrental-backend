@@ -43,12 +43,12 @@ describe('UsersService', () => {
   });
 
   it('should call prisma.user.findUnique with correct userId', async () => {
-    const mockPassword = await argon2.hash('testpassword'); // 👈 ใช้ hash จริง
+    const mockPassword = await argon2.hash('testpassword');
     const mockUser = { id: 1, password: mockPassword };
 
     jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(mockUser as any);
 
     const result = await service.verifyPassword(mockPassword, 'testpassword');
-    expect(result).toBe(true); // 👈 ตรวจสอบว่า verify สำเร็จ
+    expect(result).toBe(true);
   });
 });
