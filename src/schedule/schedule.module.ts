@@ -7,9 +7,10 @@ import { LoggerMiddleware } from '@app/middleware/logger.middleware';
 import { PrismaModule } from '@app/prisma/prisma.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from '@app/auth/auth.module';
+import { NotificationsModule } from '@app/notifications/notifications.module';
 
 @Module({
-  imports: [PrismaModule, JwtModule, AuthModule],
+  imports: [PrismaModule, JwtModule, AuthModule, NotificationsModule],
   controllers: [ScheduleController],
   providers: [ScheduleService, ReservationService, PrismaService],
 })

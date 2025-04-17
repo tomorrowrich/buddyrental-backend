@@ -1,6 +1,5 @@
 export class CreateReviewDto {
-  commenterId: string;
-  profileId: string;
+  reservationId: string;
   rating: number;
   comment: string;
 }
