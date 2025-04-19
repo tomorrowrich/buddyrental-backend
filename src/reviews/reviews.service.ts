@@ -66,10 +66,7 @@ export class ReviewsService {
   ): Promise<PaginatedOutputDto<Review>> {
     const paginate = createPaginator({ perPage, page });
     // equivalent to paginating `this.prisma.review.findMany();`
-    const reviews = await paginate<Review, Prisma.ReviewFindManyArgs>(
-      this.prisma,
-    );
-    return reviews;
+    return await paginate<Review, Prisma.ReviewFindManyArgs>(this.prisma);
   }
 
   async findOnProfile(
