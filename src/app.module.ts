@@ -13,6 +13,7 @@ import { MailModule } from './mail/mail.module';
 import { PaymentModule } from './payment/payment.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ReportsModule } from './reports/reports.module';
+import { ReviewsModule } from './reviews/reviews.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { StorageModule } from './storage/storage.module';
@@ -43,6 +44,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     TagsModule,
     MailModule,
     ReportsModule,
+    ReviewsModule,
     StripeModule,
     PaymentModule,
     NotificationsModule,
