@@ -18,7 +18,7 @@ async function main() {
 
   await seedBuddy();
 
-  await seedTags();
+  // await seedTags(); Temporarily disabled due to Supabase issue
 
   await seedChat();
 
@@ -197,7 +197,7 @@ async function seedUser() {
   }
 
   await prisma.user.createMany({
-    data: users as any as User[],
+    data: { ...(users as any as User[]) },
     skipDuplicates: true,
   });
 
@@ -394,31 +394,35 @@ async function seedTags() {
     skipDuplicates: true,
   });
 
-  for (const userTag of userTags) {
-    await prisma.user.update({
-      where: {
-        userId: userTag.userId,
-      },
-      data: {
-        interests: {
-          connect: [{ tagId: userTag.tagId }],
+  await Promise.all(
+    userTags.map((userTag) =>
+      prisma.user.update({
+        where: {
+          userId: userTag.userId,
         },
-      },
-    });
-  }
+        data: {
+          interests: {
+            connect: [{ tagId: userTag.tagId }],
+          },
+        },
+      }),
+    ),
+  );
 
-  for (const buddyTag of buddyTags) {
-    await prisma.buddy.update({
-      where: {
-        buddyId: buddyTag.buddyId,
-      },
-      data: {
-        tags: {
-          connect: [{ tagId: buddyTag.tagId }],
+  await Promise.all(
+    buddyTags.map((buddyTag) =>
+      prisma.buddy.update({
+        where: {
+          buddyId: buddyTag.buddyId,
         },
-      },
-    });
-  }
+        data: {
+          tags: {
+            connect: [{ tagId: buddyTag.tagId }],
+          },
+        },
+      }),
+    ),
+  );
 
   console.timeEnd('seed-tags');
   console.log('Seeding Tags finished successfully\n');
