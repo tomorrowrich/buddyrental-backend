@@ -141,7 +141,7 @@ jobs:
                 "DIRECT_URL": "${{ secrets.DIRECT_URL }}&schema=preview-${{ github.event.number }}",
                 "STRIPE_SECRET_KEY": "${{ secrets.STRIPE_SECRET_KEY }}",
                 "MAIL_TRANSPORT": "${{ secrets.MAIL_TRANSPORT }}",
-                "MAIL_FROM": "buddyrental-preview-${{ github.event.number }}@${{ vars.MAIL_DOMAIN }}"
+                "MAIL_FROM": "buddyrental-preview-${{ github.event.number }}@${{ vars.MAIL_DOMAIN }}",
                 "NODE_ENV": "preview"
               },
               "resources": {
