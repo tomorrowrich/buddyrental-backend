@@ -43,15 +43,16 @@ model User {
   accessToken        String?    @map("access_token")
   resetPasswordToken String?    @map("reset_password_token") @db.VarChar(255)
 
-  interests    Tag[]
-  reviewsMade  Review[]            @relation("ReviewToCommenter")
-  Chat         Chat[]
-  ChatMessage  ChatMessage[]
-  buddy        Buddy?
-  reservations ReservationRecord[]
-  transactions Transaction[]
-  Reports      Reports[]
-  admin        Admin?
+  interests           Tag[]
+  reviewsMade         Review[]            @relation("ReviewToCommenter")
+  Chat                Chat[]
+  ChatMessage         ChatMessage[]
+  buddy               Buddy?
+  reservations        ReservationRecord[]
+  transactions        Transaction[]       @relation("UserTransaction")
+  transactionsAsBuddy Transaction[]       @relation("BuddyTransaction")
+  Reports             Reports[]
+  admin               Admin?
 
   createdAt     DateTime        @default(now()) @map("created_at")
   updatedAt     DateTime        @updatedAt @map("updated_at")
@@ -206,6 +207,7 @@ model ChatMessage {
 model Transaction {
   id        String           @id @default(uuid()) @map("id") @db.Uuid
   userId    String?          @map("user_id") @db.Uuid
+  buddyId   String?          @map("buddy_id") @db.Uuid
   type      TransactionType  @map("type")
   amount    Float            @map("amount") @db.DoublePrecision
   paymentId String?          @unique @map("payment_id") @db.VarChar(255)
@@ -213,7 +215,8 @@ model Transaction {
   timestamp DateTime         @default(now()) @map("timestamp")
   meta      Json             @map("meta") @db.Json
 
-  user User? @relation(fields: [userId], references: [userId], onDelete: SetNull)
+  user  User? @relation("UserTransaction", fields: [userId], references: [userId], onDelete: SetNull)
+  buddy User? @relation("BuddyTransaction", fields: [buddyId], references: [userId], onDelete: SetNull)
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
