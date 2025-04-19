@@ -1,3 +1,10 @@
+# [1.5.0-beta.14](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.13...v1.5.0-beta.14) (2025-04-19)
+
+### Bug Fixes
+
+- **reviews:** expose reviews api to swagger ([fadcf08](https://github.com/tomorrowrich/buddyrental-backend/commit/fadcf08149cb72fa69d3bf54284014353a64be6f))
+- **reviews:** expose reviews api to swagger ([#135](https://github.com/tomorrowrich/buddyrental-backend/issues/135)) ([5b712c5](https://github.com/tomorrowrich/buddyrental-backend/commit/5b712c55c4f766fd2ba80aaf6087327e61a7e247))
+
 # [1.5.0-beta.13](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.12...v1.5.0-beta.13) (2025-04-18)
 
 ### Features
