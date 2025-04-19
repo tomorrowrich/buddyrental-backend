@@ -1,3 +1,12 @@
+# [1.5.0-beta.15](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.14...v1.5.0-beta.15) (2025-04-19)
+
+### Bug Fixes
+
+- **ci:** imagine forgetting a comma ([a2ff9ba](https://github.com/tomorrowrich/buddyrental-backend/commit/a2ff9badca5178491c4c95edf7ef8dcd8d7d2dd5))
+- **ci:** pool timeout ([59de630](https://github.com/tomorrowrich/buddyrental-backend/commit/59de630052d149f752bf83071e02ba5493ec5ee1))
+- **ci:** pool timeout new ([4f54d6c](https://github.com/tomorrowrich/buddyrental-backend/commit/4f54d6c69005244902991d37244452c50d4f4b6b))
+- **mailer:** default mailer env ([ac068df](https://github.com/tomorrowrich/buddyrental-backend/commit/ac068df8bc80618035d4629515cf791f95eae7d4))
+
 # [1.5.0-beta.14](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.13...v1.5.0-beta.14) (2025-04-19)
 
 ### Bug Fixes
