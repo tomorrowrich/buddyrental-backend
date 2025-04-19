@@ -394,35 +394,31 @@ async function seedTags() {
     skipDuplicates: true,
   });
 
-  await Promise.all(
-    userTags.map((userTag) =>
-      prisma.user.update({
-        where: {
-          userId: userTag.userId,
+  for (const userTag of userTags) {
+    await prisma.user.update({
+      where: {
+        userId: userTag.userId,
+      },
+      data: {
+        interests: {
+          connect: [{ tagId: userTag.tagId }],
         },
-        data: {
-          interests: {
-            connect: [{ tagId: userTag.tagId }],
-          },
-        },
-      }),
-    ),
-  );
+      },
+    });
+  }
 
-  await Promise.all(
-    buddyTags.map((buddyTag) =>
-      prisma.buddy.update({
-        where: {
-          buddyId: buddyTag.buddyId,
+  for (const buddyTag of buddyTags) {
+    await prisma.buddy.update({
+      where: {
+        buddyId: buddyTag.buddyId,
+      },
+      data: {
+        tags: {
+          connect: [{ tagId: buddyTag.tagId }],
         },
-        data: {
-          tags: {
-            connect: [{ tagId: buddyTag.tagId }],
-          },
-        },
-      }),
-    ),
-  );
+      },
+    });
+  }
 
   console.timeEnd('seed-tags');
   console.log('Seeding Tags finished successfully\n');
