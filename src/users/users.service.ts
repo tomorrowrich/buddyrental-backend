@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   Query,
@@ -139,10 +140,16 @@ export class UsersService {
     email: string,
     citizenId: string,
     phoneNumber: string,
+    nickname: string,
   ) {
     const user = await this.prisma.user.findFirst({
       where: {
-        OR: [{ citizenId }, { email }, { phoneNumber }],
+        OR: [
+          { citizenId },
+          { email },
+          { phoneNumber },
+          { displayName: nickname },
+        ],
         deletedAt: null,
       },
       omit: { password: true },
@@ -183,9 +190,36 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
+    if (updateUserDto.displayName) {
+      const isDisplayNameTaken = await this.prisma.user.findFirst({
+        where: {
+          displayName: updateUserDto.displayName,
+          deletedAt: null,
+          NOT: { userId },
+        },
+        select: { userId: true },
+      });
+
+      if (isDisplayNameTaken) {
+        throw new ForbiddenException('Duplicate Display Name');
+      }
+    }
+    console.log('updateUserDto: ', updateUserDto);
+
     return await this.prisma.user.update({
       where: { userId: userId, deletedAt: null },
-      data: updateUserDto,
+      data: {
+        firstName: updateUserDto.firstName,
+        lastName: updateUserDto.lastName,
+        citizenId: updateUserDto.citizenId,
+        phoneNumber: updateUserDto.phone,
+        displayName: updateUserDto.displayName,
+        gender: updateUserDto.gender,
+        address: updateUserDto.address,
+        city: updateUserDto.city,
+        postalCode: updateUserDto.postalCode,
+        profilePicture: updateUserDto.profilePicture,
+      },
       omit: { password: true },
     });
   }

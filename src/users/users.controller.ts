@@ -36,6 +36,7 @@ export class UsersController {
     @Req() req: AuthenticatedRequest,
     @Body() payload: UpdateUserDto,
   ) {
+    // console.log('updateProfile payload: ', payload);
     const validationPipe = new ValidationPipe({ transform: true });
     await validationPipe.transform(payload, { type: 'body' });
 
