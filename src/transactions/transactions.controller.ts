@@ -1,8 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
-  Param,
   Post,
   Req,
   UsePipes,
@@ -24,29 +22,14 @@ export class TransactionsController {
   @UsePipes(new ValidationPipe({ transform: true }))
   async transfer(
     @Req() req: AuthenticatedRequest,
-    @Body() body: { buddyId: string; amount: number },
+    @Body() body: { buddyId: string; amount: number; reservationId: string },
   ) {
-    const { buddyId, amount } = body;
+    const { buddyId, amount, reservationId } = body;
     return await this.transactionsService.transferToBuddy(
       req.user.userId,
       buddyId,
       amount,
+      reservationId,
     );
-  }
-
-  @Get('me')
-  @LoggedIn()
-  @ApiOperation({ summary: 'Get my transaction history' })
-  async getMyTransactions(@Req() req: AuthenticatedRequest) {
-    return await this.transactionsService.getTransactionsByUser(
-      req.user.userId,
-    );
-  }
-
-  @Get('buddy/:buddyId')
-  @LoggedIn()
-  @ApiOperation({ summary: 'Get transactions for a buddy' })
-  async getBuddyTransactions(@Param('buddyId') buddyId: string) {
-    return await this.transactionsService.getTransactionsForBuddy(buddyId);
   }
 }

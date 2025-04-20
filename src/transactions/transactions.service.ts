@@ -4,13 +4,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '@app/prisma/prisma.service';
-import { TransactionType, TrasactionStatus } from '@prisma/client';
 
 @Injectable()
 export class TransactionsService {
   constructor(private prisma: PrismaService) {}
 
-  async transferToBuddy(userId: string, buddyId: string, amount: number) {
+  async transferToBuddy(
+    userId: string,
+    buddyId: string,
+    amount: number,
+    reservationId: string,
+  ) {
     if (amount <= 0) {
       throw new BadRequestException('Amount must be more than 0');
     }
@@ -38,33 +42,15 @@ export class TransactionsService {
 
       await tx.user.update({
         where: { userId: buddy.userId },
-        data: { balance: { increment: amount } },
+        data: { balance: { increment: amount * 0.85 } },
       });
 
-      return await tx.transaction.create({
-        data: {
-          userId,
-          buddyId,
-          amount,
-          type: TransactionType.TRANSFER,
-          status: TrasactionStatus.COMPLETED,
-          meta: {},
-        },
+      const updatedReservation = await tx.reservationRecord.update({
+        where: { reservationId },
+        data: { price: amount },
       });
-    });
-  }
 
-  async getTransactionsByUser(userId: string) {
-    return await this.prisma.transaction.findMany({
-      where: { userId },
-      orderBy: { createdAt: 'desc' },
-    });
-  }
-
-  async getTransactionsForBuddy(buddyId: string) {
-    return await this.prisma.transaction.findMany({
-      where: { buddyId },
-      orderBy: { createdAt: 'desc' },
+      return updatedReservation;
     });
   }
 }
