@@ -1,12 +1,14 @@
 import { Buddy, PrismaClient, User } from '@prisma/client';
 import { userPassword } from '../src/prisma/prisma.extension';
-import * as users from './data/users.json';
 import * as buddies from './data/buddies.json';
-import * as tags from './data/tags.json';
-import * as userTags from './data/tags-users.json';
 import * as buddyTags from './data/tags-buddies.json';
+import * as userTags from './data/tags-users.json';
+import * as tags from './data/tags.json';
+import * as users from './data/users.json';
 
 const prisma = new PrismaClient().$extends(userPassword);
+
+let skippedUserSeeding = false;
 
 async function main() {
   console.log('Start seeding...');
@@ -190,17 +192,6 @@ async function seedUser() {
 
   const existingUsers = await prisma.user.count();
 
-  if (existingUsers > 0) {
-    console.timeEnd('seed-user');
-    console.log('User already exists, skipping seeding\n');
-    return;
-  }
-
-  await prisma.user.createMany({
-    data: { ...(users as any as User[]) },
-    skipDuplicates: true,
-  });
-
   await prisma.user.upsert({
     where: {
       email: 'user@buddy.rental',
@@ -222,6 +213,18 @@ async function seedUser() {
       postalCode: 'REDACTED',
       verified: true,
     },
+  });
+
+  if (existingUsers > 0) {
+    skippedUserSeeding = true;
+    console.timeEnd('seed-user');
+    console.log('User already exists, skipping seeding\n');
+    return;
+  }
+
+  await prisma.user.createMany({
+    data: { ...(users as any as User[]) },
+    skipDuplicates: true,
   });
 
   console.timeEnd('seed-user');
@@ -264,17 +267,6 @@ async function seedBuddy() {
 
   const existingBuddies = await prisma.buddy.count();
 
-  if (existingBuddies > 0) {
-    console.timeEnd('seed-buddy');
-    console.log('Buddy already exists, skipping seeding\n');
-    return;
-  }
-
-  await prisma.buddy.createMany({
-    data: buddies as any as Buddy[],
-    skipDuplicates: true,
-  });
-
   await prisma.user.upsert({
     where: {
       email: 'buddy@buddy.rental',
@@ -313,6 +305,17 @@ async function seedBuddy() {
         },
       },
     },
+  });
+
+  if (skippedUserSeeding || existingBuddies > 0) {
+    console.timeEnd('seed-buddy');
+    console.log('Buddy already exists, skipping seeding\n');
+    return;
+  }
+
+  await prisma.buddy.createMany({
+    data: buddies as any as Buddy[],
+    skipDuplicates: true,
   });
 
   console.timeEnd('seed-buddy');
