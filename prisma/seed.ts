@@ -1,4 +1,4 @@
-import { Buddy, PrismaClient, User } from '@prisma/client';
+import { Buddy, PrismaClient } from '@prisma/client';
 import { userPassword } from '../src/prisma/prisma.extension';
 import * as users from './data/users.json';
 import * as buddies from './data/buddies.json';
@@ -197,7 +197,7 @@ async function seedUser() {
   }
 
   await prisma.user.createMany({
-    data: { ...(users as any as User[]) },
+    data: users,
     skipDuplicates: true,
   });
 
