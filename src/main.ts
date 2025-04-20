@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { utilities, WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
 
 export const allowedOrigins = [
   /^http:\/\/localhost:(3000|55500)$/,
@@ -36,10 +38,22 @@ export const corsOptions = {
   credentials: true,
   maxAge: 86400,
 };
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
     cors: corsOptions,
+    rawBody: true,
+    logger: WinstonModule.createLogger({
+      level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        utilities.format.nestLike('BuddyRental', {
+          colors: process.env.NODE_ENV === 'development',
+        }),
+      ),
+      transports: [new winston.transports.Console()],
+    }),
   });
   app.setGlobalPrefix('/api');
 

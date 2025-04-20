@@ -1,10 +1,45 @@
-import { PrismaClient } from '@prisma/client';
+import { Buddy, PrismaClient, User } from '@prisma/client';
+import { userPassword } from '../src/prisma/prisma.extension';
+import * as users from './data/users.json';
+import * as buddies from './data/buddies.json';
+import * as tags from './data/tags.json';
+import * as userTags from './data/tags-users.json';
+import * as buddyTags from './data/tags-buddies.json';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient().$extends(userPassword);
 
 async function main() {
   console.log('Start seeding...');
 
+  await seedReportCategory();
+
+  await seedUser();
+  await seedVerifiedUser();
+
+  await seedBuddy();
+
+  // await seedTags(); Temporarily disabled due to Supabase issue
+
+  await seedChat();
+
+  await seedAdmin();
+
+  console.log('Seeding finished successfully');
+  console.log('Disconnecting...');
+}
+
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  .finally(() => {
+    return prisma.$disconnect();
+  });
+
+async function seedAdmin() {
+  console.time('seed-admin');
   console.log('Start seeding admin');
   // First check if user with admin role exists
   const existingUser = await prisma.user.findFirst({
@@ -46,8 +81,7 @@ async function main() {
         gender: 'UNKNOWN',
         displayName: 'Admin Buddy',
         description: 'Admin of Buddy Rental',
-        password:
-          '$argon2id$v=19$m=16,t=2,p=1$cjZrVnBtWHhRUERmZGREaw$LZiIERDdNVshOZ/lTeREKA',
+        password: '1234',
         phoneNumber: 'REDACTED',
         postalCode: 'REDACTED',
         admin: {
@@ -60,10 +94,13 @@ async function main() {
       },
     });
   }
-  console.log('Seeding Admin finished successfully');
 
-  console.log('Start seeding ReportCategory...');
+  console.timeEnd('seed-admin');
+  console.log('Seeding Admin finished successfully\n');
+}
 
+async function seedReportCategory() {
+  console.time('seed-report-category');
   console.log('Start seeding ReportCategory...');
 
   const reportCategories = [
@@ -143,17 +180,250 @@ async function main() {
     });
   }
 
-  console.log('Seeding ReportCategory finished successfully');
-
-  console.log('Seeding finished successfully');
+  console.timeEnd('seed-report-category');
+  console.log('Seeding ReportCategory finished successfully\n');
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  .finally(() => {
-    return prisma.$disconnect();
+async function seedUser() {
+  console.time('seed-user');
+  console.log('Start seeding User...');
+
+  const existingUsers = await prisma.user.count();
+
+  if (existingUsers > 0) {
+    console.timeEnd('seed-user');
+    console.log('User already exists, skipping seeding\n');
+    return;
+  }
+
+  await prisma.user.createMany({
+    data: { ...(users as any as User[]) },
+    skipDuplicates: true,
   });
+
+  await prisma.user.upsert({
+    where: {
+      email: 'user@buddy.rental',
+    },
+    update: {},
+    create: {
+      email: 'user@buddy.rental',
+      address: 'REDACTED',
+      citizenId: '0',
+      city: 'REDACTED',
+      dateOfBirth: new Date(0, 0, 0),
+      firstName: 'Customer',
+      lastName: 'Doe',
+      gender: 'UNKNOWN',
+      displayName: 'johndoe',
+      description: 'Test User',
+      password: '1234',
+      phoneNumber: '0',
+      postalCode: 'REDACTED',
+      verified: true,
+    },
+  });
+
+  console.timeEnd('seed-user');
+  console.log('Seeding User finished successfully\n');
+}
+
+async function seedVerifiedUser() {
+  console.time('seed-verified-user');
+  console.log('Start seeding VerifiedUser...');
+
+  const existingVerifiedUsers = await prisma.user.count({
+    where: {
+      verified: true,
+    },
+  });
+
+  if (existingVerifiedUsers > 0) {
+    console.timeEnd('seed-verified-user');
+    console.log('VerifiedUser already exists, skipping seeding\n');
+    return;
+  }
+
+  await prisma.user.updateMany({
+    where: {
+      verified: false,
+    },
+    data: {
+      verified: true,
+    },
+    limit: Math.floor((await prisma.user.count()) * 0.8),
+  });
+
+  console.timeEnd('seed-verified-user');
+  console.log('Seeding VerifiedUser finished successfully\n');
+}
+
+async function seedBuddy() {
+  console.time('seed-buddy');
+  console.log('Start seeding Buddy...');
+
+  const existingBuddies = await prisma.buddy.count();
+
+  if (existingBuddies > 0) {
+    console.timeEnd('seed-buddy');
+    console.log('Buddy already exists, skipping seeding\n');
+    return;
+  }
+
+  await prisma.buddy.createMany({
+    data: buddies as any as Buddy[],
+    skipDuplicates: true,
+  });
+
+  await prisma.user.upsert({
+    where: {
+      email: 'buddy@buddy.rental',
+    },
+    update: {
+      buddy: {
+        create: {
+          balanceWithdrawable: 0,
+          description: 'Test Buddy',
+          totalReviews: 0,
+          priceMin: 0,
+        },
+      },
+    },
+    create: {
+      email: 'buddy@buddy.rental',
+      address: 'REDACTED',
+      citizenId: '1',
+      city: 'REDACTED',
+      dateOfBirth: new Date(0, 0, 0),
+      firstName: 'Buddy',
+      lastName: 'Test',
+      gender: 'UNKNOWN',
+      displayName: 'buddytest',
+      description: 'Test User',
+      password: '1234',
+      phoneNumber: '1',
+      postalCode: 'REDACTED',
+      verified: true,
+      buddy: {
+        create: {
+          balanceWithdrawable: 0,
+          description: 'Test Buddy',
+          totalReviews: 0,
+          priceMin: 0,
+        },
+      },
+    },
+  });
+
+  console.timeEnd('seed-buddy');
+  console.log('Seeding Buddy finished successfully\n');
+}
+
+async function seedChat() {
+  const customer = await prisma.user.findUnique({
+    where: {
+      email: 'user@buddy.rental',
+    },
+  });
+
+  const buddyUser = await prisma.user.findUnique({
+    where: {
+      email: 'buddy@buddy.rental',
+    },
+    include: {
+      buddy: true,
+    },
+  });
+  const buddy = buddyUser?.buddy;
+
+  if (!customer || !buddy) {
+    console.error('Test buddy or customer not found, skipping chat seeding');
+    return;
+  }
+  console.time('seed-chat');
+  console.log('Start seeding Chat...');
+
+  const existingChats = await prisma.chat.count();
+
+  if (existingChats > 0) {
+    console.timeEnd('seed-chat');
+    console.log('Chat already exists, skipping seeding\n');
+    return;
+  }
+
+  await prisma.chat.upsert({
+    where: {
+      buddyId_customerId: {
+        buddyId: buddy.buddyId,
+        customerId: customer.userId,
+      },
+    },
+    update: {},
+    create: {
+      buddy: {
+        connect: {
+          buddyId: buddy.buddyId,
+        },
+      },
+      customer: {
+        connect: {
+          userId: customer.userId,
+        },
+      },
+    },
+  });
+
+  console.timeEnd('seed-chat');
+  console.log('Seeding Chat finished successfully\n');
+}
+
+async function seedTags() {
+  console.time('seed-tags');
+  console.log('Start seeding Tags...');
+
+  const existingTags = await prisma.tag.count();
+
+  if (existingTags > 0) {
+    console.timeEnd('seed-tags');
+    console.log('Tags already exist, skipping seeding\n');
+    return;
+  }
+
+  await prisma.tag.createMany({
+    data: tags,
+    skipDuplicates: true,
+  });
+
+  await Promise.all(
+    userTags.map((userTag) =>
+      prisma.user.update({
+        where: {
+          userId: userTag.userId,
+        },
+        data: {
+          interests: {
+            connect: [{ tagId: userTag.tagId }],
+          },
+        },
+      }),
+    ),
+  );
+
+  await Promise.all(
+    buddyTags.map((buddyTag) =>
+      prisma.buddy.update({
+        where: {
+          buddyId: buddyTag.buddyId,
+        },
+        data: {
+          tags: {
+            connect: [{ tagId: buddyTag.tagId }],
+          },
+        },
+      }),
+    ),
+  );
+
+  console.timeEnd('seed-tags');
+  console.log('Seeding Tags finished successfully\n');
+}
