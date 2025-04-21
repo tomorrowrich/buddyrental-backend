@@ -185,7 +185,7 @@ export class ScheduleService {
   private async updateToBusy(
     prisma: Prisma.TransactionClient,
     scheduleId: string,
-    _currentSchedule: any,
+    _currentSchedule: Schedule,
     data: {
       status?: ScheduleStatus;
       start?: Date;
@@ -193,14 +193,61 @@ export class ScheduleService {
       description?: string;
     },
   ) {
-    // For BUSY status, we just update the schedule
-    return await prisma.schedule.update({
+    // For BUSY status, we just update the schedule and check for conflicts
+    // Check for conflicts with existing schedules
+    const conflictingSchedules = await prisma.schedule.findMany({
+      where: {
+        buddyId: _currentSchedule.buddyId,
+        scheduleId: { not: scheduleId },
+        status: ScheduleStatus.BUSY,
+        OR: [
+          {
+            start: { lte: data.end || _currentSchedule.end },
+            end: { gte: data.start || _currentSchedule.start },
+          },
+          {
+            start: { gte: data.start || _currentSchedule.start },
+            end: { lte: data.end || _currentSchedule.end },
+          },
+        ],
+      },
+    });
+    // If there are conflicts, throw an error
+    if (conflictingSchedules.length > 0) {
+      throw new BadRequestException(
+        'Schedule conflicts with another schedules',
+      );
+    }
+
+    // If no conflicts, update as requested
+    await prisma.schedule.update({
       where: { scheduleId },
       data: {
         start: data.start,
         end: data.end,
         status: ScheduleStatus.BUSY,
         description: data.description,
+      },
+    });
+    // Update others to AVAILABLE
+    await prisma.schedule.updateManyAndReturn({
+      where: {
+        scheduleId: { not: scheduleId },
+        buddyId: _currentSchedule.buddyId,
+        status: ScheduleStatus.UNCONFIRMED,
+        OR: [
+          {
+            start: { lte: data.end || _currentSchedule.end },
+            end: { gte: data.start || _currentSchedule.start },
+          },
+          {
+            start: { gte: data.start || _currentSchedule.start },
+            end: { lte: data.end || _currentSchedule.end },
+          },
+        ],
+      },
+      data: {
+        status: ScheduleStatus.AVAILABLE,
       },
     });
   }
@@ -216,38 +263,6 @@ export class ScheduleService {
       description?: string;
     },
   ) {
-    // Check for conflicts with existing schedules
-    const conflictingSchedules = await prisma.schedule.findMany({
-      where: {
-        buddyId: currentSchedule.buddyId,
-        scheduleId: { not: scheduleId },
-        status: { not: ScheduleStatus.BUSY },
-        OR: [
-          {
-            start: { lte: data.end || currentSchedule.end },
-            end: { gte: data.start || currentSchedule.start },
-          },
-          {
-            start: { gte: data.start || currentSchedule.start },
-            end: { lte: data.end || currentSchedule.end },
-          },
-        ],
-      },
-    });
-
-    // If there are conflicts, mark this schedule as BUSY
-    if (conflictingSchedules.length > 0) {
-      return await prisma.schedule.update({
-        where: { scheduleId },
-        data: {
-          start: data.start,
-          end: data.end,
-          status: ScheduleStatus.BUSY, // Force to BUSY due to conflict
-          description: data.description,
-        },
-      });
-    }
-
     // If no conflicts, update as requested
     return await prisma.schedule.update({
       where: { scheduleId },
@@ -391,7 +406,7 @@ export class ScheduleService {
       .findMany({
         where: {
           OR: [{ userId: user.userId }, { buddyId: user.buddyId }],
-          status: { not: 'CANCELLED' },
+          status: { notIn: ['CANCELLED', 'COMPLETED'] },
           reservationStart: { gte: startDate },
           reservationEnd: { lte: endDate },
         },
