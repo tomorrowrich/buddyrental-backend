@@ -32,11 +32,15 @@ export class ReportsService {
     if (!user) {
       throw new NotFoundException('User not found');
     }
-    const buddy = await this.prisma.buddy.findUnique({
-      where: { buddyId: data.buddyId },
-    });
-    if (!buddy) {
-      throw new NotFoundException('Buddy not found');
+
+    const buddy = null;
+    if (data.buddyId) {
+      const buddy = await this.prisma.buddy.findUnique({
+        where: { buddyId: data.buddyId },
+      });
+      if (!buddy) {
+        throw new NotFoundException('Buddy not found');
+      }
     }
 
     const category = await this.prisma.reportsCategory.findUnique({
@@ -54,7 +58,7 @@ export class ReportsService {
         userId: data.userId,
         categoryId: data.categoryId,
         details: data.details,
-        buddyId: data.buddyId,
+        buddyId: data.buddyId || null,
         status: 'PENDING',
       },
     });
@@ -110,7 +114,11 @@ export class ReportsService {
     return status as ReportStatus;
   }
 
-  async updateReportStatus(reportId: string, status: ReportStatus) {
+  async updateReportStatus(
+    reportId: string,
+    status: ReportStatus,
+    action?: 'ban' | '10days' | '1month' | '3months',
+  ) {
     const report = await this.prisma.reports.findUnique({
       where: { id: reportId },
     });

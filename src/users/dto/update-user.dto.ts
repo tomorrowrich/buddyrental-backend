@@ -10,6 +10,7 @@ import {
   IsDateString,
   IsPostalCode,
   IsUrl,
+  IsNotEmpty,
 } from 'class-validator';
 
 export class UpdateUserDto {
@@ -39,9 +40,9 @@ export class UpdateUserDto {
 
   @ApiProperty({ description: 'User nickname, alphabet only', example: 'John' })
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   @IsAlpha()
-  nickname?: string;
+  displayName: string;
 
   @ApiProperty({
     description: 'Gender of the user',

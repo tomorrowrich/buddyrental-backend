@@ -1,3 +1,18 @@
+# [1.5.0-beta.16](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.15...v1.5.0-beta.16) (2025-04-21)
+
+### Bug Fixes
+
+- **admin:** remove file and add role ([d6a9406](https://github.com/tomorrowrich/buddyrental-backend/commit/d6a9406ff27f8d1da03df2f4ac9a556956a3058b))
+- **ci:** fix seeding ([d36c705](https://github.com/tomorrowrich/buddyrental-backend/commit/d36c7059f829e9bab1f06dc69259cdcd2e645c79))
+- **user:** fix update and register ([1cd010f](https://github.com/tomorrowrich/buddyrental-backend/commit/1cd010f4a149f02c45b8839f4243f0a8731862d9))
+- **user:** fix update and register ([44ac8e4](https://github.com/tomorrowrich/buddyrental-backend/commit/44ac8e4cfa297a641f311f9855b5641b6b482587))
+
+### Features
+
+- **admin:** implement ban ([15a2614](https://github.com/tomorrowrich/buddyrental-backend/commit/15a2614f074229700f06058b74806c50d42b5d3a))
+- **admin:** implement ban ([b25b6dc](https://github.com/tomorrowrich/buddyrental-backend/commit/b25b6dc589bd91426fe3e3db1fed607ea7879490))
+- **admin:** implement ban ([bd53696](https://github.com/tomorrowrich/buddyrental-backend/commit/bd53696f119a8f6548d1beffe70a6ca6367fbc65))
+
 # [1.5.0-beta.15](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.14...v1.5.0-beta.15) (2025-04-19)
 
 ### Bug Fixes

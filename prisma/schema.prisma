@@ -29,7 +29,7 @@ model User {
   citizenId          String     @unique @map("citizen_id")
   phoneNumber        String     @map("phone_number")
   verified           Boolean    @default(false)
-  displayName        String?    @map("display_name") @db.VarChar(255)
+  displayName        String     @unique @map("display_name") @db.VarChar(255)
   gender             UserGender @map("gender")
   dateOfBirth        DateTime   @map("date_of_birth") @db.Date
   address            String     @db.VarChar(255)
@@ -42,6 +42,8 @@ model User {
   stripeCustomerId   String?    @map("stripe_customer_id") @db.VarChar(255)
   accessToken        String?    @map("access_token")
   resetPasswordToken String?    @map("reset_password_token") @db.VarChar(255)
+  isBanned           Boolean    @default(false)
+  suspendedUntil     DateTime?
 
   interests           Tag[]
   reviewsMade         Review[]            @relation("ReviewToCommenter")
