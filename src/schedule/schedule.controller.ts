@@ -70,8 +70,6 @@ export class ScheduleController {
     if (startDate > endDate) {
       throw new BadRequestException('Start date must be before end date');
     }
-
-    console.log(startDate, endDate);
     return this.scheduleService.getPersonalSchedules(
       req.user.userId,
       startDate,

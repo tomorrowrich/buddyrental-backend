@@ -14,8 +14,8 @@ import { NotificationsService } from '@app/notifications/notifications.service';
 describe('ReservationService', () => {
   let reservationService: ReservationService;
   let prismaService: PrismaService;
-  let scheduleService: ScheduleService;
-  let notificationService: NotificationsService;
+  let _scheduleService: ScheduleService;
+  let _notificationService: NotificationsService;
 
   const mockReservations = [];
   const mockSchedule = {
@@ -85,8 +85,8 @@ describe('ReservationService', () => {
 
     reservationService = module.get<ReservationService>(ReservationService);
     prismaService = module.get<PrismaService>(PrismaService);
-    scheduleService = module.get<ScheduleService>(ScheduleService);
-    notificationService =
+    _scheduleService = module.get<ScheduleService>(ScheduleService);
+    _notificationService =
       module.get<NotificationsService>(NotificationsService);
   });
 
