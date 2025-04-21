@@ -117,7 +117,6 @@ export class ReportsController {
     @Req() req: AuthenticatedRequest,
     @Body() body: CreateReportDto,
   ) {
-    console.log(body);
     const data = await this.reportsService.createReport(req.user.userId, body);
     return { success: true, data };
   }
@@ -134,14 +133,27 @@ export class ReportsController {
     enum: ['PENDING', 'RESOLVED'],
     description: 'New status of the report',
   })
+  @ApiQuery({
+    name: 'action',
+    required: false,
+    enum: ['ban', '10days', '1month', '3months'],
+    description: 'Optional action to suspend or ban user',
+  })
   async updateReportStatus(
     @Param('reportId') reportId: string,
     @Query('status') status: ReportStatus,
+    @Query('action') action?: 'ban' | '10days' | '1month' | '3months',
   ) {
     if (!isUUID(reportId)) throw new BadRequestException('Invalid report ID');
     if (!status) throw new BadRequestException('Missing status');
+
     this.reportsService.validateReportStatus(status);
-    const data = await this.reportsService.updateReportStatus(reportId, status);
+
+    const data = await this.reportsService.updateReportStatus(
+      reportId,
+      status,
+      action,
+    );
     return { success: true, data };
   }
 }
