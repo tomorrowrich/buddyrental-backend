@@ -1,4 +1,4 @@
-import { LoggedIn } from '@app/auth/auth.decorator';
+import { LoggedIn, Roles } from '@app/auth/auth.decorator';
 import {
   Body,
   Controller,
@@ -20,6 +20,7 @@ import { UpdateUserInterestsDto } from './dto/update-interests.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { MailService } from '@app/mail/mail.service';
 import { Response } from 'express';
+import { AuthUserRole } from '@app/auth/role.enum';
 
 @ApiTags('Users')
 @Controller('users')
@@ -35,6 +36,7 @@ export class UsersController {
     @Req() req: AuthenticatedRequest,
     @Body() payload: UpdateUserDto,
   ) {
+    // console.log('updateProfile payload: ', payload);
     const validationPipe = new ValidationPipe({ transform: true });
     await validationPipe.transform(payload, { type: 'body' });
 
@@ -96,5 +98,31 @@ export class UsersController {
       success: false,
       message: 'Invalid request',
     });
+  }
+
+  @Patch(':id/suspend')
+  @LoggedIn()
+  @Roles(AuthUserRole.ADMIN)
+  async setSuspend(
+    @Param('id') id: string, // userId ที่จะ suspend
+    @Body() body: { suspendTime: number }, // รับค่า suspendTime เป็น object
+  ) {
+    // console.log('suspendTime: ', body.suspendTime); // ใช้ body.suspendTime แทน
+    await this.usersService.setSuspendTime(id, body.suspendTime);
+    return { message: `User ${id} suspended successfully!` };
+  }
+
+  @Patch(':id/ban')
+  @LoggedIn()
+  @Roles(AuthUserRole.ADMIN)
+  async setBan(
+    @Param('id') id: string, // userId ที่จะ ban
+    @Body() body: { isBanned: boolean }, // DTO สำหรับข้อมูลการแบน
+  ) {
+    // console.log('isBan body controller: ', body.isBan); // ใช้ body.isBan แทน
+    await this.usersService.setBan(id, body.isBanned);
+    return {
+      message: `User ${id} ${body.isBanned ? 'banned' : 'unbanned'} successfully!`,
+    };
   }
 }

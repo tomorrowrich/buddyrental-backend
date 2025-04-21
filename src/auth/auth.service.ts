@@ -31,6 +31,7 @@ export class AuthService {
       registerDto.email,
       registerDto.citizenId,
       registerDto.phone,
+      registerDto.nickname,
     );
     if (existingUser) {
       throw new ForbiddenException('Duplicate user');

@@ -63,9 +63,9 @@ export class RegisterDto {
 
   @ApiProperty({ description: 'User nickname, alphabet only', example: 'John' })
   @IsString()
-  @IsOptional()
+  @IsNotEmpty()
   @IsAlpha()
-  nickname?: string;
+  nickname: string;
 
   @ApiProperty({
     description: 'Gender of the user',
