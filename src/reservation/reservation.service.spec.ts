@@ -15,11 +15,14 @@ describe('ReservationService', () => {
   let reservationService: ReservationService;
   let prismaService: PrismaService;
   let scheduleService: ScheduleService;
+  let notificationService: NotificationsService;
 
   const mockReservations = [];
   const mockSchedule = {
-    scheduleId: 'schedule1',
-    status: ScheduleStatus.UNCONFIRMED,
+    schedule: {
+      scheduleId: 'schedule1',
+      status: ScheduleStatus.UNCONFIRMED,
+    },
   };
 
   // Define types for the mocks to avoid 'any' errors
@@ -60,6 +63,10 @@ describe('ReservationService', () => {
     deleteSchedule: jest.fn(),
   };
 
+  const notificationsServiceMock = {
+    sendNotification: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -69,13 +76,18 @@ describe('ReservationService', () => {
           provide: PrismaService,
           useValue: prismaServiceMock as unknown as PrismaService,
         },
-        NotificationsService,
+        {
+          provide: NotificationsService,
+          useValue: notificationsServiceMock,
+        },
       ],
     }).compile();
 
     reservationService = module.get<ReservationService>(ReservationService);
     prismaService = module.get<PrismaService>(PrismaService);
     scheduleService = module.get<ScheduleService>(ScheduleService);
+    notificationService =
+      module.get<NotificationsService>(NotificationsService);
   });
 
   afterEach(() => {
@@ -286,6 +298,87 @@ describe('ReservationService', () => {
     });
   });
 
+  describe('getReservationStatus', () => {
+    it('should return the status of a reservation', async () => {
+      const mockReservation = {
+        status: 'PENDING',
+      };
+
+      prismaServiceMock.reservationRecord.findUnique.mockResolvedValue(
+        mockReservation,
+      );
+
+      const result = await reservationService.getReservationStatus('res1');
+
+      expect(prismaService.reservationRecord.findUnique).toHaveBeenCalledWith({
+        where: { reservationId: 'res1' },
+        select: { status: true },
+      });
+      expect(result).toEqual('PENDING');
+    });
+
+    it('should throw NotFoundException if reservation is not found', async () => {
+      prismaServiceMock.reservationRecord.findUnique.mockResolvedValue(null);
+
+      await expect(
+        reservationService.getReservationStatus('nonexistent'),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('getReservationDetail', () => {
+    it('should return the details of a reservation', async () => {
+      const mockReservation = {
+        reservationId: 'res1',
+        userId: 'user1',
+        buddyId: 'buddy1',
+        status: 'PENDING',
+      };
+
+      prismaServiceMock.reservationRecord.findUnique.mockResolvedValue(
+        mockReservation,
+      );
+
+      const result = await reservationService.getReservationDetail('res1');
+
+      expect(prismaService.reservationRecord.findUnique).toHaveBeenCalledWith({
+        where: { reservationId: 'res1' },
+        include: {
+          user: {
+            select: {
+              userId: true,
+              firstName: true,
+              lastName: true,
+              profilePicture: true,
+              email: true,
+              phoneNumber: true,
+              citizenId: true,
+              address: true,
+            },
+          },
+          buddy: {
+            include: {
+              user: {
+                select: {
+                  userId: true,
+                  firstName: true,
+                  lastName: true,
+                  profilePicture: true,
+                  email: true,
+                  phoneNumber: true,
+                  citizenId: true,
+                  address: true,
+                },
+              },
+              tags: true,
+            },
+          },
+        },
+      });
+      expect(result).toEqual(mockReservation);
+    });
+  });
+
   describe('createReservation', () => {
     const createReservationDto = {
       buddyId: 'buddy1',
@@ -389,7 +482,7 @@ describe('ReservationService', () => {
           detail: 'test detail',
           reservationStart: new Date(createReservationDto.reservationStart),
           reservationEnd: new Date(createReservationDto.reservationEnd),
-          scheduleId: 'schedule1',
+          scheduleId: mockSchedule.schedule.scheduleId,
         },
       });
       expect(result).toEqual({

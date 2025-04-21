@@ -301,6 +301,7 @@ enum ReservationStatus {
   ACCEPTED
   REJECTED
   CANCELLED
+  UNAVAILABLE
   COMPLETED
 }
 

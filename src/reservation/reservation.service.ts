@@ -192,7 +192,7 @@ export class ReservationService {
             status: 'PENDING',
             reservationStart: new Date(payload.reservationStart),
             reservationEnd: new Date(payload.reservationEnd),
-            scheduleId: schedule.scheduleId,
+            scheduleId: schedule.schedule.scheduleId,
           },
         });
         return { reservation, schedule };
