@@ -1,3 +1,14 @@
+# [1.5.0-beta.17](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.16...v1.5.0-beta.17) (2025-04-22)
+
+### Bug Fixes
+
+- cleanup ([cc5b10a](https://github.com/tomorrowrich/buddyrental-backend/commit/cc5b10ac7fc2695d9b11e47c7928b5ff778e2db2))
+
+### Features
+
+- add notification on reservation ([cf36888](https://github.com/tomorrowrich/buddyrental-backend/commit/cf368880666a3e15af50d0661ca59f69929cfefc))
+- schedule API ([7f2401e](https://github.com/tomorrowrich/buddyrental-backend/commit/7f2401e8f13de22bf23982fb281fc7beff42c0d6))
+
 # [1.5.0-beta.16](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.15...v1.5.0-beta.16) (2025-04-21)
 
 ### Bug Fixes

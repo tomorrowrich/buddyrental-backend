@@ -38,7 +38,7 @@ export class ReservationService {
       },
       take,
       skip,
-      orderBy: { reservationStart: 'desc' },
+      orderBy: [{ updatedAt: 'desc' }, { reservationStart: 'desc' }],
     });
     const totalCount = await this.prisma.reservationRecord
       .count({
@@ -80,7 +80,7 @@ export class ReservationService {
       },
       take,
       skip,
-      orderBy: { reservationStart: 'desc' },
+      orderBy: [{ updatedAt: 'desc' }, { reservationStart: 'desc' }],
     });
     const totalCount = await this.prisma.reservationRecord
       .count({
@@ -169,10 +169,26 @@ export class ReservationService {
 
     const buddy = await this.prisma.buddy.findUnique({
       where: { buddyId: payload.buddyId },
+      include: {
+        user: {
+          select: {
+            userId: true,
+          },
+        },
+      },
     });
     if (!buddy) {
       throw new NotFoundException('Buddy not found');
     }
+
+    const user = await this.prisma.user.findUnique({
+      where: { userId },
+      select: {
+        userId: true,
+        firstName: true,
+        lastName: true,
+      },
+    });
 
     const { reservation, schedule } = await this.prisma.$transaction(
       async (tx) => {
@@ -192,12 +208,20 @@ export class ReservationService {
             status: 'PENDING',
             reservationStart: new Date(payload.reservationStart),
             reservationEnd: new Date(payload.reservationEnd),
-            scheduleId: schedule.scheduleId,
+            scheduleId: schedule.schedule.scheduleId,
           },
         });
         return { reservation, schedule };
       },
     );
+
+    if (buddy.user) {
+      await this.notificationService.createNotification(buddy.user.userId, {
+        type: 'Booking',
+        title: 'New Reservation Request',
+        body: `You have a new reservation request from ${user!.firstName} ${user!.lastName}`,
+      });
+    }
 
     return {
       success: true,
@@ -208,6 +232,26 @@ export class ReservationService {
   async confirmReservation(userId: string, reservationId: string) {
     const existingReservation = await this.prisma.reservationRecord.findUnique({
       where: { reservationId },
+      include: {
+        buddy: {
+          select: {
+            user: {
+              select: {
+                userId: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            userId: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
 
     if (!existingReservation) {
@@ -249,6 +293,18 @@ export class ReservationService {
       },
     );
 
+    if (existingReservation.user && existingReservation.buddy.user) {
+      await this.notificationService.createNotification(
+        existingReservation.user.userId,
+        {
+          type: 'Booking',
+          title: 'Reservation Confirmed',
+          body: `Your reservation with ${existingReservation.buddy.user.firstName} ${existingReservation.buddy.user.lastName} has been confirmed`,
+          url: `/booking/history`,
+        },
+      );
+    }
+
     return {
       success: true,
       data: { reservation, schedule },
@@ -258,6 +314,26 @@ export class ReservationService {
   async rejectReservation(userId: string, reservationId: string) {
     const existingReservation = await this.prisma.reservationRecord.findUnique({
       where: { reservationId },
+      include: {
+        buddy: {
+          select: {
+            user: {
+              select: {
+                userId: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            userId: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
 
     if (!existingReservation) {
@@ -285,6 +361,18 @@ export class ReservationService {
       return { reservation };
     });
 
+    if (existingReservation.user) {
+      await this.notificationService.createNotification(
+        existingReservation.user.userId,
+        {
+          type: 'Booking',
+          title: 'Reservation Rejected',
+          body: `Your reservation with ${existingReservation.buddyId} has been rejected`,
+          url: `/booking/history`,
+        },
+      );
+    }
+
     return {
       success: true,
       data: { reservation },
@@ -295,7 +383,25 @@ export class ReservationService {
     const existingReservation = await this.prisma.reservationRecord.findUnique({
       where: { reservationId },
       include: {
-        buddy: true,
+        buddy: {
+          select: {
+            userId: true,
+            user: {
+              select: {
+                userId: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            userId: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
       },
     });
 
@@ -330,6 +436,37 @@ export class ReservationService {
       return { reservation };
     });
 
+    if (
+      existingReservation.buddy.userId &&
+      userId === existingReservation.userId
+    ) {
+      await this.notificationService.createNotification(
+        existingReservation.buddy.userId,
+        {
+          type: 'Booking',
+          title: 'Reservation Cancelled',
+          body: `Your reservation with ${existingReservation.user.firstName} ${existingReservation.user.lastName} has been cancelled`,
+          url: `/booking/history/buddy`,
+        },
+      );
+    }
+
+    if (
+      existingReservation.userId &&
+      existingReservation.buddy.user &&
+      userId === existingReservation.buddy.userId
+    ) {
+      await this.notificationService.createNotification(
+        existingReservation.userId,
+        {
+          type: 'Booking',
+          title: 'Reservation Cancelled',
+          body: `Your reservation with ${existingReservation.buddy.user.firstName} ${existingReservation.buddy.user.lastName} has been cancelled`,
+          url: `/booking/history`,
+        },
+      );
+    }
+
     return {
       success: true,
       data: { reservation },
@@ -339,6 +476,27 @@ export class ReservationService {
   async completeReservation(userId: string, id: string) {
     const existingReservation = await this.prisma.reservationRecord.findUnique({
       where: { reservationId: id },
+      include: {
+        buddy: {
+          select: {
+            userId: true,
+            user: {
+              select: {
+                userId: true,
+                firstName: true,
+                lastName: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            userId: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
 
     if (!existingReservation) {
@@ -349,8 +507,29 @@ export class ReservationService {
       throw new BadRequestException('Reservation is not accepted');
     }
 
-    if (existingReservation.buddyId !== userId) {
-      throw new ForbiddenException('You are not the owner of this reservation');
+    const user = await this.prisma.user.findUnique({
+      where: { userId },
+      select: {
+        userId: true,
+        buddy: {
+          select: {
+            buddyId: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (
+      existingReservation.buddyId !== user.buddy?.buddyId &&
+      user.userId !== existingReservation.userId
+    ) {
+      throw new ForbiddenException(
+        'You are not the participate in this reservation',
+      );
     }
 
     const { reservation } = await this.prisma.$transaction(async (tx) => {
@@ -365,6 +544,37 @@ export class ReservationService {
 
       return { reservation };
     });
+
+    if (
+      existingReservation.buddy.userId &&
+      userId === existingReservation.user.userId
+    ) {
+      await this.notificationService.createNotification(
+        existingReservation.buddy.userId,
+        {
+          type: 'Booking',
+          title: 'Reservation Completed',
+          body: `Your reservation with ${existingReservation.user.firstName} ${existingReservation.user.lastName} has been completed`,
+          url: `/booking/history/buddy`,
+        },
+      );
+    }
+
+    if (
+      existingReservation.user.userId &&
+      existingReservation.buddy.user &&
+      userId === existingReservation.buddy.userId
+    ) {
+      await this.notificationService.createNotification(
+        existingReservation.user.userId,
+        {
+          type: 'Booking',
+          title: 'Reservation Completed',
+          body: `Your reservation with ${existingReservation.buddy.user.firstName} ${existingReservation.buddy.user.lastName} has been completed`,
+          url: `/booking/history`,
+        },
+      );
+    }
 
     return {
       success: true,

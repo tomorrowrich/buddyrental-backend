@@ -72,9 +72,10 @@ export class PaymentService {
       });
 
     const session = await this.stripe.checkout.sessions.create({
+      ui_mode: 'embedded',
       mode: 'payment',
-      success_url: payload.redirectUrl + '?success=true',
-      cancel_url: payload.redirectUrl + '?success=false',
+      return_url: payload.redirectUrl + '?success=true',
+      // cancel_url: payload.redirectUrl + '?success=false',
       customer: customerId,
       line_items: [
         {
@@ -94,13 +95,16 @@ export class PaymentService {
         meta: {
           checkoutSession: JSON.stringify(session),
           stripeCustomerId: customerId,
-          checkoutUrl: session.url,
+          // checkoutUrl: session.url,
         },
       },
       omit: { meta: true },
     });
 
-    return { success: true, data: { url: session.url, transaction } };
+    return {
+      success: true,
+      data: { clientSecret: session.client_secret, transaction },
+    };
   }
 
   async makeWithdraw(userId: string, amount: number) {
