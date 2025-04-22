@@ -21,6 +21,7 @@ export class TransactionsService {
 
     return await this.prisma.$transaction(async (tx) => {
       const user = await tx.user.findUnique({ where: { userId } });
+      console.log('user', user);
 
       if (!user || user.balance < amount) {
         throw new BadRequestException('Insufficient balance');
@@ -45,12 +46,10 @@ export class TransactionsService {
         data: { balance: { increment: amount * 0.85 } },
       });
 
-      const updatedReservation = await tx.reservationRecord.update({
+      return await tx.reservationRecord.update({
         where: { reservationId },
         data: { price: amount },
       });
-
-      return updatedReservation;
     });
   }
 }

@@ -1,7 +1,7 @@
 import {
   Body,
   Controller,
-  Post,
+  Patch,
   Req,
   UsePipes,
   ValidationPipe,
@@ -16,7 +16,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
-  @Post('transfer')
+  @Patch('transfer')
   @LoggedIn()
   @ApiOperation({ summary: 'Transfer balance to a buddy' })
   @UsePipes(new ValidationPipe({ transform: true }))
