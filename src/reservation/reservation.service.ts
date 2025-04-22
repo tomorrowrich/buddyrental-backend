@@ -231,9 +231,7 @@ export class ReservationService {
 
         await tx.user.update({
           where: { userId: existingReservation.buddyId },
-          data: {
-            balance: { increment: existingReservation.price * 0.85 },
-          },
+          data: { balance: { increment: existingReservation.price * 0.85 } },
         });
 
         const reservation = await tx.reservationRecord.update({
