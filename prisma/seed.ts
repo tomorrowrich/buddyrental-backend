@@ -191,6 +191,12 @@ async function seedUser() {
   console.log('Start seeding User...');
 
   const existingUsers = await prisma.user.count();
+  
+  if (existingUsers > 0) {
+    console.timeEnd('seed-user');
+    console.log('User already exists, skipping seeding\n');
+    return;
+  }
 
   if (existingUsers > 0) {
     console.timeEnd('seed-user');
