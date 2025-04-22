@@ -14,12 +14,15 @@ import { NotificationsService } from '@app/notifications/notifications.service';
 describe('ReservationService', () => {
   let reservationService: ReservationService;
   let prismaService: PrismaService;
-  let scheduleService: ScheduleService;
+  let _scheduleService: ScheduleService;
+  let _notificationService: NotificationsService;
 
   const mockReservations = [];
   const mockSchedule = {
-    scheduleId: 'schedule1',
-    status: ScheduleStatus.UNCONFIRMED,
+    schedule: {
+      scheduleId: 'schedule1',
+      status: ScheduleStatus.UNCONFIRMED,
+    },
   };
 
   // Define types for the mocks to avoid 'any' errors
@@ -32,6 +35,9 @@ describe('ReservationService', () => {
       count: jest.Mock;
     };
     buddy: {
+      findUnique: jest.Mock;
+    };
+    user: {
       findUnique: jest.Mock;
     };
     $transaction: jest.Mock;
@@ -48,6 +54,9 @@ describe('ReservationService', () => {
     buddy: {
       findUnique: jest.fn(),
     },
+    user: {
+      findUnique: jest.fn(),
+    },
     $transaction: jest.fn(
       (callback: (prisma: PrismaMock) => Promise<unknown>) =>
         callback(prismaServiceMock),
@@ -60,6 +69,11 @@ describe('ReservationService', () => {
     deleteSchedule: jest.fn(),
   };
 
+  const notificationsServiceMock = {
+    sendNotification: jest.fn(),
+    createNotification: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -69,13 +83,18 @@ describe('ReservationService', () => {
           provide: PrismaService,
           useValue: prismaServiceMock as unknown as PrismaService,
         },
-        NotificationsService,
+        {
+          provide: NotificationsService,
+          useValue: notificationsServiceMock,
+        },
       ],
     }).compile();
 
     reservationService = module.get<ReservationService>(ReservationService);
     prismaService = module.get<PrismaService>(PrismaService);
-    scheduleService = module.get<ScheduleService>(ScheduleService);
+    _scheduleService = module.get<ScheduleService>(ScheduleService);
+    _notificationService =
+      module.get<NotificationsService>(NotificationsService);
   });
 
   afterEach(() => {
@@ -119,7 +138,7 @@ describe('ReservationService', () => {
             },
           },
         },
-        orderBy: { reservationStart: 'desc' },
+        orderBy: [{ updatedAt: 'desc' }, { reservationStart: 'desc' }],
         take,
         skip,
       });
@@ -164,7 +183,7 @@ describe('ReservationService', () => {
             },
           },
         },
-        orderBy: { reservationStart: 'desc' },
+        orderBy: [{ updatedAt: 'desc' }, { reservationStart: 'desc' }],
         take: defaultTake,
         skip: defaultSkip,
       });
@@ -221,7 +240,7 @@ describe('ReservationService', () => {
             },
           },
         },
-        orderBy: { reservationStart: 'desc' },
+        orderBy: [{ updatedAt: 'desc' }, { reservationStart: 'desc' }],
         take,
         skip,
       });
@@ -275,7 +294,7 @@ describe('ReservationService', () => {
             },
           },
         },
-        orderBy: { reservationStart: 'desc' },
+        orderBy: [{ updatedAt: 'desc' }, { reservationStart: 'desc' }],
         take: defaultTake,
         skip: defaultSkip,
       });
@@ -283,6 +302,87 @@ describe('ReservationService', () => {
         data: mockReservations,
         totalCount: expectedPageCount,
       });
+    });
+  });
+
+  describe('getReservationStatus', () => {
+    it('should return the status of a reservation', async () => {
+      const mockReservation = {
+        status: 'PENDING',
+      };
+
+      prismaServiceMock.reservationRecord.findUnique.mockResolvedValue(
+        mockReservation,
+      );
+
+      const result = await reservationService.getReservationStatus('res1');
+
+      expect(prismaService.reservationRecord.findUnique).toHaveBeenCalledWith({
+        where: { reservationId: 'res1' },
+        select: { status: true },
+      });
+      expect(result).toEqual('PENDING');
+    });
+
+    it('should throw NotFoundException if reservation is not found', async () => {
+      prismaServiceMock.reservationRecord.findUnique.mockResolvedValue(null);
+
+      await expect(
+        reservationService.getReservationStatus('nonexistent'),
+      ).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('getReservationDetail', () => {
+    it('should return the details of a reservation', async () => {
+      const mockReservation = {
+        reservationId: 'res1',
+        userId: 'user1',
+        buddyId: 'buddy1',
+        status: 'PENDING',
+      };
+
+      prismaServiceMock.reservationRecord.findUnique.mockResolvedValue(
+        mockReservation,
+      );
+
+      const result = await reservationService.getReservationDetail('res1');
+
+      expect(prismaService.reservationRecord.findUnique).toHaveBeenCalledWith({
+        where: { reservationId: 'res1' },
+        include: {
+          user: {
+            select: {
+              userId: true,
+              firstName: true,
+              lastName: true,
+              profilePicture: true,
+              email: true,
+              phoneNumber: true,
+              citizenId: true,
+              address: true,
+            },
+          },
+          buddy: {
+            include: {
+              user: {
+                select: {
+                  userId: true,
+                  firstName: true,
+                  lastName: true,
+                  profilePicture: true,
+                  email: true,
+                  phoneNumber: true,
+                  citizenId: true,
+                  address: true,
+                },
+              },
+              tags: true,
+            },
+          },
+        },
+      });
+      expect(result).toEqual(mockReservation);
     });
   });
 
@@ -341,6 +441,14 @@ describe('ReservationService', () => {
     it('should create a reservation successfully', async () => {
       prismaServiceMock.buddy.findUnique.mockResolvedValue({
         buddyId: 'buddy1',
+        user: {
+          userId: 'buddyUser1',
+        },
+      });
+      prismaServiceMock.user.findUnique.mockResolvedValue({
+        userId: 'user1',
+        firstName: 'John',
+        lastName: 'Doe',
       });
       scheduleServiceMock.createSchedule.mockResolvedValue(mockSchedule);
 
@@ -372,6 +480,21 @@ describe('ReservationService', () => {
 
       expect(prismaServiceMock.buddy.findUnique).toHaveBeenCalledWith({
         where: { buddyId: 'buddy1' },
+        include: {
+          user: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      });
+      expect(prismaServiceMock.user.findUnique).toHaveBeenCalledWith({
+        where: { userId: 'user1' },
+        select: {
+          userId: true,
+          firstName: true,
+          lastName: true,
+        },
       });
       expect(scheduleServiceMock.createSchedule).toHaveBeenCalledWith(
         'buddy1',
@@ -389,9 +512,17 @@ describe('ReservationService', () => {
           detail: 'test detail',
           reservationStart: new Date(createReservationDto.reservationStart),
           reservationEnd: new Date(createReservationDto.reservationEnd),
-          scheduleId: 'schedule1',
+          scheduleId: mockSchedule.schedule.scheduleId,
         },
       });
+      expect(notificationsServiceMock.createNotification).toHaveBeenCalledWith(
+        'buddyUser1',
+        {
+          type: 'Booking',
+          title: 'New Reservation Request',
+          body: 'You have a new reservation request from John Doe',
+        },
+      );
       expect(result).toEqual({
         success: true,
         data: {
@@ -409,6 +540,18 @@ describe('ReservationService', () => {
       buddyId: 'buddy1',
       status: 'PENDING',
       scheduleId: 'schedule1',
+      buddy: {
+        user: {
+          userId: 'buddy1',
+          firstName: 'Buddy',
+          lastName: 'User',
+        },
+      },
+      user: {
+        userId: 'user1',
+        firstName: 'John',
+        lastName: 'Doe',
+      },
     };
 
     it('should throw NotFoundException if reservation is not found', async () => {
@@ -470,6 +613,15 @@ describe('ReservationService', () => {
         'schedule1',
         { status: ScheduleStatus.BUSY },
       );
+      expect(notificationsServiceMock.createNotification).toHaveBeenCalledWith(
+        'user1',
+        {
+          type: 'Booking',
+          title: 'Reservation Confirmed',
+          body: 'Your reservation with Buddy User has been confirmed',
+          url: '/booking/history',
+        },
+      );
       expect(result).toEqual({
         success: true,
         data: {
@@ -487,6 +639,18 @@ describe('ReservationService', () => {
       buddyId: 'buddy1',
       status: 'PENDING',
       scheduleId: 'schedule1',
+      buddy: {
+        user: {
+          userId: 'buddy1',
+          firstName: 'Buddy',
+          lastName: 'User',
+        },
+      },
+      user: {
+        userId: 'user1',
+        firstName: 'John',
+        lastName: 'Doe',
+      },
     };
 
     it('should throw NotFoundException if reservation is not found', async () => {
@@ -544,6 +708,15 @@ describe('ReservationService', () => {
           status: 'AVAILABLE',
         },
       );
+      expect(notificationsServiceMock.createNotification).toHaveBeenCalledWith(
+        'user1',
+        {
+          type: 'Booking',
+          title: 'Reservation Rejected',
+          body: 'Your reservation with buddy1 has been rejected',
+          url: '/booking/history',
+        },
+      );
       expect(result).toEqual({
         success: true,
         data: { reservation: rejectedReservation },
@@ -560,6 +733,16 @@ describe('ReservationService', () => {
       scheduleId: 'schedule1',
       buddy: {
         userId: 'buddy1',
+        user: {
+          userId: 'buddy1',
+          firstName: 'Buddy',
+          lastName: 'User',
+        },
+      },
+      user: {
+        userId: 'user1',
+        firstName: 'John',
+        lastName: 'Doe',
       },
     };
 
@@ -616,6 +799,15 @@ describe('ReservationService', () => {
         'schedule1',
         { status: 'AVAILABLE' },
       );
+      expect(notificationsServiceMock.createNotification).toHaveBeenCalledWith(
+        'user1',
+        {
+          type: 'Booking',
+          title: 'Reservation Cancelled',
+          body: 'Your reservation with Buddy User has been cancelled',
+          url: '/booking/history',
+        },
+      );
       expect(result).toEqual({
         success: true,
         data: { reservation: cancelledReservation },
@@ -649,6 +841,15 @@ describe('ReservationService', () => {
         'schedule1',
         { status: 'AVAILABLE' },
       );
+      expect(notificationsServiceMock.createNotification).toHaveBeenCalledWith(
+        'buddy1',
+        {
+          type: 'Booking',
+          title: 'Reservation Cancelled',
+          body: 'Your reservation with John Doe has been cancelled',
+          url: '/booking/history/buddy',
+        },
+      );
       expect(result).toEqual({
         success: true,
         data: { reservation: cancelledReservation },
@@ -663,6 +864,19 @@ describe('ReservationService', () => {
       buddyId: 'buddy1',
       status: 'ACCEPTED',
       scheduleId: 'schedule1',
+      buddy: {
+        userId: 'buddy1',
+        user: {
+          userId: 'buddy1',
+          firstName: 'Buddy',
+          lastName: 'User',
+        },
+      },
+      user: {
+        userId: 'user1',
+        firstName: 'John',
+        lastName: 'Doe',
+      },
     };
 
     it('should throw NotFoundException if reservation is not found', async () => {
@@ -682,19 +896,29 @@ describe('ReservationService', () => {
       ).rejects.toThrow(BadRequestException);
     });
 
-    it('should throw ForbiddenException if user is not the buddy', async () => {
+    it('should throw ForbiddenException if user is not participating in the reservation', async () => {
       prismaServiceMock.reservationRecord.findUnique.mockResolvedValue(
         mockReservation,
       );
+      prismaServiceMock.user.findUnique.mockResolvedValue({
+        userId: 'user2',
+        buddy: null,
+      });
       await expect(
         reservationService.completeReservation('user2', 'res1'),
       ).rejects.toThrow(ForbiddenException);
     });
 
-    it('should complete a reservation successfully', async () => {
+    it('should complete a reservation successfully as buddy', async () => {
       prismaServiceMock.reservationRecord.findUnique.mockResolvedValue(
         mockReservation,
       );
+      prismaServiceMock.user.findUnique.mockResolvedValue({
+        userId: 'buddy1',
+        buddy: {
+          buddyId: 'buddy1',
+        },
+      });
 
       const completedReservation = {
         ...mockReservation,
@@ -717,6 +941,61 @@ describe('ReservationService', () => {
       expect(scheduleServiceMock.updateSchedule).toHaveBeenCalledWith(
         'schedule1',
         { status: 'AVAILABLE' },
+      );
+      expect(notificationsServiceMock.createNotification).toHaveBeenCalledWith(
+        'user1',
+        {
+          type: 'Booking',
+          title: 'Reservation Completed',
+          body: 'Your reservation with Buddy User has been completed',
+          url: '/booking/history',
+        },
+      );
+      expect(result).toEqual({
+        success: true,
+        data: { reservation: completedReservation },
+      });
+    });
+
+    it('should complete a reservation successfully as user', async () => {
+      prismaServiceMock.reservationRecord.findUnique.mockResolvedValue(
+        mockReservation,
+      );
+      prismaServiceMock.user.findUnique.mockResolvedValue({
+        userId: 'user1',
+        buddy: null,
+      });
+
+      const completedReservation = {
+        ...mockReservation,
+        status: 'COMPLETED',
+      };
+
+      prismaServiceMock.reservationRecord.update.mockResolvedValue(
+        completedReservation,
+      );
+
+      const result = await reservationService.completeReservation(
+        'user1',
+        'res1',
+      );
+
+      expect(prismaServiceMock.reservationRecord.update).toHaveBeenCalledWith({
+        where: { reservationId: 'res1' },
+        data: { status: 'COMPLETED' },
+      });
+      expect(scheduleServiceMock.updateSchedule).toHaveBeenCalledWith(
+        'schedule1',
+        { status: 'AVAILABLE' },
+      );
+      expect(notificationsServiceMock.createNotification).toHaveBeenCalledWith(
+        'buddy1',
+        {
+          type: 'Booking',
+          title: 'Reservation Completed',
+          body: 'Your reservation with John Doe has been completed',
+          url: '/booking/history/buddy',
+        },
       );
       expect(result).toEqual({
         success: true,
