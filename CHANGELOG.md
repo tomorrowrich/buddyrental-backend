@@ -1,3 +1,10 @@
+# [1.5.0-beta.18](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.17...v1.5.0-beta.18) (2025-04-23)
+
+### Features
+
+- trigger semver ([d49aacb](https://github.com/tomorrowrich/buddyrental-backend/commit/d49aacbd802165c8efd4e5b538e0f219163854f8))
+- trigger semver ([#151](https://github.com/tomorrowrich/buddyrental-backend/issues/151)) ([e2dc443](https://github.com/tomorrowrich/buddyrental-backend/commit/e2dc443542a6655ee14cba43821e8d77cc86119e))
+
 # [1.5.0-beta.17](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.16...v1.5.0-beta.17) (2025-04-22)
 
 ### Bug Fixes
