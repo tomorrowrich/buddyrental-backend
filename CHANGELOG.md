@@ -1,3 +1,14 @@
+# [1.5.0-beta.20](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.19...v1.5.0-beta.20) (2025-04-23)
+
+### Bug Fixes
+
+- buddy module test ([3328113](https://github.com/tomorrowrich/buddyrental-backend/commit/332811341fda284da8c5da295592004514857205))
+
+### Features
+
+- buddy stripe onboard ([ea7ea1c](https://github.com/tomorrowrich/buddyrental-backend/commit/ea7ea1cff2e3cb8faffddb61d0d9250617358069))
+- buddy stripe onboard ([#152](https://github.com/tomorrowrich/buddyrental-backend/issues/152)) ([760813f](https://github.com/tomorrowrich/buddyrental-backend/commit/760813f121c229106cca74d5ad6424bcedb72a94))
+
 # [1.5.0-beta.19](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.18...v1.5.0-beta.19) (2025-04-23)
 
 ### Features
