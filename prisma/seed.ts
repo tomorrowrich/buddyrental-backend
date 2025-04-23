@@ -223,7 +223,7 @@ async function seedUser() {
   }
 
   await prisma.user.createMany({
-    data: { ...(users as any as User[]) },
+    data: users as any as User[],
     skipDuplicates: true,
   });
 
