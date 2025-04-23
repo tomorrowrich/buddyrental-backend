@@ -39,6 +39,7 @@ describe('ReservationService', () => {
     };
     user: {
       findUnique: jest.Mock;
+      update: jest.Mock;
     };
     $transaction: jest.Mock;
   };
@@ -55,6 +56,7 @@ describe('ReservationService', () => {
       findUnique: jest.fn(),
     },
     user: {
+      update: jest.fn().mockResolvedValue({}),
       findUnique: jest.fn(),
     },
     $transaction: jest.fn(
@@ -467,8 +469,16 @@ describe('ReservationService', () => {
       prismaServiceMock.reservationRecord.create.mockResolvedValue(
         mockReservation,
       );
+
+      prismaServiceMock.user = {
+        ...prismaServiceMock.user,
+        update: jest.fn().mockResolvedValue({}),
+      };
+
       prismaServiceMock.$transaction.mockImplementation(
-        async (callback: (prisma: PrismaMock) => Promise<unknown>) => {
+        async <T>(
+          callback: (tx: typeof prismaServiceMock) => Promise<T>,
+        ): Promise<T> => {
           return await callback(prismaServiceMock);
         },
       );

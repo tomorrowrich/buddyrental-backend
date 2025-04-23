@@ -1,4 +1,4 @@
-import { Buddy, PrismaClient } from '@prisma/client';
+import { Buddy, PrismaClient, User } from '@prisma/client';
 import { userPassword } from '../src/prisma/prisma.extension';
 import * as buddies from './data/buddies.json';
 import * as buddyTags from './data/tags-buddies.json';
@@ -191,23 +191,6 @@ async function seedUser() {
   console.log('Start seeding User...');
 
   const existingUsers = await prisma.user.count();
-  
-  if (existingUsers > 0) {
-    console.timeEnd('seed-user');
-    console.log('User already exists, skipping seeding\n');
-    return;
-  }
-
-  if (existingUsers > 0) {
-    console.timeEnd('seed-user');
-    console.log('User already exists, skipping seeding\n');
-    return;
-  }
-
-  await prisma.user.createMany({
-    data: users,
-    skipDuplicates: true,
-  });
 
   await prisma.user.upsert({
     where: {

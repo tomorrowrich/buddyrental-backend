@@ -268,6 +268,16 @@ export class ReservationService {
 
     const { reservation, schedule } = await this.prisma.$transaction(
       async (tx) => {
+        await tx.user.update({
+          where: { userId: existingReservation.userId },
+          data: { balance: { decrement: existingReservation.price } },
+        });
+
+        await tx.user.update({
+          where: { userId: existingReservation.buddyId },
+          data: { balance: { increment: existingReservation.price * 0.85 } },
+        });
+
         const reservation = await tx.reservationRecord.update({
           where: { reservationId },
           data: { status: 'ACCEPTED' },
