@@ -122,7 +122,7 @@ export class PaymentService {
     if (!buddy.stripeAccountId)
       throw new BadRequestException('Buddy not onboarded.');
 
-    if (buddy.balanceWithdrawable < amount) {
+    if (user.balance < amount) {
       throw new BadRequestException(
         'Insufficient balance. Please check your balance.',
       );
@@ -130,7 +130,7 @@ export class PaymentService {
 
     const transfer = await this.stripe.transfers.create({
       amount: amount,
-      currency: 'thb',
+      currency: this.config.get('stripe.currency') || 'thb',
       destination: buddy.stripeAccountId,
       transfer_group: `buddy-${userId}`,
     });
@@ -151,10 +151,10 @@ export class PaymentService {
         omit: { meta: true },
       })
       .then(async (transaction) => {
-        await this.prisma.buddy.update({
-          where: { buddyId: buddy.buddyId },
+        await this.prisma.user.update({
+          where: { userId },
           data: {
-            balanceWithdrawable: { decrement: +amount },
+            balance: { decrement: +amount },
           },
         });
         return transaction;
