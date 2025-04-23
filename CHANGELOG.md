@@ -1,3 +1,12 @@
+# [1.5.0-beta.19](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.18...v1.5.0-beta.19) (2025-04-23)
+
+### Features
+
+- **reservation:** implement coin transfer ([2003cde](https://github.com/tomorrowrich/buddyrental-backend/commit/2003cde51a09ed6eb9119939fd7df92a675eebae))
+- **reservation:** implement transfer coin ([0bcf2a6](https://github.com/tomorrowrich/buddyrental-backend/commit/0bcf2a6b8ac8d27c9be32977e04f6e4010c80c75))
+- **reservation:** implement transfer coin ([4767dd5](https://github.com/tomorrowrich/buddyrental-backend/commit/4767dd5026dfa7ce8ff5566e6369a93f687ab451))
+- **reservation:** implement transfer coin ([#150](https://github.com/tomorrowrich/buddyrental-backend/issues/150)) ([323bad7](https://github.com/tomorrowrich/buddyrental-backend/commit/323bad7c0f65d1105ac7d2e0170416e2517e7c95))
+
 # [1.5.0-beta.18](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.17...v1.5.0-beta.18) (2025-04-23)
 
 ### Features
