@@ -122,7 +122,7 @@ export class PaymentService {
     if (!buddy.stripeAccountId)
       throw new BadRequestException('Buddy not onboarded.');
 
-    if (buddy.balanceWithdrawable < amount) {
+    if (user.balance < amount) {
       throw new BadRequestException(
         'Insufficient balance. Please check your balance.',
       );
@@ -130,7 +130,7 @@ export class PaymentService {
 
     const transfer = await this.stripe.transfers.create({
       amount: amount,
-      currency: 'thb',
+      currency: this.config.get('stripe.currency') || 'thb',
       destination: buddy.stripeAccountId,
       transfer_group: `buddy-${userId}`,
     });
@@ -151,10 +151,10 @@ export class PaymentService {
         omit: { meta: true },
       })
       .then(async (transaction) => {
-        await this.prisma.buddy.update({
-          where: { buddyId: buddy.buddyId },
+        await this.prisma.user.update({
+          where: { userId },
           data: {
-            balanceWithdrawable: { decrement: +amount },
+            balance: { decrement: +amount },
           },
         });
         return transaction;
@@ -277,32 +277,27 @@ export class PaymentService {
     }
   }
 
-  async onboardBuddy(buddyId: string) {
-    const buddy = await this.prisma.buddy.findUnique({
-      where: { buddyId },
-      include: { user: true },
+  async onboardBuddy(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { userId },
+      include: { buddy: true },
     });
 
-    if (!buddy || !buddy.user) {
-      throw new BadRequestException('Buddy not found.');
+    if (!user) {
+      throw new UnauthorizedException('User not found.');
     }
 
-    if (buddy.stripeAccountId) {
+    if (user.buddy?.stripeAccountId) {
       throw new BadRequestException('Buddy already onboarded.');
     }
 
     const stripeAccount = await this.stripe.accounts
       .create({
-        country: buddy.user.country,
-        email: buddy.user.email,
+        country: user.country,
+        email: user.email,
         business_type: 'individual',
       })
       .then(async (account) => {
-        await this.prisma.buddy.update({
-          where: { buddyId },
-          data: { stripeAccountId: account.id },
-        });
-
         const acctLink = await this.stripe.accountLinks.create({
           account: account.id,
           refresh_url: this.config.get('site_url') + 'profile',
@@ -310,9 +305,9 @@ export class PaymentService {
           type: 'account_onboarding',
         });
 
-        return acctLink.url;
+        return { url: acctLink.url, stripeAccountId: account.id };
       });
 
-    return { url: stripeAccount };
+    return stripeAccount;
   }
 }
