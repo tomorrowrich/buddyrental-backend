@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { PrismaService } from '@app/prisma/prisma.service';
@@ -11,7 +11,53 @@ export class ReviewsService {
   constructor(private prisma: PrismaService) {}
 
   async create(createReviewDto: CreateReviewDto) {
-    return await this.prisma.review.create({ data: createReviewDto });
+    const detail = await this.prisma.reservationRecord.findUnique({
+      where: { reservationId: createReviewDto.reservationId },
+      include: {
+        user: {
+          select: {
+            userId: true,
+            firstName: true,
+            lastName: true,
+            profilePicture: true,
+            email: true,
+            phoneNumber: true,
+            citizenId: true,
+            address: true,
+          },
+        },
+        buddy: {
+          include: {
+            user: {
+              select: {
+                userId: true,
+                firstName: true,
+                lastName: true,
+                profilePicture: true,
+                email: true,
+                phoneNumber: true,
+                citizenId: true,
+                address: true,
+              },
+            },
+            tags: true,
+          },
+        },
+      },
+    });
+
+    if (!detail) {
+      throw new InternalServerErrorException();
+    }
+
+    return await this.prisma.review.create({
+      data: {
+        commenterId: detail.userId,
+        profileId: detail.buddyId,
+        rating: createReviewDto.rating,
+        comment: createReviewDto.comment,
+      },
+    });
   }
 
   async findAll(
@@ -20,10 +66,7 @@ export class ReviewsService {
   ): Promise<PaginatedOutputDto<Review>> {
     const paginate = createPaginator({ perPage, page });
     // equivalent to paginating `this.prisma.review.findMany();`
-    const reviews = await paginate<Review, Prisma.ReviewFindManyArgs>(
-      this.prisma,
-    );
-    return reviews;
+    return await paginate<Review, Prisma.ReviewFindManyArgs>(this.prisma);
   }
 
   async findOnProfile(

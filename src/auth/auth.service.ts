@@ -31,6 +31,7 @@ export class AuthService {
       registerDto.email,
       registerDto.citizenId,
       registerDto.phone,
+      registerDto.nickname,
     );
     if (existingUser) {
       throw new ForbiddenException('Duplicate user');
@@ -82,11 +83,27 @@ export class AuthService {
   }
 
   async me(userId: string) {
-    const user = await this.usersService.findOne(userId).catch(() => null);
+    const user = await this.usersService
+      .getUserWithProfile(userId)
+      .catch(() => null);
     if (!user) {
       throw new UnauthorizedException();
     }
 
     return { user };
+  }
+
+  async verifyToken(token: string) {
+    if (!token) {
+      throw new BadRequestException('No token provided');
+    }
+
+    const payload = await this.jwtService.verifyAsync<{
+      sub: string;
+      email: string;
+    }>(token, {
+      secret: this.config.get<string>('auth.secret_key'),
+    });
+    return { userId: payload.sub, email: payload.email };
   }
 }

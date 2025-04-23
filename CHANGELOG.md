@@ -1,3 +1,193 @@
+# [1.5.0-beta.20](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.19...v1.5.0-beta.20) (2025-04-23)
+
+### Bug Fixes
+
+- buddy module test ([3328113](https://github.com/tomorrowrich/buddyrental-backend/commit/332811341fda284da8c5da295592004514857205))
+
+### Features
+
+- buddy stripe onboard ([ea7ea1c](https://github.com/tomorrowrich/buddyrental-backend/commit/ea7ea1cff2e3cb8faffddb61d0d9250617358069))
+- buddy stripe onboard ([#152](https://github.com/tomorrowrich/buddyrental-backend/issues/152)) ([760813f](https://github.com/tomorrowrich/buddyrental-backend/commit/760813f121c229106cca74d5ad6424bcedb72a94))
+
+# [1.5.0-beta.19](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.18...v1.5.0-beta.19) (2025-04-23)
+
+### Features
+
+- **reservation:** implement coin transfer ([2003cde](https://github.com/tomorrowrich/buddyrental-backend/commit/2003cde51a09ed6eb9119939fd7df92a675eebae))
+- **reservation:** implement transfer coin ([0bcf2a6](https://github.com/tomorrowrich/buddyrental-backend/commit/0bcf2a6b8ac8d27c9be32977e04f6e4010c80c75))
+- **reservation:** implement transfer coin ([4767dd5](https://github.com/tomorrowrich/buddyrental-backend/commit/4767dd5026dfa7ce8ff5566e6369a93f687ab451))
+- **reservation:** implement transfer coin ([#150](https://github.com/tomorrowrich/buddyrental-backend/issues/150)) ([323bad7](https://github.com/tomorrowrich/buddyrental-backend/commit/323bad7c0f65d1105ac7d2e0170416e2517e7c95))
+
+# [1.5.0-beta.18](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.17...v1.5.0-beta.18) (2025-04-23)
+
+### Features
+
+- trigger semver ([d49aacb](https://github.com/tomorrowrich/buddyrental-backend/commit/d49aacbd802165c8efd4e5b538e0f219163854f8))
+- trigger semver ([#151](https://github.com/tomorrowrich/buddyrental-backend/issues/151)) ([e2dc443](https://github.com/tomorrowrich/buddyrental-backend/commit/e2dc443542a6655ee14cba43821e8d77cc86119e))
+
+# [1.5.0-beta.17](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.16...v1.5.0-beta.17) (2025-04-22)
+
+### Bug Fixes
+
+- cleanup ([cc5b10a](https://github.com/tomorrowrich/buddyrental-backend/commit/cc5b10ac7fc2695d9b11e47c7928b5ff778e2db2))
+
+### Features
+
+- add notification on reservation ([cf36888](https://github.com/tomorrowrich/buddyrental-backend/commit/cf368880666a3e15af50d0661ca59f69929cfefc))
+- schedule API ([7f2401e](https://github.com/tomorrowrich/buddyrental-backend/commit/7f2401e8f13de22bf23982fb281fc7beff42c0d6))
+
+# [1.5.0-beta.16](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.15...v1.5.0-beta.16) (2025-04-21)
+
+### Bug Fixes
+
+- **admin:** remove file and add role ([d6a9406](https://github.com/tomorrowrich/buddyrental-backend/commit/d6a9406ff27f8d1da03df2f4ac9a556956a3058b))
+- **ci:** fix seeding ([d36c705](https://github.com/tomorrowrich/buddyrental-backend/commit/d36c7059f829e9bab1f06dc69259cdcd2e645c79))
+- **user:** fix update and register ([1cd010f](https://github.com/tomorrowrich/buddyrental-backend/commit/1cd010f4a149f02c45b8839f4243f0a8731862d9))
+- **user:** fix update and register ([44ac8e4](https://github.com/tomorrowrich/buddyrental-backend/commit/44ac8e4cfa297a641f311f9855b5641b6b482587))
+
+### Features
+
+- **admin:** implement ban ([15a2614](https://github.com/tomorrowrich/buddyrental-backend/commit/15a2614f074229700f06058b74806c50d42b5d3a))
+- **admin:** implement ban ([b25b6dc](https://github.com/tomorrowrich/buddyrental-backend/commit/b25b6dc589bd91426fe3e3db1fed607ea7879490))
+- **admin:** implement ban ([bd53696](https://github.com/tomorrowrich/buddyrental-backend/commit/bd53696f119a8f6548d1beffe70a6ca6367fbc65))
+
+# [1.5.0-beta.15](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.14...v1.5.0-beta.15) (2025-04-19)
+
+### Bug Fixes
+
+- **ci:** imagine forgetting a comma ([a2ff9ba](https://github.com/tomorrowrich/buddyrental-backend/commit/a2ff9badca5178491c4c95edf7ef8dcd8d7d2dd5))
+- **ci:** pool timeout ([59de630](https://github.com/tomorrowrich/buddyrental-backend/commit/59de630052d149f752bf83071e02ba5493ec5ee1))
+- **ci:** pool timeout new ([4f54d6c](https://github.com/tomorrowrich/buddyrental-backend/commit/4f54d6c69005244902991d37244452c50d4f4b6b))
+- **mailer:** default mailer env ([ac068df](https://github.com/tomorrowrich/buddyrental-backend/commit/ac068df8bc80618035d4629515cf791f95eae7d4))
+
+# [1.5.0-beta.14](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.13...v1.5.0-beta.14) (2025-04-19)
+
+### Bug Fixes
+
+- **reviews:** expose reviews api to swagger ([fadcf08](https://github.com/tomorrowrich/buddyrental-backend/commit/fadcf08149cb72fa69d3bf54284014353a64be6f))
+- **reviews:** expose reviews api to swagger ([#135](https://github.com/tomorrowrich/buddyrental-backend/issues/135)) ([5b712c5](https://github.com/tomorrowrich/buddyrental-backend/commit/5b712c55c4f766fd2ba80aaf6087327e61a7e247))
+
+# [1.5.0-beta.13](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.12...v1.5.0-beta.13) (2025-04-18)
+
+### Features
+
+- **transaction:** implement api ([1f08771](https://github.com/tomorrowrich/buddyrental-backend/commit/1f08771380df6dce1a33f79221054b9f347504a7))
+
+# [1.5.0-beta.12](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.11...v1.5.0-beta.12) (2025-04-17)
+
+### Bug Fixes
+
+- **doc:** incorrect swagger ([a029107](https://github.com/tomorrowrich/buddyrental-backend/commit/a0291070eb036d6ad5751c5d63771ac19b516c70))
+- **payment:** withdraw logic ([520c2a0](https://github.com/tomorrowrich/buddyrental-backend/commit/520c2a03ff2e2937c256de50da03a6255164636c))
+
+### Features
+
+- **payment:** coin purchase ([15508a1](https://github.com/tomorrowrich/buddyrental-backend/commit/15508a13a8ad739b8f0a523a52d885a428960cdc))
+- **payment:** event hook ([3732cc9](https://github.com/tomorrowrich/buddyrental-backend/commit/3732cc9bdfc5c999260599657c2683d105e21045))
+- **payment:** stripe integration ([adda8da](https://github.com/tomorrowrich/buddyrental-backend/commit/adda8da94c878c684847ad3add12750837000f9b))
+- **payment:** transaction ([#139](https://github.com/tomorrowrich/buddyrental-backend/issues/139)) ([9f9840a](https://github.com/tomorrowrich/buddyrental-backend/commit/9f9840a09382b8bf0f22617ce3901a6b84054bdb))
+- **payment:** transaction history ([2d8adcc](https://github.com/tomorrowrich/buddyrental-backend/commit/2d8adcc0ab3b07a573e3eea63bc5c34097521aee))
+- **payment:** withdrwawal system ([8465cd4](https://github.com/tomorrowrich/buddyrental-backend/commit/8465cd4b26a9db457cbacf20f78acd801301b7f0))
+
+# [1.5.0-beta.11](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.10...v1.5.0-beta.11) (2025-04-17)
+
+### Features
+
+- **review:** integrate create review ([9912cb9](https://github.com/tomorrowrich/buddyrental-backend/commit/9912cb936e2279450a72fbfb6ba43180cac966e6))
+
+# [1.5.0-beta.10](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.9...v1.5.0-beta.10) (2025-04-10)
+
+### Bug Fixes
+
+- testing mod ([5825c73](https://github.com/tomorrowrich/buddyrental-backend/commit/5825c7333ddcb75baaace40d35484d1d9eccef68))
+- typo ([b9754d6](https://github.com/tomorrowrich/buddyrental-backend/commit/b9754d627cd9037ad45ff68e2884ed164057fa92))
+
+### Features
+
+- notification service ([f7cc071](https://github.com/tomorrowrich/buddyrental-backend/commit/f7cc0714b33299e6a90f2295ed672aa1fdcce2df))
+- notification service ([#138](https://github.com/tomorrowrich/buddyrental-backend/issues/138)) ([9dec27f](https://github.com/tomorrowrich/buddyrental-backend/commit/9dec27f1812dbe95554058819dcc09c91d6dd8a3))
+
+# [1.5.0-beta.9](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.8...v1.5.0-beta.9) (2025-04-09)
+
+### Bug Fixes
+
+- **buddy:** add missing import ([5ccb328](https://github.com/tomorrowrich/buddyrental-backend/commit/5ccb328032aade052ee93f25b14e9f99e725037c))
+
+### Features
+
+- **buddy:** createBuddy api on backend ([c9419af](https://github.com/tomorrowrich/buddyrental-backend/commit/c9419afe40992e3fa8af2d696311c3dc78b3b00d))
+
+# [1.5.0-beta.8](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.7...v1.5.0-beta.8) (2025-04-04)
+
+### Bug Fixes
+
+- **cors:** fix cors for backend deployment ([b1a5953](https://github.com/tomorrowrich/buddyrental-backend/commit/b1a595314a5933ec780fd15bc3bf757f896fd547))
+- **cors:** fix cors for backend deployment ([#132](https://github.com/tomorrowrich/buddyrental-backend/issues/132)) ([b3bf0a2](https://github.com/tomorrowrich/buddyrental-backend/commit/b3bf0a21a2f170ad696e786ec52b5bc6f9ae9345))
+
+# [1.5.0-beta.7](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.6...v1.5.0-beta.7) (2025-04-03)
+
+### Bug Fixes
+
+- **deps:** remove exports ([a914ffc](https://github.com/tomorrowrich/buddyrental-backend/commit/a914ffc4b1cf94b05d5cb88857ed94bb7882c71f))
+- **users:** url regex ([d201cc3](https://github.com/tomorrowrich/buddyrental-backend/commit/d201cc32697e975dfa6f57763ef067d43d4964f2))
+- **users:** url regex ([0f515aa](https://github.com/tomorrowrich/buddyrental-backend/commit/0f515aa42e44c24eb1fcb9952d3a4aaa24bdbef8))
+- **users:** url regex ([4ea604b](https://github.com/tomorrowrich/buddyrental-backend/commit/4ea604b885ef6af133871baf7b883fdc1b2749bc))
+
+# [1.5.0-beta.6](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.5...v1.5.0-beta.6) (2025-03-27)
+
+### Features
+
+- **feed-and-search:** implement feed and search api ([7934beb](https://github.com/tomorrowrich/buddyrental-backend/commit/7934beb869f79a57b1a3a85775c74ee98d566b0e))
+
+# [1.5.0-beta.5](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.4...v1.5.0-beta.5) (2025-03-27)
+
+### Bug Fixes
+
+- enable mail ([8131577](https://github.com/tomorrowrich/buddyrental-backend/commit/81315772b5ce653a114bac52884e8c595b7d36b2))
+
+### Features
+
+- **report:** add from integration ([4f412f1](https://github.com/tomorrowrich/buddyrental-backend/commit/4f412f1a83c42b6b6d92a8ac298b208dbf45bd50))
+- **report:** add from integration ([#129](https://github.com/tomorrowrich/buddyrental-backend/issues/129)) ([d8640f6](https://github.com/tomorrowrich/buddyrental-backend/commit/d8640f64cb89e39e44330d6144c355891c553cbb))
+
+# [1.5.0-beta.4](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.3...v1.5.0-beta.4) (2025-03-26)
+
+### Bug Fixes
+
+- **mail:** templating and type ([6b4b1b6](https://github.com/tomorrowrich/buddyrental-backend/commit/6b4b1b618e4fd50707b51f76c37b669698873f4e))
+
+# [1.5.0-beta.3](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.2...v1.5.0-beta.3) (2025-03-26)
+
+### Bug Fixes
+
+- **prisma:** seeding ([835fc8e](https://github.com/tomorrowrich/buddyrental-backend/commit/835fc8e493ff3084cc9a7bf3d959307886b016eb))
+
+### Features
+
+- **reports:** add get reports admin api ([395377d](https://github.com/tomorrowrich/buddyrental-backend/commit/395377dde04f8be4b5190c6fc13b3d5fc92a9167))
+- **reports:** add get reports admin api ([#126](https://github.com/tomorrowrich/buddyrental-backend/issues/126)) ([af82425](https://github.com/tomorrowrich/buddyrental-backend/commit/af82425f8ec5abd17786f577d151097bf88302fb))
+- **reports:** create reports ([cc0a144](https://github.com/tomorrowrich/buddyrental-backend/commit/cc0a1440d4892086cdb4906736dc8971155774d9))
+
+# [1.5.0-beta.2](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0-beta.1...v1.5.0-beta.2) (2025-03-26)
+
+### Bug Fixes
+
+- **buddy:** api conditions ([f9e8d4b](https://github.com/tomorrowrich/buddyrental-backend/commit/f9e8d4b6cacc4dc307a7be44e9b6531b0147f785))
+- **buddy:** api conditions ([#117](https://github.com/tomorrowrich/buddyrental-backend/issues/117)) ([8ba1a75](https://github.com/tomorrowrich/buddyrental-backend/commit/8ba1a753f36bb6173242273fde6f37775d69c882))
+
+# [1.5.0-beta.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.4.0...v1.5.0-beta.1) (2025-03-26)
+
+### Bug Fixes
+
+- **verification-api:** fix response ([de9e6d3](https://github.com/tomorrowrich/buddyrental-backend/commit/de9e6d371e57cb0e0f6c51357926fb593de589af))
+- **verify-api:** fix verfication-api ([5985e7c](https://github.com/tomorrowrich/buddyrental-backend/commit/5985e7c5e78a6715022c1b31a39cd388dab69c5f))
+- **verify-api:** fix verfication-api ([7e1ffae](https://github.com/tomorrowrich/buddyrental-backend/commit/7e1ffae9838d4babdc5aaa2f29b9f278f7b86725))
+- **verify-api:** fix verfication-api ([#114](https://github.com/tomorrowrich/buddyrental-backend/issues/114)) ([581c7e8](https://github.com/tomorrowrich/buddyrental-backend/commit/581c7e83a9f10ee06f04bacc6de8143d30c23ac6))
+
+### Features
+
+- **verify-api:** fix verfication-api ([697d351](https://github.com/tomorrowrich/buddyrental-backend/commit/697d351d54428d87d303b57c0acacbf9b91e649c))
+
 # [1.4.0](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.3.0...v1.4.0) (2025-03-26)
 
 ### Bug Fixes

@@ -1,6 +1,6 @@
 {
   "name": "buddyrental-backend",
-  "version": "1.4.0",
+  "version": "1.5.0-beta.20",
   "description": "",
   "author": "",
   "private": true,
@@ -22,69 +22,77 @@
     "commitlint": "commitlint --edit"
   },
   "dependencies": {
-    "@nestjs-modules/mailer": "^2.0.2",
-    "@nestjs/common": "^11.0.11",
-    "@nestjs/config": "^4.0.1",
-    "@nestjs/core": "^11.0.11",
+    "@nestjs-modules/mailer": "^1.6.1",
+    "@nestjs/common": "^11.0.12",
+    "@nestjs/config": "^4.0.2",
+    "@nestjs/core": "^11.0.12",
     "@nestjs/jwt": "^11.0.0",
-    "@nestjs/platform-express": "^11.0.11",
-    "@nestjs/platform-socket.io": "^11.0.11",
-    "@nestjs/swagger": "^11.0.6",
-    "@nestjs/websockets": "^11.0.11",
+    "@nestjs/platform-express": "^11.0.12",
+    "@nestjs/platform-socket.io": "^11.0.12",
+    "@nestjs/swagger": "^11.1.0",
+    "@nestjs/websockets": "^11.0.12",
     "@prisma/client": "^6.5.0",
-    "@supabase/supabase-js": "^2.48.1",
+    "@supabase/supabase-js": "^2.49.4",
     "argon2": "^0.41.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "form-data": "^4.0.2",
-    "mailgun.js": "^12.0.1",
     "module-alias": "^2.2.3",
+    "nest-winston": "^1.10.2",
     "nestjs-supabase-js": "^1.1.1",
     "nodemailer": "^6.10.0",
     "prisma-pagination": "^0.2.3",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "socket.io": "^4.8.1",
-    "swagger-ui-express": "^5.0.1"
+    "stripe": "^18.0.0",
+    "swagger-ui-express": "^5.0.1",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.0",
     "@commitlint/config-conventional": "^19.8.0",
-    "@eslint/eslintrc": "^3.3.0",
-    "@eslint/js": "^9.22.0",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.23.0",
     "@nestjs/cli": "^11.0.5",
     "@nestjs/schematics": "^11.0.2",
-    "@nestjs/testing": "^11.0.11",
+    "@nestjs/testing": "^11.0.12",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/exec": "^7.0.3",
     "@semantic-release/git": "^10.0.1",
     "@swc/cli": "^0.6.0",
-    "@swc/core": "^1.11.8",
-    "@types/express": "^5.0.0",
+    "@swc/core": "^1.11.16",
+    "@types/express": "^5.0.1",
     "@types/jest": "^29.5.14",
     "@types/multer": "^1.4.12",
-    "@types/node": "^22.13.10",
-    "@types/supertest": "^6.0.2",
+    "@types/node": "^22.13.17",
+    "@types/nodemailer": "^6.4.17",
+    "@types/supertest": "^6.0.3",
     "conventional-changelog-atom": "^5.0.0",
-    "eslint": "^9.22.0",
+    "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",
-    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-prettier": "^5.2.5",
     "eslint-plugin-unused-imports": "^4.1.4",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "jest": "^29.7.0",
+    "jest-mock-extended": "^4.0.0-beta1",
     "prettier": "^3.5.3",
     "prisma": "^6.5.0",
     "semantic-release": "^24.2.3",
     "source-map-support": "^0.5.21",
-    "supertest": "^7.0.0",
-    "ts-jest": "^29.2.6",
+    "supertest": "^7.1.0",
+    "ts-jest": "^29.3.1",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.1"
+    "typescript-eslint": "^8.29.0"
+  },
+  "prisma": {
+    "seed": "ts-node --transpile-only prisma/seed.ts"
   },
   "_moduleAliases": {
     "@app": "dist"
@@ -112,5 +120,11 @@
       "<rootDir>/src/"
     ]
   },
-  "packageManager": "pnpm@10.6.2+sha1.7f417eb782bab712a1a9bd0206887dcee502d03e"
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "esbuild"
+    ]
+  },
+  "packageManager": "pnpm@10.8.1+sha512.c50088ba998c67b8ca8c99df8a5e02fd2ae2e2b29aaf238feaa9e124248d3f48f9fb6db2424949ff901cffbb5e0f0cc1ad6aedb602cd29450751d11c35023677"
 }

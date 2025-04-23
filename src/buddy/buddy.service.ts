@@ -1,9 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CreateBuddyDto } from './dto/create-buddy.dto';
+import { PaymentService } from '@app/payment/payment.service';
 
 @Injectable()
 export class BuddyService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private payment: PaymentService,
+  ) {}
 
   async updatePricing(buddyId: string, priceMin: number, priceMax: number) {
     const buddy = await this.prisma.buddy.findUnique({ where: { buddyId } });
@@ -44,5 +53,28 @@ export class BuddyService {
         })
         .then((buddy) => buddy.tags),
     };
+  }
+
+  async createBuddy(userId: string, data: CreateBuddyDto) {
+    const existingBuddy = await this.prisma.buddy.findUnique({
+      where: { userId },
+    });
+    if (existingBuddy) {
+      throw new BadRequestException('Buddy already exists for this user');
+    }
+    const onboard = await this.payment.onboardBuddy(userId);
+
+    const buddy = await this.prisma.buddy.create({
+      data: {
+        userId,
+        priceMin: data.minPrice,
+        priceMax: data.maxPrice,
+        description: data.description,
+        balanceWithdrawable: 0,
+        stripeAccountId: onboard.stripeAccountId,
+      },
+    });
+
+    return { buddy, onboard };
   }
 }

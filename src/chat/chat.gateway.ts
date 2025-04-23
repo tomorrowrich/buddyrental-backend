@@ -78,10 +78,6 @@ export class ChatGateway implements OnGatewayConnection {
     });
 
     if (errors.length > 0) {
-      for (const error of errors) {
-        console.log(error.children);
-      }
-      console.log('______________________');
       return 'INVALID';
     }
 

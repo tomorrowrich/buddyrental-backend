@@ -1,7 +1,6 @@
 import { PrismaService } from '@app/prisma/prisma.service';
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -79,13 +78,29 @@ export class ChatService {
   async getChats(userId: string, take = 10, skip = 0) {
     const data = await this.prisma.chat.findMany({
       where: {
-        OR: [{ buddyId: userId }, { customerId: userId }],
+        OR: [{ buddy: { userId } }, { customerId: userId }],
       },
       include: {
         ChatMessage: {
           take: 1,
           orderBy: {
             createdAt: 'desc',
+          },
+        },
+        buddy: {
+          include: {
+            user: {
+              select: {
+                displayName: true,
+                profilePicture: true,
+              },
+            },
+          },
+        },
+        customer: {
+          select: {
+            displayName: true,
+            profilePicture: true,
           },
         },
       },
@@ -98,7 +113,7 @@ export class ChatService {
 
     const totalCount = await this.prisma.chat.count({
       where: {
-        OR: [{ buddyId: userId }, { customerId: userId }],
+        OR: [{ buddy: { userId } }, { customerId: userId }],
       },
     });
 
@@ -106,19 +121,30 @@ export class ChatService {
   }
 
   async getHistory(userId: string, chatId: string, take: number, skip: number) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        userId,
+      },
+      include: {
+        buddy: {
+          select: {
+            buddyId: true,
+          },
+        },
+      },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
     const chat = await this.prisma.chat.findUnique({
       where: {
         id: chatId,
-        OR: [{ buddyId: userId }, { customerId: userId }],
+        OR: [{ buddyId: user.buddy?.buddyId }, { customerId: userId }],
       },
     });
 
     if (!chat) {
       throw new NotFoundException('Chat not found');
-    }
-
-    if (chat.buddyId !== userId && chat.customerId !== userId) {
-      throw new ForbiddenException('You are not involved in this chat');
     }
 
     const data = await this.prisma.chatMessage.findMany({

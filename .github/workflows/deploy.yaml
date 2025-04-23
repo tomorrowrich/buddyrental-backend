@@ -61,8 +61,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: Staging
     env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}\&schema=preview-${{ github.event.number }}
-      DIRECT_URL: ${{ secrets.DIRECT_URL }}\&schema=preview-${{ github.event.number }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}&schema=preview-${{ github.event.number }}
+      DIRECT_URL: ${{ secrets.DIRECT_URL }}&schema=preview-${{ github.event.number }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -75,7 +75,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: 'latest'
           cache: 'pnpm'
 
       - name: Install dependencies
@@ -83,6 +83,12 @@ jobs:
 
       - name: Migrate Prisma
         run: pnpm prisma migrate deploy
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
+      - name: Seed Prisma
+        run: pnpm prisma db seed
 
   deploy:
     concurrency:
@@ -133,6 +139,9 @@ jobs:
               "env": {
                 "DATABASE_URL": "${{ secrets.DATABASE_URL }}&schema=preview-${{ github.event.number }}",
                 "DIRECT_URL": "${{ secrets.DIRECT_URL }}&schema=preview-${{ github.event.number }}",
+                "STRIPE_SECRET_KEY": "${{ secrets.STRIPE_SECRET_KEY }}",
+                "MAIL_TRANSPORT": "${{ secrets.MAIL_TRANSPORT }}",
+                "MAIL_FROM": "buddyrental-preview-${{ github.event.number }}@${{ vars.MAIL_DOMAIN }}",
                 "NODE_ENV": "preview"
               },
               "resources": {

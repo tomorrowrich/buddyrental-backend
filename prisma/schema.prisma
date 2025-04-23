@@ -21,36 +21,45 @@ model Admin {
 }
 
 model User {
-  userId             String              @id @unique @default(uuid()) @map("user_id") @db.Uuid
-  adminId            String?             @map("admin_id") @db.Uuid
-  firstName          String              @map("first_name") @db.VarChar(64)
-  lastName           String              @map("last_name") @db.VarChar(64)
-  email              String              @unique @map("email") @db.VarChar(255)
-  password           String              @map("password") @db.Text
-  citizenId          String              @unique @map("citizen_id")
-  phoneNumber        String              @map("phone_number")
-  verified           Boolean             @default(false)
-  displayName        String?             @map("display_name") @db.VarChar(255)
-  gender             UserGender          @map("gender")
-  dateOfBirth        DateTime            @map("date_of_birth") @db.Date
-  address            String              @db.VarChar(255)
-  city               String              @db.VarChar(64)
-  postalCode         String              @db.VarChar(16)
-  profilePicture     String?             @map("profile_picture") @db.Text
-  description        String?             @db.Text
-  accessToken        String?             @map("access_token")
-  resetPasswordToken String?             @map("reset_password_token") @db.VarChar(255)
-  interests          Tag[]
-  reviewsMade        Review[]            @relation("ReviewToCommenter")
-  Chat               Chat[]
-  ChatMessage        ChatMessage[]
-  buddy              Buddy?
-  reservations       ReservationRecord[]
-  Admin              Admin?
+  userId             String     @id @unique @default(uuid()) @map("user_id") @db.Uuid
+  firstName          String     @map("first_name") @db.VarChar(64)
+  lastName           String     @map("last_name") @db.VarChar(64)
+  email              String     @unique @map("email") @db.VarChar(255)
+  password           String     @map("password") @db.Text
+  citizenId          String     @unique @map("citizen_id")
+  phoneNumber        String     @map("phone_number")
+  verified           Boolean    @default(false)
+  displayName        String     @unique @map("display_name") @db.VarChar(255)
+  gender             UserGender @map("gender")
+  dateOfBirth        DateTime   @map("date_of_birth") @db.Date
+  address            String     @db.VarChar(255)
+  city               String     @db.VarChar(64)
+  postalCode         String     @db.VarChar(16)
+  country            String     @default("TH") @db.VarChar(2)
+  profilePicture     String?    @map("profile_picture") @db.Text
+  description        String?    @db.Text
+  balance            Float      @default(0) @map("balance") @db.DoublePrecision
+  stripeCustomerId   String?    @map("stripe_customer_id") @db.VarChar(255)
+  accessToken        String?    @map("access_token")
+  resetPasswordToken String?    @map("reset_password_token") @db.VarChar(255)
+  isBanned           Boolean    @default(false)
+  suspendedUntil     DateTime?
 
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
+  interests           Tag[]
+  reviewsMade         Review[]            @relation("ReviewToCommenter")
+  Chat                Chat[]
+  ChatMessage         ChatMessage[]
+  buddy               Buddy?
+  reservations        ReservationRecord[]
+  transactions        Transaction[]       @relation("UserTransaction")
+  transactionsAsBuddy Transaction[]       @relation("BuddyTransaction")
+  Reports             Reports[]
+  admin               Admin?
+
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  deletedAt     DateTime?       @map("deleted_at")
+  Notifications Notifications[]
 
   @@unique([email, phoneNumber])
 }
@@ -64,6 +73,7 @@ model Buddy {
   priceMin            Float   @map("price_min") @db.DoublePrecision
   priceMax            Float?  @map("price_max") @db.DoublePrecision
   tagsCount           Int     @default(0) @map("tags_count")
+  stripeAccountId     String? @unique @map("stripe_account_id") @db.VarChar(255)
   userId              String? @unique @map("user_id") @db.Uuid
   user                User?   @relation(fields: [userId], references: [userId], onDelete: SetNull)
 
@@ -71,11 +81,12 @@ model Buddy {
   schedules    Schedule[]
   reviews      Review[]            @relation("ReviewToProfile")
   tags         Tag[]
+  Chat         Chat[]
+  Reports      Reports[]
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
-  Chat      Chat[]
 
   @@index([ratingAvg, priceMin, priceMax])
   @@index([tagsCount])
@@ -102,7 +113,7 @@ model Schedule {
 
 model Tag {
   tagId   String  @id @unique @default(uuid()) @map("tag_id") @db.Uuid
-  name    String  @map("name") @db.Text
+  name    String  @map("name") @db.VarChar(24)
   buddies Buddy[]
   users   User[]
 
@@ -133,6 +144,7 @@ model ReservationRecord {
   price            Float             @map("price") @db.DoublePrecision
   reservationStart DateTime          @map("reservation_start") @db.Timestamp
   reservationEnd   DateTime          @map("reservation_end") @db.Timestamp
+  detail           String            @default("") @map("detail") @db.Text
   status           ReservationStatus @map("status")
   userId           String            @map("user_id") @db.Uuid
   buddyId          String            @map("buddy_id") @db.Uuid
@@ -194,6 +206,92 @@ model ChatMessage {
   @@index([deletedAt])
 }
 
+model Transaction {
+  id        String           @id @default(uuid()) @map("id") @db.Uuid
+  userId    String?          @map("user_id") @db.Uuid
+  buddyId   String?          @map("buddy_id") @db.Uuid
+  type      TransactionType  @map("type")
+  amount    Float            @map("amount") @db.DoublePrecision
+  paymentId String?          @unique @map("payment_id") @db.VarChar(255)
+  status    TrasactionStatus @map("status")
+  timestamp DateTime         @default(now()) @map("timestamp")
+  meta      Json             @map("meta") @db.Json
+
+  user  User? @relation("UserTransaction", fields: [userId], references: [userId], onDelete: SetNull)
+  buddy User? @relation("BuddyTransaction", fields: [buddyId], references: [userId], onDelete: SetNull)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([createdAt])
+  @@index([paymentId])
+}
+
+model Coupon {
+  id        String       @id @default(uuid()) @map("id") @db.Uuid
+  code      String       @unique @map("code") @db.VarChar(64)
+  type      CouponType   @map("type")
+  value     Float        @map("value") @db.DoublePrecision
+  startDate DateTime     @map("start_date") @db.Timestamp
+  endDate   DateTime     @map("end_date") @db.Timestamp
+  status    CouponStatus @map("status")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+}
+
+model ReportsCategory {
+  id      String    @id @default(uuid()) @map("id") @db.Uuid
+  name    String    @map("name") @db.VarChar(60)
+  Reports Reports[]
+}
+
+model Notifications {
+  id        String           @id @default(uuid()) @map("id") @db.Uuid
+  userId    String           @map("user_id") @db.Uuid
+  type      NotificationType @map("type")
+  title     String           @map("title") @db.VarChar(120)
+  body      String           @map("body") @db.Text
+  url       String?          @map("url") @db.VarChar(255)
+  read      Boolean          @default(false) @map("read")
+  createdAt DateTime         @default(now()) @map("created_at")
+  updatedAt DateTime         @updatedAt @map("updated_at")
+  deletedAt DateTime?        @map("deleted_at")
+
+  user User? @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  @@index([deletedAt])
+  @@index([userId])
+  @@index([userId, read])
+}
+
+model Reports {
+  id         String  @id @default(uuid()) @map("id") @db.Uuid
+  userId     String  @map("user_id") @db.Uuid
+  buddyId    String? @map("buddy_id") @db.Uuid
+  reporterId String  @map("reporter_id") @db.Uuid
+  categoryId String  @map("category_id") @db.Uuid
+  details    String  @map("details") @db.Text
+
+  status   ReportStatus    @map("status")
+  category ReportsCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  reporter User            @relation(fields: [reporterId], references: [userId], onDelete: Cascade)
+  buddy    Buddy?          @relation(fields: [buddyId], references: [buddyId], onDelete: Cascade)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([deletedAt])
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+}
+
 enum ChatMessageStatus {
   WAITING
   SENT
@@ -205,7 +303,33 @@ enum ReservationStatus {
   ACCEPTED
   REJECTED
   CANCELLED
+  UNAVAILABLE
   COMPLETED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+  REFUND
+}
+
+enum TrasactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  VOIDED
+}
+
+enum CouponStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
+enum CouponType {
+  PERCENTAGE
+  FIXED
 }
 
 enum ScheduleStatus {
@@ -219,4 +343,10 @@ enum UserGender {
   FEMALE
   OTHER
   UNKNOWN
+}
+
+enum NotificationType {
+  Booking
+  Chat
+  Others
 }

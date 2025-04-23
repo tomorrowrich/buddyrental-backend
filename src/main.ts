@@ -3,33 +3,57 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { utilities, WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+
+export const allowedOrigins = [
+  /^http:\/\/localhost:(3000|55500)$/,
+  /^https:\/\/mybuddyrental\.netlify\.app$/,
+  /^https:\/\/buddyrental-[\w-]+\.tonklaw\.com$/,
+];
 
 export const corsOptions = {
-  origin: '*',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,UPDATE',
-  allowedHeaders: 'Content-Type, Authorization',
+  origin: (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: boolean) => void,
+  ) => {
+    if (!origin || process.env.NODE_ENV !== 'production')
+      return callback(null, true);
+
+    const isAllowed = allowedOrigins.some((regex) => regex.test(origin));
+    if (isAllowed) callback(null, true);
+    else callback(new Error('Not allowed by CORS'));
+  },
+  methods: [
+    'GET',
+    'HEAD',
+    'PUT',
+    'PATCH',
+    'POST',
+    'DELETE',
+    'OPTIONS',
+    'UPDATE',
+  ],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   maxAge: 86400,
 };
+
 async function bootstrap() {
-  const allowedOrigins = [
-    /^http:\/\/localhost:3000$/,
-    /^https:\/\/mybuddyrental\.netlify\.app$/,
-    /^https:\/\/*mybuddyrental\.netlify\.app$/,
-    /^https:\/\/mybuddyrental-[\w-]+\.tonklaw\.com$/,
-  ];
-
-  const corsOptions = {
-    origin: allowedOrigins,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS,UPDATE',
-    allowedHeaders: 'Content-Type, Authorization',
-    credentials: true,
-    maxAge: 86400,
-  };
-
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
     cors: corsOptions,
+    rawBody: true,
+    logger: WinstonModule.createLogger({
+      level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+      format: winston.format.combine(
+        winston.format.timestamp(),
+        utilities.format.nestLike('BuddyRental', {
+          colors: process.env.NODE_ENV === 'development',
+        }),
+      ),
+      transports: [new winston.transports.Console()],
+    }),
   });
   app.setGlobalPrefix('/api');
 
