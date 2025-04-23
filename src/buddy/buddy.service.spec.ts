@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { BuddyService } from './buddy.service';
 import { PrismaService } from '@app/prisma/prisma.service';
+import { PaymentService } from '@app/payment/payment.service';
 
 describe('BuddyService', () => {
   let service: BuddyService;
@@ -22,6 +23,10 @@ describe('BuddyService', () => {
         {
           provide: PrismaService,
           useValue: mockPrismaService,
+        },
+        {
+          provide: PaymentService,
+          useValue: {},
         },
       ],
     }).compile();
