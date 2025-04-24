@@ -1,3 +1,9 @@
+## [1.5.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0...v1.5.1) (2025-04-24)
+
+### Bug Fixes
+
+- reservation failed ([000cbae](https://github.com/tomorrowrich/buddyrental-backend/commit/000cbae86666687f5ce7ab6161b6950ee0085924))
+
 ## [1.5.1-beta.1](https://github.com/tomorrowrich/buddyrental-backend/compare/v1.5.0...v1.5.1-beta.1) (2025-04-24)
 
 ### Bug Fixes
