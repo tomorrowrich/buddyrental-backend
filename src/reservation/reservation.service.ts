@@ -273,8 +273,8 @@ export class ReservationService {
           data: { balance: { decrement: existingReservation.price } },
         });
 
-        await tx.user.update({
-          where: { userId: existingReservation.buddyId },
+        await tx.user.updateMany({
+          where: { buddy: { buddyId: existingReservation.buddyId } },
           data: { balance: { increment: existingReservation.price * 0.85 } },
         });
 
